@@ -44,7 +44,7 @@ private struct BentoCoreHeader: View {
         let core = store.core
         VStack(spacing: BentoSpace.s6) {
             HStack(alignment: .top) {
-                BentoIconButton(icon: .terminal, label: "后台服务设置") { nav.route = .settings }
+                BentoIconButton(icon: .terminal, label: String(localized: "后台服务设置")) { nav.route = .settings }
                 Spacer()
                 BentoIconCircle(icon: .core, size: BentoMetric.iconCircleLarge,
                                 fill: BentoColor.Ink.black, ink: BentoColor.Ink.inverse)
@@ -84,7 +84,7 @@ private struct BentoMCPHealthRow: View {
                 BentoIconCircle(icon: .mcps, size: BentoSpace.s32, fill: BentoColor.Bg.panel)
                 Text("MCP").bentoText(.bodyStrong)
                 Spacer(minLength: BentoSpace.s4)
-                BentoPillChip("\(store.healthyCount) / \(store.activeMCPs.count) 正常",
+                BentoPillChip(String(localized: "\(store.healthyCount) / \(store.activeMCPs.count) 正常"),
                               tone: attention.isEmpty ? .mint : .peach, dot: attention.isEmpty ? .ok : .warn)
                 BentoIcon.chevronRight.image
                     .font(.system(size: BentoMetric.iconSizeSmall, weight: .semibold))

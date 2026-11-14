@@ -18,17 +18,17 @@ struct BentoMenuMCPs: View {
 
         BentoSegmentedPills(BentoMenuScope.allCases, selection: $scope, track: BentoColor.Bg.panel) { scope in
             switch scope {
-            case .all: "全部 \(store.mcps.count)"
-            case .attention: "需要处理 \(attention.count)"
+            case .all: String(localized: "全部 \(store.mcps.count)")
+            case .attention: String(localized: "需要处理 \(attention.count)")
             }
         }
-        BentoSectionLabel("MCP（开关 = 是否在默认服务里）")
+        BentoSectionLabel(String(localized: "MCP（开关 = 是否在默认服务里）"))
 
         ForEach(attention) { mcp in
             BentoAttentionCard(mcp: mcp)
         }
         if scope == .attention && attention.isEmpty {
-            BentoCard { BentoEmptyState(icon: .check, text: "没有需要处理的 MCP") }
+            BentoCard { BentoEmptyState(icon: .check, text: String(localized: "没有需要处理的 MCP")) }
         }
         if scope == .all && !others.isEmpty {
             BentoCard(padding: BentoSpace.s8) {
@@ -112,7 +112,7 @@ struct BentoAttentionCard: View {
                 .bentoText(.body, tone.ink)
                 .fixedSize(horizontal: false, vertical: true)
             BentoCountdown(target: retryAt) { seconds in
-                seconds > 0 ? "\(seconds) 秒后自动重试 · 已重试 \(attempts) 次" : "正在重试… · 已重试 \(attempts) 次"
+                seconds > 0 ? String(localized: "\(seconds) 秒后自动重试 · 已重试 \(attempts) 次") : String(localized: "正在重试… · 已重试 \(attempts) 次")
             }
             .bentoText(.label, tone.ink)
         case .configError(let message):

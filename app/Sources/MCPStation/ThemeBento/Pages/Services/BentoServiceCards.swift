@@ -15,8 +15,8 @@ struct BentoServiceMembersCard: View {
         BentoCard {
             VStack(alignment: .leading, spacing: BentoSpace.s8) {
                 BentoSectionLabel(service.isDefault
-                    ? "包含的 MCP（= 所有开关打开的 MCP）"
-                    : "包含的 MCP（勾选即生效，不受“默认服务”开关影响）")
+                    ? String(localized: "包含的 MCP（= 所有开关打开的 MCP）")
+                    : String(localized: "包含的 MCP（勾选即生效，不受“默认服务”开关影响）"))
                 LazyVGrid(columns: Self.columns, alignment: .leading, spacing: BentoSpace.s2) {
                     ForEach(allMCPs) { mcp in
                         let isMember = members.contains(mcp.name)
@@ -26,7 +26,7 @@ struct BentoServiceMembersCard: View {
                                 Text(mcp.name).bentoText(.body)
                                 Text("\(mcp.toolCount)").bentoText(.body, BentoColor.Ink.tertiary)
                                 if isMember && !mcp.inDefault {
-                                    BentoPillChip("默认已关", tone: .panel)
+                                    BentoPillChip(String(localized: "默认已关"), tone: .panel)
                                 }
                             }
                             .lineLimit(1)
@@ -60,9 +60,9 @@ struct BentoClientConfigCard: View {
         let command = Format.clientCommand(service: service, client: target, port: port)
         BentoCard {
             VStack(alignment: .leading, spacing: BentoSpace.s12) {
-                BentoSectionLabel("客户端配置")
+                BentoSectionLabel(String(localized: "客户端配置"))
                 BentoSegmentedPills(ClientTarget.allCases, selection: $target,
-                                    track: BentoColor.Bg.panel, title: \.rawValue)
+                                    track: BentoColor.Bg.panel, title: \.title)
                 HStack(alignment: .top, spacing: BentoSpace.s12) {
                     Text(command)
                         .bentoText(.mono)
@@ -83,9 +83,9 @@ struct BentoClientConfigCard: View {
 
     private var hint: String {
         switch target {
-        case .local: "在本机终端里运行一次即可；地址只监听 127.0.0.1"
-        case .container: "容器里用 host.docker.internal 代替 127.0.0.1，换网络不受影响"
-        case .json: "写进客户端的 MCP 配置文件；容器里把 127.0.0.1 换成 host.docker.internal"
+        case .local: String(localized: "在本机终端里运行一次即可；地址只监听 127.0.0.1")
+        case .container: String(localized: "容器里用 host.docker.internal 代替 127.0.0.1，换网络不受影响")
+        case .json: String(localized: "写进客户端的 MCP 配置文件；容器里把 127.0.0.1 换成 host.docker.internal")
         }
     }
 }
@@ -99,14 +99,14 @@ struct BentoServiceChecksCard: View {
         let health = BentoCopy.health(service)
         BentoCard {
             VStack(alignment: .leading, spacing: 0) {
-                BentoSectionLabel("检查").padding(.bottom, BentoSpace.s4)
-                check("工具名", longest <= ServiceSummary.toolNameLimit ? .ok : .error,
-                      "最长 \(longest) 字符（上限 \(ServiceSummary.toolNameLimit)）")
-                check("名字冲突", .ok, "无（工具名都带 MCP 名前缀）")
-                check("合并后的说明", .ok, service.withInstructions > 0
-                    ? "\(service.withInstructions) 个 MCP 有说明，共 \(Format.count(service.instructionsLength)) 字"
-                    : "没有 MCP 带说明")
-                check("MCP 状态", health.status, health.text)
+                BentoSectionLabel(String(localized: "检查")).padding(.bottom, BentoSpace.s4)
+                check(String(localized: "工具名"), longest <= ServiceSummary.toolNameLimit ? .ok : .error,
+                      String(localized: "最长 \(longest) 字符（上限 \(ServiceSummary.toolNameLimit)）"))
+                check(String(localized: "名字冲突"), .ok, String(localized: "无（工具名都带 MCP 名前缀）"))
+                check(String(localized: "合并后的说明"), .ok, service.withInstructions > 0
+                    ? String(localized: "\(service.withInstructions) 个 MCP 有说明，共 \(Format.count(service.instructionsLength)) 字")
+                    : String(localized: "没有 MCP 带说明"))
+                check(String(localized: "MCP 状态"), health.status, health.text)
             }
         }
     }

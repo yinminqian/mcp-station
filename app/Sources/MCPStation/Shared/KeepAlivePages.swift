@@ -44,7 +44,7 @@ final class PagesContainerView<ID: Hashable>: NSView {
     }
 
     @available(*, unavailable)
-    required init?(coder: NSCoder) { fatalError("不从 nib 创建") }
+    required init?(coder: NSCoder) { fatalError(String(localized: "不从 nib 创建")) }
 
     /// 换页：容器里始终只挂当前这一页，直接替换、不做过渡动画（macOS 侧边栏切换内容的惯例）。
     /// 页面背景是透明的，任何淡入淡出都会让两页内容叠在一起显示（2026-11-14 用户反馈"重影"）。

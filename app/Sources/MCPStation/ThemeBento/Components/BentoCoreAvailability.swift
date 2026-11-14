@@ -10,8 +10,8 @@ extension EnvironmentValues {
 struct BentoCoreDownBadge: View {
     var body: some View {
         HStack(spacing: BentoSpace.s8) {
-            BentoPillChip("后台服务没有运行，下面是最后一次的状态", tone: .rose, dot: .error)
-            BentoRestartCoreButton(tone: .ink, title: "重启", size: .small)
+            BentoPillChip(String(localized: "后台服务没有运行，下面是最后一次的状态"), tone: .rose, dot: .error)
+            BentoRestartCoreButton(tone: .ink, title: String(localized: "重启"), size: .small)
         }
     }
 }

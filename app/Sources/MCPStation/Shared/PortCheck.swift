@@ -20,7 +20,7 @@ enum PortCheck {
                 if line.hasPrefix("p"), pid.isEmpty { pid = String(line.dropFirst()) }
                 if line.hasPrefix("c"), name.isEmpty { name = String(line.dropFirst()) }
             }
-            return pid.isEmpty || name == "mcp-core" ? nil : "\(name.isEmpty ? "进程" : name)（pid \(pid)）"
+            return pid.isEmpty || name == "mcp-core" ? nil : "\(name.isEmpty ? String(localized: "进程") : name)（pid \(pid)）"
         }.value
     }
 }

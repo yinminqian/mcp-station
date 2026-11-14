@@ -48,7 +48,7 @@ struct GlassStateText: View {
 struct GlassCopyButton: View {
     var text: String
     var key: String
-    var label = "复制"
+    var label = String(localized: "复制")
     @Environment(CopyFeedback.self) private var copy
 
     var body: some View {

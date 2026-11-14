@@ -85,17 +85,17 @@ actor HTTPCoreClient: CoreClient {
         let owner = st?["portOwner"] as? String
         let reason: CoreDownReason
         if st?["disabled"] as? Bool == true {
-            reason = .init(title: "后台服务被系统关掉了",
-                           detail: "在「系统设置 → 通用 → 登录项与扩展」里打开 mcp-core，然后点「重启」。",
+            reason = .init(title: String(localized: "后台服务被系统关掉了"),
+                           detail: String(localized: "在「系统设置 → 通用 → 登录项与扩展」里打开 mcp-core，然后点「重启」。"),
                            occupiedBy: nil, lastExitCode: exit, logTail: tail)
         } else if CoreInstaller.bundled == nil, !installed {
-            reason = .init(title: "后台服务没有安装", detail: "这个 App 包里没有带内核（mcp-core），用 scripts/build-app.sh 重新构建。",
+            reason = .init(title: String(localized: "后台服务没有安装"), detail: String(localized: "这个 App 包里没有带内核（mcp-core），用 scripts/build-app.sh 重新构建。"),
                            occupiedBy: nil, lastExitCode: 0, logTail: [])
         } else if exit != 0 {
-            reason = .init(title: "后台服务启动后退出了（退出码 \(exit)）", detail: "下面是内核日志的最后几行。点「重启」再试一次。",
+            reason = .init(title: String(localized: "后台服务启动后退出了（退出码 \(exit)）"), detail: String(localized: "下面是内核日志的最后几行。点「重启」再试一次。"),
                            occupiedBy: owner, lastExitCode: exit, logTail: tail)
         } else {
-            reason = .init(title: "后台服务没有运行", detail: "点「重启」启动它。", occupiedBy: owner, lastExitCode: exit, logTail: tail)
+            reason = .init(title: String(localized: "后台服务没有运行"), detail: String(localized: "点「重启」启动它。"), occupiedBy: owner, lastExitCode: exit, logTail: tail)
         }
         return .stopped(reason: reason)
     }
@@ -137,12 +137,12 @@ actor HTTPCoreClient: CoreClient {
     private static func core(_ c: [String: Any]) -> CoreStatus {
         let state: CoreState
         if (c["api"] as? Int) != apiVersion {
-            state = .stopped(reason: .init(title: "内核版本不对",
-                                           detail: "运行的内核接口版本是 \(c["api"] ?? "?")，这个 App 需要 \(apiVersion)。点「重启」会升级内核，客户端会断几秒。",
+            state = .stopped(reason: .init(title: String(localized: "内核版本不对"),
+                                           detail: String(localized: "运行的内核接口版本是 \(c["api"] ?? "?")，这个 App 需要 \(apiVersion)。点「重启」会升级内核，客户端会断几秒。"),
                                            occupiedBy: nil, lastExitCode: 0, logTail: []))
         } else if let e = c["configError"] as? String {
-            state = .stopped(reason: .init(title: "配置文件读不了",
-                                           detail: "\(e)\n修好或移走这个文件后点「重启」。在修好之前不会改动它（现在用的是上一份能用的备份）。",
+            state = .stopped(reason: .init(title: String(localized: "配置文件读不了"),
+                                           detail: String(localized: "\(e)\n修好或移走这个文件后点「重启」。在修好之前不会改动它（现在用的是上一份能用的备份）。"),
                                            occupiedBy: nil, lastExitCode: 0, logTail: []))
         } else if c["gatewayError"] is String {
             // 网关端口起不来：配置能管、客户端连不上，正是 .notInstalled 的含义；设置页端口那一行会说被谁占着
@@ -190,14 +190,14 @@ actor HTTPCoreClient: CoreClient {
 
     private static func call(_ d: [String: Any]) -> CallRecord {
         let service = switch d["route"] as? String {
-        case "default": "默认"
-        case "test": "试调用"
-        case "single": "单独地址"
+        case "default": String(localized: "默认")
+        case "test": String(localized: "试调用")
+        case "single": String(localized: "单独地址")
         default: d["service"] as? String ?? "—"
         }
         let error = d["error"] as? String
         return CallRecord(id: d["id"] as? Int ?? 0, time: date(d["t"]) ?? .now, mcp: d["mcp"] as? String ?? "",
-                          tool: d["tool"] as? String ?? "", service: service, client: d["client"] as? String ?? "未知客户端",
+                          tool: d["tool"] as? String ?? "", service: service, client: d["client"] as? String ?? String(localized: "未知客户端"),
                           duration: .milliseconds(d["ms"] as? Int ?? 0), outcome: error.map { .error($0) } ?? .ok)
     }
 
@@ -230,7 +230,7 @@ actor HTTPCoreClient: CoreClient {
 
     func addMCP(_ draft: MCPDraft) async throws {
         let name = draft.name.trimmingCharacters(in: .whitespaces)
-        if name.isEmpty { throw CoreError.missingField("名字") }
+        if name.isEmpty { throw CoreError.missingField(String(localized: "名字")) }
         if draft.target.trimmingCharacters(in: .whitespaces).isEmpty { throw CoreError.missingField(draft.kind.targetLabel) }
         let entry = try JSONSerialization.jsonObject(with: JSONEncoder().encode(ConfigFile.MCPEntry(draft: draft)))
         _ = try await send("POST", "/control/mcps", ["name": name, "entry": entry])
@@ -263,11 +263,11 @@ actor HTTPCoreClient: CoreClient {
 
     func importConfig(_ data: Data) async throws -> String {
         let r = try await send("POST", "/control/import", raw: data) as? [String: Any] ?? [:]
-        var parts = ["导入完成：新增 \(r["added"] as? Int ?? 0) 个 MCP"]
-        if let u = r["updated"] as? Int, u > 0 { parts.append("更新 \(u) 个") }
-        if let s = r["services"] as? Int, s > 0 { parts.append("\(s) 个服务") }
+        var parts = [String(localized: "导入完成：新增 \(r["added"] as? Int ?? 0) 个 MCP")]
+        if let u = r["updated"] as? Int, u > 0 { parts.append(String(localized: "更新 \(u) 个")) }
+        if let s = r["services"] as? Int, s > 0 { parts.append(String(localized: "\(s) 个服务")) }
         if let skipped = r["skipped"] as? [String], !skipped.isEmpty {
-            parts.append("跳过名字不合法的 \(skipped.count) 个（\(skipped.prefix(3).joined(separator: "、"))）")
+            parts.append(String(localized: "跳过名字不合法的 \(skipped.count) 个（\(skipped.prefix(3).joined(separator: "、"))）"))
         }
         return parts.joined(separator: "，")
     }
@@ -284,7 +284,7 @@ actor HTTPCoreClient: CoreClient {
         } else if let obj = (try? JSONSerialization.jsonObject(with: Data(trimmed.utf8))) as? [String: Any] {
             args = obj
         } else {
-            return ToolCallResult(isError: true, text: "参数不是合法的 JSON 对象", duration: .zero)
+            return ToolCallResult(isError: true, text: String(localized: "参数不是合法的 JSON 对象"), duration: .zero)
         }
         let r = try await send("POST", "/control/mcps/\(mcp)/call", ["tool": tool, "arguments": args]) as? [String: Any] ?? [:]
         return ToolCallResult(isError: r["isError"] as? Bool ?? true, text: r["text"] as? String ?? "", duration: .milliseconds(r["ms"] as? Int ?? 0))
@@ -324,7 +324,7 @@ actor HTTPCoreClient: CoreClient {
 
     private static func error(_ data: Data) -> Error {
         let e = ((try? JSONSerialization.jsonObject(with: data)) as? [String: Any])?["error"] as? [String: Any]
-        let message = e?["message"] as? String ?? "内核返回了错误"
+        let message = e?["message"] as? String ?? String(localized: "内核返回了错误")
         return switch e?["code"] as? String {
         case "unknown_mcp", "unknown_service": CoreAPIError(message: message)
         case "invalid_name": CoreError.invalidName(message)
@@ -378,10 +378,10 @@ enum CoreInstaller {
     }
 
     static func ensure(restart: Bool) async throws {
-        guard bundled != nil else { throw CoreAPIError(message: "这个 App 包里没有带内核（mcp-core）") }
+        guard bundled != nil else { throw CoreAPIError(message: String(localized: "这个 App 包里没有带内核（mcp-core）")) }
         let r = await run(restart ? ["install", "--restart"] : ["install"])
         if r?["ok"] as? Bool != true {
-            throw CoreAPIError(message: "后台服务装不上：\(r?["error"] as? String ?? "没有输出")")
+            throw CoreAPIError(message: String(localized: "后台服务装不上：\(r?["error"] as? String ?? String(localized: "没有输出"))"))
         }
     }
 

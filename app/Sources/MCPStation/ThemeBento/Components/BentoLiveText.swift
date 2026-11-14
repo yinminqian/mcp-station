@@ -22,7 +22,7 @@ struct BentoCountdown: View {
 /// 已运行时长：「3 小时 12 分」，半分钟刷新一次。
 struct BentoUptime: View {
     let since: Date
-    var prefix = "已运行 "
+    var prefix = String(localized: "已运行 ")
 
     var body: some View {
         TimelineView(.periodic(from: .now, by: 30)) { context in

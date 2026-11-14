@@ -4,15 +4,15 @@ import Foundation
 enum BentoCopy {
     /// 「被 默认、ios 使用」；没开默认开关时补一句「默认已关」。
     static func usage(usedBy: [String], inDefault: Bool) -> String {
-        guard !usedBy.isEmpty else { return "没有服务用到" }
-        let base = "被 \(usedBy.joined(separator: "、")) 使用"
-        return inDefault ? base : base + " · 默认已关"
+        guard !usedBy.isEmpty else { return String(localized: "没有服务用到") }
+        let base = String(localized: "被 \(usedBy.joined(separator: "、")) 使用")
+        return inDefault ? base : base + String(localized: " · 默认已关")
     }
 
     /// 状态一句话；等待重试时带上已经试了几次。
     static func stateLine(_ state: MCPState) -> String {
         if case .backoff(_, _, let attempts) = state {
-            return "\(Format.stateLabel(state)) · 已重试 \(attempts) 次"
+            return String(localized: "\(Format.stateLabel(state)) · 已重试 \(attempts) 次")
         }
         return Format.stateLabel(state)
     }
@@ -22,11 +22,11 @@ enum BentoCopy {
     /// 服务的健康状况：「3 个都正常」/「1 个不正常」/「还没有 MCP」。
     static func health(_ service: ServiceSummary) -> (text: String, status: BentoStatus) {
         let count = service.members.count
-        if count == 0 { return ("还没有 MCP", .idle) }
-        if service.healthy == count { return ("\(count) 个都正常", .ok) }
-        return ("\(count - service.healthy) 个不正常", .warn)
+        if count == 0 { return (String(localized: "还没有 MCP"), .idle) }
+        if service.healthy == count { return (String(localized: "\(count) 个都正常"), .ok) }
+        return (String(localized: "\(count - service.healthy) 个不正常"), .warn)
     }
 
     /// 登录时打开：要等网关（LaunchAgent）接入后才做。
-    static let loginItemLater = "网关接入后开放"
+    static let loginItemLater = String(localized: "网关接入后开放")
 }

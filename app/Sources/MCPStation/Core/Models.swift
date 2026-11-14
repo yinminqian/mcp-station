@@ -11,7 +11,7 @@ enum MCPKind: String, Codable, Sendable, CaseIterable {
         switch self {
         case .npx: "npx"
         case .uvx: "uvx"
-        case .command: "命令"
+        case .command: String(localized: "命令")
         case .http: "HTTP"
         }
     }
@@ -19,9 +19,9 @@ enum MCPKind: String, Codable, Sendable, CaseIterable {
     /// 启动目标叫什么：既是定义里那一行的名字，也是新增表单里的输入框标题。
     var targetLabel: String {
         switch self {
-        case .npx, .uvx: "包"
-        case .command: "命令"
-        case .http: "地址"
+        case .npx, .uvx: String(localized: "包")
+        case .command: String(localized: "命令")
+        case .http: String(localized: "地址")
         }
     }
 
@@ -35,8 +35,8 @@ enum MCPKind: String, Codable, Sendable, CaseIterable {
     }
 
     /// 每行一条的附加配置：本地进程是环境变量，HTTP 上游是请求头。
-    var extraLabel: String { self == .http ? "请求头" : "环境变量" }
-    var extraPrompt: String { self == .http ? "每行一个，如 Authorization: Bearer xxx" : "每行一个，如 API_KEY=xxx" }
+    var extraLabel: String { self == .http ? String(localized: "请求头") : String(localized: "环境变量") }
+    var extraPrompt: String { self == .http ? String(localized: "每行一个，如 Authorization: Bearer xxx") : String(localized: "每行一个，如 API_KEY=xxx") }
 }
 
 /// 新增 MCP 时填的定义，对应 `POST /control/mcps` 的请求体（docs/ARCHITECTURE.md §4.1）。
@@ -183,7 +183,7 @@ struct CoreStatus: Equatable, Sendable {
 
     var isRunning: Bool { if case .running = state { true } else { false } }
     /// "重启"按钮叫什么：网关没接入时它的作用是重新读配置、重新检测。
-    var restartTitle: String { state == .notInstalled ? "重新检测" : "重启后台服务" }
+    var restartTitle: String { state == .notInstalled ? String(localized: "重新检测") : String(localized: "重启后台服务") }
     /// 能不能改配置、检测 MCP。网关没接入时也可以。
     var canManage: Bool {
         switch state {

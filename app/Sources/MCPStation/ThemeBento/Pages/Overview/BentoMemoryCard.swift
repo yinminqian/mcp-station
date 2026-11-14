@@ -14,7 +14,7 @@ struct BentoMemoryCard: View {
         let peak = top.first?.memory ?? 0
         BentoCard(radius: BentoRadius.xl, padding: BentoSpace.s16) {
             VStack(alignment: .leading, spacing: BentoSpace.s8) {
-                BentoSectionLabel("内存 · 合计")
+                BentoSectionLabel(String(localized: "内存 · 合计"))
                 // 一个采样都没有时显示「—」，不是「<1 MB」
                 BentoMemoryText(bytes: top.isEmpty ? nil : store.totalMemory)
                     .bentoText(.headline, BentoColor.Ink.black)

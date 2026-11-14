@@ -10,12 +10,12 @@ struct BentoMenuServices: View {
     var body: some View {
         let services = store.services
         let tones = BentoServiceTones(services)
-        BentoSectionLabel("服务")
+        BentoSectionLabel(String(localized: "服务"))
         ForEach(services) { service in
             BentoServiceRow(service: service, tone: tones[service.name]) {
                 if let port = store.core?.port {
                     BentoCopyButton(text: Format.serviceURL(service, port: port), key: "menu-service:\(service.name)",
-                                    label: "复制 \(service.name) 的地址")
+                                    label: String(localized: "复制 \(service.name) 的地址"))
                 }
             }
         }
@@ -36,7 +36,7 @@ struct BentoMenuCoreDown: View {
             Text(reason.detail)
         } actions: {
             HStack(spacing: BentoSpace.s8) {
-                BentoRestartCoreButton(tone: .ink, title: "立即重启", size: .small)
+                BentoRestartCoreButton(tone: .ink, title: String(localized: "立即重启"), size: .small)
                 Button("查看原因…") {
                     BentoOpenMain(nav: nav, openWindow: openWindow)() { $0.route = .overview }
                 }
@@ -54,7 +54,7 @@ struct BentoMenuFooter: View {
     var body: some View {
         BentoCard(padding: BentoSpace.s8) {
             VStack(spacing: 0) {
-                BentoMenuActionRow(title: "打开主窗口…", shortcut: "⌘O") {
+                BentoMenuActionRow(title: String(localized: "打开主窗口…"), shortcut: "⌘O") {
                     BentoOpenMain(nav: nav, openWindow: openWindow)()
                 }
                 .keyboardShortcut("o")
@@ -70,7 +70,7 @@ struct BentoMenuFooter: View {
                 }
                 .padding(.horizontal, BentoSpace.s12)
                 .frame(height: BentoSpace.s40)
-                BentoMenuActionRow(title: "退出 MCP Station", shortcut: "⌘Q") {
+                BentoMenuActionRow(title: String(localized: "退出 MCP Station"), shortcut: "⌘Q") {
                     NSApp.terminate(nil)
                 }
                 .keyboardShortcut("q")

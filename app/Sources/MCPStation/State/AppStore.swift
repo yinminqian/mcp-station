@@ -125,7 +125,7 @@ final class AppStore {
     var services: [ServiceSummary] {
         let byName = Dictionary(uniqueKeysWithValues: mcps.map { ($0.name, $0) })
         let defaultMembers = mcps.filter(\.inDefault)
-        var out = [ServiceSummary(name: "默认", path: "/mcp", isDefault: true,
+        var out = [ServiceSummary(name: String(localized: "默认"), path: "/mcp", isDefault: true,
                                   members: defaultMembers, sessions: core?.defaultSessions ?? 0)]
         out += namedServices.map { s in
             ServiceSummary(name: s.name, path: "/s/\(s.name)/mcp", isDefault: false,
@@ -141,7 +141,7 @@ final class AppStore {
 
     /// 某个 MCP 被哪些服务用到（"默认" 在前）。
     func usedBy(_ m: MCPServer) -> [String] {
-        (m.inDefault ? ["默认"] : []) + namedServices.filter { $0.mcpNames.contains(m.name) }.map(\.name)
+        (m.inDefault ? [String(localized: "默认")] : []) + namedServices.filter { $0.mcpNames.contains(m.name) }.map(\.name)
     }
 
     // MARK: 操作（乐观更新，失败回滚）
@@ -236,7 +236,7 @@ final class AppStore {
     func exportConfig(to url: URL) async {
         do {
             try ConfigStore.write(try await client.exportConfig(), to: url)
-            showToast("已导出到 \(url.lastPathComponent)")
+            showToast(String(localized: "已导出到 \(url.lastPathComponent)"))
         } catch {
             showToast(error.localizedDescription, style: .error)
         }

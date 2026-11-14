@@ -40,10 +40,10 @@ private struct GlassSummaryStrip: View {
 
     private var mcp: some View {
         let active = store.activeMCPs.count, bad = store.attention.count, stopped = store.mcps.count - active
-        var detail = bad > 0 ? "\(bad) 个需要关注" : "无需关注"
-        if stopped > 0 { detail += " · \(stopped) 个已停止" }
+        var detail = bad > 0 ? String(localized: "\(bad) 个需要关注") : String(localized: "无需关注")
+        if stopped > 0 { detail += String(localized: " · \(stopped) 个已停止") }
         return GlassMetricCard(symbol: bad > 0 ? "exclamationmark.triangle.fill" : "checkmark.seal.fill",
-                               tint: bad > 0 ? .orange : .green, title: "MCP 正常",
+                               tint: bad > 0 ? .orange : .green, title: String(localized: "MCP 正常"),
                                value: "\(store.healthyCount) / \(active)", detail: detail) {
             HealthBar(healthy: store.healthyCount, attention: bad, total: active)
                 .frame(maxHeight: .infinity, alignment: .bottom)
@@ -52,9 +52,9 @@ private struct GlassSummaryStrip: View {
 
     private var calls: some View {
         let s = store.stats
-        return GlassMetricCard(symbol: "waveform.path.ecg", tint: .blue, title: "每分钟调用",
+        return GlassMetricCard(symbol: "waveform.path.ecg", tint: .blue, title: String(localized: "每分钟调用"),
                                value: Format.count(s.perMinute),
-                               detail: "峰值 \(s.peakPerMinute) · 最近 1 小时 \(Format.count(s.total1h))") {
+                               detail: String(localized: "峰值 \(s.peakPerMinute) · 最近 1 小时 \(Format.count(s.total1h))")) {
             Sparkline(values: s.perMinuteSeries, color: .blue)
         }
         .help("趋势：最近 30 分钟每分钟调用数")
@@ -62,9 +62,9 @@ private struct GlassSummaryStrip: View {
 
     private var errors: some View {
         let s = store.stats, src = s.errorSources
-        let detail = src.count > 1 ? "\(src[0]) 等 \(src.count) 个 MCP" : src.first ?? "没有出错的 MCP"
+        let detail = src.count > 1 ? String(localized: "\(src[0]) 等 \(src.count) 个 MCP") : src.first ?? String(localized: "没有出错的 MCP")
         return GlassMetricCard(symbol: "xmark.octagon.fill", tint: s.errors1h > 0 ? .red : .secondary,
-                               title: "错误 · 最近 1 小时", value: Format.count(s.errors1h), detail: detail) {
+                               title: String(localized: "错误 · 最近 1 小时"), value: Format.count(s.errors1h), detail: detail) {
             Sparkline(values: s.errorSeries, color: .red)
         }
         .help(src.joined(separator: "、"))
@@ -79,9 +79,9 @@ private struct GlassSummaryStrip: View {
             let j = i - (n - h.count)
             return acc + (j >= 0 ? Double(h[j]) : 0)
         } }
-        return GlassMetricCard(symbol: "memorychip.fill", tint: .purple, title: "内存合计",
+        return GlassMetricCard(symbol: "memorychip.fill", tint: .purple, title: String(localized: "内存合计"),
                                value: store.memoryRanking.isEmpty ? "—" : Format.bytes(store.totalMemory),
-                               detail: top.map { "最高 \($0.name) \(Format.bytes($0.memory))" } ?? "没有在跑的本地 MCP") {
+                               detail: top.map { String(localized: "最高 \($0.name) \(Format.bytes($0.memory))") } ?? String(localized: "没有在跑的本地 MCP")) {
             if totals.count > 1 { Sparkline(values: totals, color: .purple, baselineAtZero: false) }
         }
     }
@@ -310,6 +310,6 @@ struct CallOutcomeIcon: View {
     var body: some View {
         Image(systemName: call.isError ? "xmark.circle.fill" : "checkmark.circle.fill")
             .foregroundStyle(call.isError ? .red : .green)
-            .help(call.isError ? { if case .error(let e) = call.outcome { e } else { "" } }() : "成功")
+            .help(call.isError ? { if case .error(let e) = call.outcome { e } else { "" } }() : String(localized: "成功"))
     }
 }

@@ -66,7 +66,7 @@ enum Snapshotter {
         Task { @MainActor in
             try? await Task.sleep(for: .seconds(4))
             guard let window = NSApp.windows.first(where: { $0.isVisible && $0.canBecomeMain }) else {
-                FileHandle.standardError.write("bench error: 没有可见的主窗口\n".data(using: .utf8)!)
+                FileHandle.standardError.write(String(localized: "bench error: 没有可见的主窗口\n").data(using: .utf8)!)
                 exit(2)
             }
             // 先激活到前台：窗口不在屏幕上时 AppKit 会多做 50～75ms 软件光栅化，轮与轮之间不可比（REPORT-02 §5）
@@ -77,7 +77,7 @@ enum Snapshotter {
             FileHandle.standardError.write("bench window onScreen=\(window.isOnActiveSpace && window.isVisible) occluded=\(occluded)\n".data(using: .utf8)!)
             // 窗口被遮住时 SwiftUI 不做布局和绘制，natural 模式量不到东西（会全是 0），直接报错
             if occluded && !forced {
-                FileHandle.standardError.write("bench error: 窗口被遮挡，natural 模式无法测量（请让窗口在当前桌面可见，或用 MCPSTATION_SWITCH_MODE=forced）\n".data(using: .utf8)!)
+                FileHandle.standardError.write(String(localized: "bench error: 窗口被遮挡，natural 模式无法测量（请让窗口在当前桌面可见，或用 MCPSTATION_SWITCH_MODE=forced）\n").data(using: .utf8)!)
                 exit(3)
             }
             let root = window.contentView?.superview ?? window.contentView

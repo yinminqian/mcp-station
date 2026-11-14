@@ -47,14 +47,14 @@ private struct GlassFilterMenu: View {
     var body: some View {
         Menu {
             Picker("筛选", selection: $nav.mcpFilter) {
-                ForEach(Navigator.MCPFilter.allCases) { Text($0.rawValue).tag($0) }
+                ForEach(Navigator.MCPFilter.allCases) { Text($0.title).tag($0) }
             }
             .pickerStyle(.inline)
         } label: {
             Label("筛选", systemImage: nav.mcpFilter == .all
                   ? "line.3.horizontal.decrease" : "line.3.horizontal.decrease.circle.fill")
         }
-        .help("筛选 MCP：\(nav.mcpFilter.rawValue)")
+        .help("筛选 MCP：\(nav.mcpFilter.title)")
         .disabled(nav.route != .mcps)
     }
 }
@@ -68,13 +68,13 @@ private struct GlassSectionPicker: View {
     private var segments: [Segment] {
         switch nav.route {
         case .mcps:
-            [.init(id: "overview", title: "概况"), .init(id: "tools", title: "工具"),
-             .init(id: "resources", title: "Resources"), .init(id: "logs", title: "日志"), .init(id: "calls", title: "调用")]
+            [.init(id: "overview", title: String(localized: "概况")), .init(id: "tools", title: String(localized: "工具")),
+             .init(id: "resources", title: "Resources"), .init(id: "logs", title: String(localized: "日志")), .init(id: "calls", title: String(localized: "调用"))]
         case .services:
-            [.init(id: "members", title: "组成"), .init(id: "tools", title: "工具"),
-             .init(id: "instructions", title: "说明"), .init(id: "calls", title: "调用")]
+            [.init(id: "members", title: String(localized: "组成")), .init(id: "tools", title: String(localized: "工具")),
+             .init(id: "instructions", title: String(localized: "说明")), .init(id: "calls", title: String(localized: "调用"))]
         case .calls:
-            Navigator.CallFilter.allCases.map { .init(id: $0.rawValue, title: $0.rawValue) }
+            Navigator.CallFilter.allCases.map { .init(id: $0.rawValue, title: $0.title) }
         case .overview, .settings:
             []
         }
@@ -132,26 +132,26 @@ private struct GlassMainAction: View {
         let running = store.core?.canManage ?? false
         switch nav.route {
         case .overview, .settings:
-            return Action(title: store.core?.restartTitle ?? "重新检测", symbol: "arrow.triangle.2.circlepath",
+            return Action(title: store.core?.restartTitle ?? String(localized: "重新检测"), symbol: "arrow.triangle.2.circlepath",
                           enabled: !store.isBusy("core-restart")) { store.restartCore() }
         case .mcps:
             guard let m = store.mcp(nav.selectedMCP) else {
-                return Action(title: "重启", symbol: "arrow.clockwise", enabled: false) {}
+                return Action(title: String(localized: "重启"), symbol: "arrow.clockwise", enabled: false) {}
             }
             let backoff: Bool = { if case .backoff = m.state { true } else { false } }()
-            return Action(title: backoff ? "立即重试" : "重启 \(m.name)", symbol: "arrow.clockwise",
+            return Action(title: backoff ? String(localized: "立即重试") : String(localized: "重启 \(m.name)"), symbol: "arrow.clockwise",
                           enabled: running && m.state != .stopped
                               && !store.isBusy("restart:\(m.name)") && !store.isBusy("retry:\(m.name)")) {
                 backoff ? store.retryNow(m.name) : store.restart(m.name)
             }
         case .services:
             let s = store.service(nav.selectedService)
-            return Action(title: "重命名", symbol: "pencil", enabled: running && s != nil && s?.isDefault == false) {
+            return Action(title: String(localized: "重命名"), symbol: "pencil", enabled: running && s != nil && s?.isDefault == false) {
                 if let s { nav.request = .renameService(s.name) }
             }
         case .calls:
             let filtered = nav.callFilter != .all || !nav.callSearch.isEmpty
-            return Action(title: "清除筛选", symbol: "line.3.horizontal.decrease.circle", enabled: filtered) {
+            return Action(title: String(localized: "清除筛选"), symbol: "line.3.horizontal.decrease.circle", enabled: filtered) {
                 nav.callFilter = .all
                 nav.callSearch = ""
             }
@@ -172,7 +172,7 @@ private struct GlassMoreMenu: View {
                 if let m = store.mcp(nav.selectedMCP) {
                     Button("复制单独地址") {
                         Clipboard.copy(Format.mcpURL(m.name, port: port))
-                        store.showToast("已复制 \(m.name) 的单独地址")
+                        store.showToast(String(localized: "已复制 \(m.name) 的单独地址"))
                     }
                     Button(m.inDefault ? "从默认服务移除" : "加入默认服务") { store.setDefault(m.name, on: !m.inDefault) }
                 }
@@ -180,14 +180,14 @@ private struct GlassMoreMenu: View {
                 if let s = store.service(nav.selectedService) {
                     Button("复制地址") {
                         Clipboard.copy(Format.serviceURL(s, port: port))
-                        store.showToast("已复制 \(s.name) 的地址")
+                        store.showToast(String(localized: "已复制 \(s.name) 的地址"))
                     }
                     Divider()
                     Button("删除服务…", role: .destructive) { nav.request = .deleteService(s.name) }
                         .disabled(s.isDefault)
                 }
             case .overview, .calls, .settings:
-                Button(store.core?.restartTitle ?? "重新检测") { store.restartCore() }
+                Button(store.core?.restartTitle ?? String(localized: "重新检测")) { store.restartCore() }
             }
         } label: {
             Label("更多", systemImage: "ellipsis")

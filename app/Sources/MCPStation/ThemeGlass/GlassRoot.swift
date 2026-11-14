@@ -65,17 +65,17 @@ private struct GlassDetail: View {
     }
 
     private var title: String {
-        if case .stopped = store.core?.state, nav.route != .settings { return "概览" }
+        if case .stopped = store.core?.state, nav.route != .settings { return String(localized: "概览") }
         return nav.route.title
     }
 
     private var subtitle: String {
-        if case .stopped = store.core?.state, nav.route != .settings { return "后台服务没有运行" }
+        if case .stopped = store.core?.state, nav.route != .settings { return String(localized: "后台服务没有运行") }
         switch nav.route {
-        case .overview: return store.attention.isEmpty ? "一切正常" : "\(store.attention.count) 个 MCP 需要关注"
-        case .mcps: return "\(store.mcps.count) 个 · \(store.attention.isEmpty ? "全部正常" : "\(store.attention.count) 个异常")"
-        case .services: return "\(store.services.count) 个"
-        case .calls: return "最近 \(Format.count(store.calls.count)) 条"
+        case .overview: return store.attention.isEmpty ? String(localized: "一切正常") : String(localized: "\(store.attention.count) 个 MCP 需要关注")
+        case .mcps: return String(localized: "\(store.mcps.count) 个 · \(store.attention.isEmpty ? String(localized: "全部正常") : String(localized: "\(store.attention.count) 个异常"))")
+        case .services: return String(localized: "\(store.services.count) 个")
+        case .calls: return String(localized: "最近 \(Format.count(store.calls.count)) 条")
         case .settings: return ""
         }
     }
@@ -101,7 +101,7 @@ private struct GlassRequestPresenter: ViewModifier {
                 Button("删除", role: .destructive) {
                     if case .deleteService(let n) = req {
                         store.deleteService(n)
-                        nav.selectedService = "默认"
+                        nav.selectedService = String(localized: "默认")
                     }
                 }
             } message: { _ in
@@ -118,12 +118,12 @@ private struct GlassRequestPresenter: ViewModifier {
     }
 
     private var alertTitle: String {
-        if case .renameService = nav.request { return "重命名服务" }
-        return "新建服务"
+        if case .renameService = nav.request { return String(localized: "重命名服务") }
+        return String(localized: "新建服务")
     }
 
     private var deleteTitle: String {
-        if case .deleteService(let n) = nav.request { return "删除服务「\(n)」？" }
+        if case .deleteService(let n) = nav.request { return String(localized: "删除服务「\(n)」？") }
         return ""
     }
 
@@ -238,10 +238,10 @@ private struct GlassCoreBadge: View {
 
     private func title(_ s: CoreState) -> String {
         switch s {
-        case .running: "后台服务运行中"
-        case .notInstalled: "网关还没接入"
-        case .restarting: "后台服务重启中"
-        case .stopped: "后台服务没有运行"
+        case .running: String(localized: "后台服务运行中")
+        case .notInstalled: String(localized: "网关还没接入")
+        case .restarting: String(localized: "后台服务重启中")
+        case .stopped: String(localized: "后台服务没有运行")
         }
     }
 

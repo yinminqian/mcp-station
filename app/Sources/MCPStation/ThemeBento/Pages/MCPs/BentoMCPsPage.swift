@@ -15,7 +15,7 @@ struct BentoMCPsPage: View {
                         .id(mcp.name)
                         .transition(.opacity)
                 } else {
-                    BentoEmptyState(icon: .mcps, text: "在左边选一个 MCP")
+                    BentoEmptyState(icon: .mcps, text: String(localized: "在左边选一个 MCP"))
                         .frame(maxHeight: .infinity)
                 }
             }
@@ -47,12 +47,12 @@ private struct BentoMCPList: View {
         VStack(alignment: .leading, spacing: BentoSpace.s12) {
             HStack(spacing: BentoSpace.s8) {
                 Text("MCP").bentoText(.headline, BentoColor.Ink.black)
-                BentoPillChip("\(store.mcps.count) 个", tone: .panel)
+                BentoPillChip(String(localized: "\(store.mcps.count) 个"), tone: .panel)
                 Spacer()
                 Button {
                     nav.request = .addMCP
                 } label: {
-                    Label("添加 MCP", bento: .add)
+                    Label(String(localized: "添加 MCP"), bento: .add)
                 }
                 .buttonStyle(.bento(.ink, size: .small))
                 .disabled(!coreRunning)
@@ -61,7 +61,7 @@ private struct BentoMCPList: View {
             }
             .frame(height: BentoMetric.controlHeight)
 
-            BentoSearchField(prompt: "搜索 MCP", text: $nav.mcpSearch)
+            BentoSearchField(prompt: String(localized: "搜索 MCP"), text: $nav.mcpSearch)
 
             ScrollView {
                 LazyVStack(spacing: BentoSpace.s8) {
@@ -76,13 +76,13 @@ private struct BentoMCPList: View {
                     if store.mcps.isEmpty {
                         // 第一次打开：引导添加或导入
                         VStack(spacing: BentoSpace.s10) {
-                            BentoEmptyState(icon: .mcps, text: "还没有 MCP。点右上角「添加 MCP」，或导入现有的配置（Claude Code、Cursor 等的 mcpServers）")
+                            BentoEmptyState(icon: .mcps, text: String(localized: "还没有 MCP。点右上角「添加 MCP」，或导入现有的配置（Claude Code、Cursor 等的 mcpServers）"))
                             Button("导入配置…") { ConfigTransfer.importFromFile(store: store) }
                                 .buttonStyle(.bento(.ink, size: .small))
                                 .disabled(!coreRunning)
                         }
                     } else if rows.isEmpty {
-                        BentoEmptyState(icon: .search, text: "没有符合条件的 MCP")
+                        BentoEmptyState(icon: .search, text: String(localized: "没有符合条件的 MCP"))
                     }
                 }
                 .padding(.bottom, BentoSpace.s12)
@@ -150,13 +150,13 @@ private struct BentoMCPListRow: View {
 
     /// 「npx · 24 工具 · 默认、ios」；等待重试时中间换成倒计时。
     private var summary: some View {
-        let services = usedBy.isEmpty ? "没有服务用到" : usedBy.joined(separator: "、")
+        let services = usedBy.isEmpty ? String(localized: "没有服务用到") : usedBy.joined(separator: "、")
         return HStack(spacing: BentoSpace.s4) {
             Text(mcp.kind.label)
             Text("·")
             switch mcp.state {
             case .backoff(_, let retryAt, _):
-                BentoCountdown(target: retryAt) { "等待重试 \($0)s" }
+                BentoCountdown(target: retryAt) { String(localized: "等待重试 \($0)s") }
             case .ready:
                 Text("\(mcp.toolCount) 工具")
             case .starting, .configError, .stopped:

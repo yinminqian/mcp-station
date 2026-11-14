@@ -18,7 +18,7 @@ struct GlassMenuPanel: View {
                 Divider().padding(.vertical, 6)
                 serviceSection
             } else {
-                Label(store.core.map { if case .stopped(let r) = $0.state { r.title } else { "后台服务没有运行" } } ?? "正在读取配置…",
+                Label(store.core.map { if case .stopped(let r) = $0.state { r.title } else { String(localized: "后台服务没有运行") } } ?? String(localized: "正在读取配置…"),
                       systemImage: "exclamationmark.octagon.fill")
                     .symbolRenderingMode(.multicolor)
                     .padding(.horizontal, 6)
@@ -47,7 +47,7 @@ struct GlassMenuPanel: View {
                 }
                 if let core = store.core, case .running(_, let since) = core.state {
                     TimelineView(.periodic(from: .now, by: 30)) { ctx in
-                        Text(verbatim: "127.0.0.1:\(core.port) · 已运行 \(Format.uptime(since: since, now: ctx.date))")
+                        Text("127.0.0.1:\(String(core.port)) · 已运行 \(Format.uptime(since: since, now: ctx.date))")
                             .font(.caption).foregroundStyle(.secondary)
                     }
                 }
@@ -146,7 +146,7 @@ struct GlassMenuPanel: View {
                     Text(s.path).font(.system(size: 11, design: .monospaced)).foregroundStyle(.secondary)
                     Spacer()
                     Text("\(s.members.count) 个 · \(s.toolCount) 工具").font(.caption).monospacedDigit().foregroundStyle(.secondary)
-                    GlassCopyButton(text: Format.serviceURL(s, port: store.core?.port ?? ConfigFile.defaultPort), key: "menu:\(s.name)", label: "复制 \(s.name) 的地址")
+                    GlassCopyButton(text: Format.serviceURL(s, port: store.core?.port ?? ConfigFile.defaultPort), key: "menu:\(s.name)", label: String(localized: "复制 \(s.name) 的地址"))
                 }
                 .padding(.horizontal, 6).padding(.vertical, 3)
             }

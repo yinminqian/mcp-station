@@ -10,11 +10,11 @@ final class Navigator {
 
         var title: String {
             switch self {
-            case .overview: "概览"
+            case .overview: String(localized: "概览")
             case .mcps: "MCP"
-            case .services: "服务"
-            case .calls: "调用记录"
-            case .settings: "设置"
+            case .services: String(localized: "服务")
+            case .calls: String(localized: "调用记录")
+            case .settings: String(localized: "设置")
             }
         }
 
@@ -37,6 +37,8 @@ final class Navigator {
     enum CallFilter: String, CaseIterable, Identifiable {
         case all = "全部", errors = "错误", slow = "慢调用"
         var id: String { rawValue }
+        /// 给人看的名字（翻译过的）；rawValue 是固定的标识。
+        var title: String { String(localized: String.LocalizationValue(rawValue)) }
 
         /// 慢调用的门槛，两套主题共用。
         static let slowThreshold: Duration = .seconds(2)
@@ -55,6 +57,7 @@ final class Navigator {
     enum MCPFilter: String, CaseIterable, Identifiable {
         case all = "全部", attention = "需要关注", stopped = "已停止"
         var id: String { rawValue }
+        var title: String { String(localized: String.LocalizationValue(rawValue)) }
     }
 
     enum ServiceTab: String, CaseIterable, Identifiable {
@@ -81,7 +84,7 @@ final class Navigator {
 
     var route: Route = .overview
     var selectedMCP: String?
-    var selectedService: String? = "默认"
+    var selectedService: String? = String(localized: "默认")
     var mcpTab: MCPTab = .overview
     var mcpFilter: MCPFilter = .all
     var serviceTab: ServiceTab = .members

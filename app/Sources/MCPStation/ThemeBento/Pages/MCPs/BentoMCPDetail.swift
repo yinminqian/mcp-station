@@ -34,7 +34,7 @@ struct BentoMCPDetail: View {
         case .resources:
             BentoMCPCapabilitiesTab(mcp: mcp)
         case .logs:
-            BentoLogBlock(title: "stderr（最近 \(mcp.stderr.count) 行）",
+            BentoLogBlock(title: String(localized: "stderr（最近 \(mcp.stderr.count) 行）"),
                           lines: mcp.stderr.map(BentoLogLine.init), fillsHeight: true)
         case .calls:
             BentoCallTable(matches: { $0.mcp == mcp.name }, showsMCP: false)
@@ -45,11 +45,11 @@ struct BentoMCPDetail: View {
 extension Navigator.MCPTab {
     func bentoLabel(for mcp: MCPServer) -> BentoCountLabel {
         switch self {
-        case .overview: BentoCountLabel("概况")
-        case .tools: BentoCountLabel("工具", count: mcp.toolCount)
+        case .overview: BentoCountLabel(String(localized: "概况"))
+        case .tools: BentoCountLabel(String(localized: "工具"), count: mcp.toolCount)
         case .resources: BentoCountLabel("Resources", count: mcp.resourceCount)
-        case .logs: BentoCountLabel("日志")
-        case .calls: BentoCountLabel("调用")
+        case .logs: BentoCountLabel(String(localized: "日志"))
+        case .calls: BentoCountLabel(String(localized: "调用"))
         }
     }
 }
@@ -77,9 +77,9 @@ private struct BentoMCPDetailHeader: View {
     @ViewBuilder private var action: some View {
         switch mcp.state {
         case .backoff:
-            actionButton("立即重试", busyKey: "retry:\(mcp.name)") { store.retryNow(mcp.name) }
+            actionButton(String(localized: "立即重试"), busyKey: "retry:\(mcp.name)") { store.retryNow(mcp.name) }
         case .ready, .starting, .configError:
-            actionButton("重启", busyKey: "restart:\(mcp.name)") { store.restart(mcp.name) }
+            actionButton(String(localized: "重启"), busyKey: "restart:\(mcp.name)") { store.restart(mcp.name) }
         case .stopped:
             EmptyView()
         }

@@ -24,14 +24,14 @@ struct BentoCoreDownView: View {
                         Button {
                             ConfigTransfer.revealConfigFile()
                         } label: {
-                            Label("在访达中显示配置文件", bento: .folder)
+                            Label(String(localized: "在访达中显示配置文件"), bento: .folder)
                         }
                         .buttonStyle(.bento(.surface, size: .small))
                     }
                 }
                 .frame(maxWidth: BentoMetric.alertColumnMaxWidth)
                 if !reason.logTail.isEmpty {
-                    BentoLogBlock(title: "日志最后 \(reason.logTail.count) 行",
+                    BentoLogBlock(title: String(localized: "日志最后 \(reason.logTail.count) 行"),
                                   lines: reason.logTail.enumerated().map { BentoLogLine(raw: $1, index: $0) })
                 }
             }

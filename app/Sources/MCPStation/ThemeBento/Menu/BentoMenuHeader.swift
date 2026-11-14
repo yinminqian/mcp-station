@@ -24,9 +24,9 @@ struct BentoMenuHeader: View {
             VStack(alignment: .trailing, spacing: BentoSpace.s2) {
                 switch BentoStatus(core: core) {
                 case .ok:
-                    BentoPillChip("\(store.healthyCount) / \(store.activeMCPs.count) 正常",
+                    BentoPillChip(String(localized: "\(store.healthyCount) / \(store.activeMCPs.count) 正常"),
                                   tone: attention.isEmpty ? .mint : .peach, dot: attention.isEmpty ? .ok : .warn)
-                    BentoMemoryText(bytes: store.totalMemory, prefix: "内存合计 ")
+                    BentoMemoryText(bytes: store.totalMemory, prefix: String(localized: "内存合计 "))
                         .bentoText(.label, BentoColor.Ink.secondary)
                 case let status:
                     BentoPillChip(core.bentoHeadline, tone: status.tone, dot: status)

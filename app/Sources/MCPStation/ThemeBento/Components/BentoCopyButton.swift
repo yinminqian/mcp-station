@@ -14,7 +14,7 @@ struct BentoCopyButton: View {
     let key: String
     var style: Style = .icon
     var tone: BentoTone = .surface
-    var label = "复制"
+    var label = String(localized: "复制")
 
     @Environment(CopyFeedback.self) private var feedback
 
@@ -23,7 +23,7 @@ struct BentoCopyButton: View {
         let button = Button {
             feedback.copy(text, key: key)
         } label: {
-            Label(copied ? "已复制" : label, bento: copied ? .copied : .copy)
+            Label(copied ? String(localized: "已复制") : label, bento: copied ? .copied : .copy)
                 .contentTransition(.symbolEffect(.replace))
         }
         Group {
@@ -32,7 +32,7 @@ struct BentoCopyButton: View {
             case .labeled: button.buttonStyle(.bento(tone, size: .small))
             }
         }
-        .accessibilityLabel(copied ? "已复制" : label)
+        .accessibilityLabel(copied ? String(localized: "已复制") : label)
         .help(label)
     }
 }

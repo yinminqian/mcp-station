@@ -22,16 +22,16 @@ struct BentoToolCallSheet: View {
                 }
             }
 
-            section("参数（JSON）") {
+            section(String(localized: "参数（JSON）")) {
                 TextField("", text: $arguments, prompt: Text("{}"), axis: .vertical)
                     .lineLimit(6, reservesSpace: true)
                     .bentoField(multiline: true)
             }
             if let schema = tool.inputSchema {
-                section("参数说明") { box(schema, height: 96) }
+                section(String(localized: "参数说明")) { box(schema, height: 96) }
             }
             section(resultTitle) {
-                box(result?.text ?? (busy ? "正在调用…" : "点「调用」后在这里显示返回内容"), height: 160,
+                box(result?.text ?? (busy ? String(localized: "正在调用…") : String(localized: "点「调用」后在这里显示返回内容")), height: 160,
                     tint: result?.isError == true ? BentoTone.rose.ink : BentoColor.Ink.primary)
             }
 
@@ -55,9 +55,9 @@ struct BentoToolCallSheet: View {
     }
 
     private var resultTitle: String {
-        guard let result else { return "结果" }
+        guard let result else { return String(localized: "结果") }
         let ms = Int(result.duration.components.seconds * 1000 + result.duration.components.attoseconds / 1_000_000_000_000_000)
-        return "结果 · \(result.isError ? "出错" : "成功") · \(ms) ms"
+        return String(localized: "结果 · \(result.isError ? String(localized: "出错") : String(localized: "成功")) · \(ms) ms")
     }
 
     private func run() {

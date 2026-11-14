@@ -23,7 +23,7 @@ struct BentoCallChartCard: View {
         BentoCard(radius: BentoRadius.xl, padding: BentoSpace.s16) {
             VStack(alignment: .leading, spacing: BentoSpace.s8) {
                 HStack(spacing: BentoSpace.s8) {
-                    BentoSectionLabel(isHovering ? "调用 · \(focus?.label ?? "") 点这一小时" : "调用 · 近 \(columns.count) 小时")
+                    BentoSectionLabel(isHovering ? String(localized: "调用 · \(focus?.label ?? "") 点这一小时") : String(localized: "调用 · 近 \(columns.count) 小时"))
                         .lineLimit(1)
                         .layoutPriority(1)
                     // 卡片窄到放不下图例时整个不显示（右栏「我的服务」的颜色和它一致）
@@ -41,7 +41,7 @@ struct BentoCallChartCard: View {
                         nav.callFilter = .errors
                         nav.route = .calls
                     } label: {
-                        BentoPillChip(errors == 0 ? "没有失败" : "\(Format.count(errors)) 次失败",
+                        BentoPillChip(errors == 0 ? String(localized: "没有失败") : String(localized: "\(Format.count(errors)) 次失败"),
                                       tone: errors == 0 ? .panel : .rose)
                     }
                     .buttonStyle(.plain)

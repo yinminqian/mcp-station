@@ -15,7 +15,7 @@ struct BentoAddMCPForm: View {
             Text("添加 MCP").bentoText(.title)
             BentoSegmentedPills(MCPKind.allCases, selection: $draft.kind, title: \.label)
 
-            field("名字") {
+            field(String(localized: "名字")) {
                 TextField("", text: $draft.name, prompt: Text("字母、数字、- 和 _"))
                     .bentoField()
                     .focused($nameFocused)
@@ -25,7 +25,7 @@ struct BentoAddMCPForm: View {
                     .bentoField()
             }
             // 每种类型都是同样几栏，切换类型时弹窗高度不变：HTTP 不用参数，这一栏留着但置灰
-            field("参数") {
+            field(String(localized: "参数")) {
                 TextField("", text: draft.kind == .http ? .constant("") : $draft.args,
                           prompt: Text(draft.kind == .http ? "HTTP 类型不用参数" : "可选，空格分开"))
                     .bentoField()

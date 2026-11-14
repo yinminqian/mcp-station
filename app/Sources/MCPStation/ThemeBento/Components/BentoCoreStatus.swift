@@ -4,11 +4,11 @@ extension CoreStatus? {
     /// 后台服务状态的一句话。
     var bentoHeadline: String {
         switch self?.state {
-        case .running: "后台服务运行中"
-        case .notInstalled: "网关还没接入"
-        case .restarting: "后台服务重启中…"
-        case .stopped: "后台服务没有运行"
-        case nil: "正在连接后台服务…"
+        case .running: String(localized: "后台服务运行中")
+        case .notInstalled: String(localized: "网关还没接入")
+        case .restarting: String(localized: "后台服务重启中…")
+        case .stopped: String(localized: "后台服务没有运行")
+        case nil: String(localized: "正在连接后台服务…")
         }
     }
 }
@@ -22,7 +22,7 @@ struct BentoCoreDetailLine: View {
     var body: some View {
         switch core?.state {
         case let .running(pid, since):
-            BentoUptime(since: since, prefix: showsPID ? "pid \(pid) · 已运行 " : "已运行 ")
+            BentoUptime(since: since, prefix: showsPID ? String(localized: "pid \(pid) · 已运行 ") : String(localized: "已运行 "))
         case .notInstalled:
             Text("配置和检测可用，客户端还连不上")
         case .restarting:
@@ -48,12 +48,12 @@ struct BentoRestartCoreButton: View {
 
     var body: some View {
         let busy = store.isBusy("core-restart") || store.core?.state == .restarting
-        let label = title ?? store.core?.restartTitle ?? "重新检测"
+        let label = title ?? store.core?.restartTitle ?? String(localized: "重新检测")
         let button = Button {
             store.restartCore()
         } label: {
             Label {
-                Text(busy ? "正在处理…" : label)
+                Text(busy ? String(localized: "正在处理…") : label)
             } icon: {
                 BentoIcon.restart.image
                     .symbolEffect(.rotate, options: .repeat(.continuous), isActive: busy)

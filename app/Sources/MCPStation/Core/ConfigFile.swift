@@ -96,8 +96,8 @@ enum ConfigError: LocalizedError {
 
     var errorDescription: String? {
         switch self {
-        case .unreadable(let why): "配置文件读不了：\(why)"
-        case .unrecognized(let why): "认不出这个文件：\(why)"
+        case .unreadable(let why): String(localized: "配置文件读不了：\(why)")
+        case .unrecognized(let why): String(localized: "认不出这个文件：\(why)")
         }
     }
 }
@@ -121,25 +121,25 @@ extension ConfigFile.MCPEntry {
         let args = self.args ?? []
         switch kind {
         case .http:
-            out.append(.init(key: "地址", value: url ?? "", monospaced: true))
+            out.append(.init(key: String(localized: "地址"), value: url ?? "", monospaced: true))
             for (k, v) in (headers ?? [:]).sorted(by: { $0.key < $1.key }) {
                 out.append(.init(key: k, value: v, secret: Self.looksSecret(k), monospaced: true))
             }
-            if let ca = x?.caCert { out.append(.init(key: "CA 证书", value: ca, monospaced: true)) }
+            if let ca = x?.caCert { out.append(.init(key: String(localized: "CA 证书"), value: ca, monospaced: true)) }
         case .npx, .uvx:
             // 包名是第一个不以 - 开头的参数；npx 的 -y 不显示
             let pkgIndex = args.firstIndex { !$0.hasPrefix("-") }
-            if let i = pkgIndex { out.append(.init(key: "包", value: args[i], monospaced: true)) }
+            if let i = pkgIndex { out.append(.init(key: String(localized: "包"), value: args[i], monospaced: true)) }
             let rest = args.enumerated().filter { $0.offset != pkgIndex && $0.element != "-y" }.map(\.element)
-            if !rest.isEmpty { out.append(.init(key: "参数", value: rest.joined(separator: " "), monospaced: true)) }
+            if !rest.isEmpty { out.append(.init(key: String(localized: "参数"), value: rest.joined(separator: " "), monospaced: true)) }
         case .command:
-            out.append(.init(key: "命令", value: command ?? "", monospaced: true))
-            if !args.isEmpty { out.append(.init(key: "参数", value: args.joined(separator: " "), monospaced: true)) }
+            out.append(.init(key: String(localized: "命令"), value: command ?? "", monospaced: true))
+            if !args.isEmpty { out.append(.init(key: String(localized: "参数"), value: args.joined(separator: " "), monospaced: true)) }
         }
         for (k, v) in (env ?? [:]).sorted(by: { $0.key < $1.key }) {
             out.append(.init(key: k, value: v, secret: Self.looksSecret(k), monospaced: true))
         }
-        if let notes = x?.notes, !notes.isEmpty { out.append(.init(key: "备注", value: notes)) }
+        if let notes = x?.notes, !notes.isEmpty { out.append(.init(key: String(localized: "备注"), value: notes)) }
         return out
     }
 

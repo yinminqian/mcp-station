@@ -52,12 +52,25 @@ private struct BentoSettingsCard<Content: View>: View {
 /// 外观：两套主题各一张预览卡片。切换立即生效，页面和选中项不变（它们在共享的 Navigator 里）。
 private struct BentoAppearanceCard: View {
     @AppStorage(AppTheme.storageKey) private var theme: AppTheme = .glass
+    /// 语言：中文 / English，切换后重新打开 App 生效。
+    @State private var language = AppLanguage.chosen
 
     var body: some View {
-        BentoSettingsCard(title: "外观") {
+        BentoSettingsCard(title: String(localized: "外观")) {
             HStack(spacing: BentoSpace.s12) {
                 ForEach(AppTheme.allCases) { option in
                     BentoThemeOption(theme: option, isSelected: option == theme) { theme = option }
+                }
+            }
+            HStack(spacing: BentoSpace.s10) {
+                Text("语言").bentoText(.body, BentoColor.Ink.secondary)
+                BentoSegmentedPills(items: AppLanguage.allCases, selection: $language, track: BentoColor.Bg.panel) { Text(verbatim: $0.name) }
+                    .fixedSize()
+                    .onChange(of: language) { AppLanguage.choose(language) }
+                if language != AppLanguage.current {
+                    Button("立即重启") { AppLanguage.relaunch() }
+                        .buttonStyle(.bento(.ink, size: .small))
+                        .help("重新打开 App 后生效")
                 }
             }
         }
@@ -178,9 +191,9 @@ private struct BentoCoreSettingsCard: View {
 
     var body: some View {
         let core = store.core
-        BentoSettingsCard(title: "网关") {
+        BentoSettingsCard(title: String(localized: "网关")) {
             VStack(alignment: .leading, spacing: 0) {
-                BentoKeyValueRow(key: "状态") {
+                BentoKeyValueRow(key: String(localized: "状态")) {
                     HStack(spacing: BentoSpace.s8) {
                         BentoStatusDot(status: BentoStatus(core: core))
                         Text(core.bentoHeadline).bentoText(.bodyStrong)
@@ -191,10 +204,10 @@ private struct BentoCoreSettingsCard: View {
                     BentoPortRow(port: core.port)
                 }
                 if let core, core.memory != nil {
-                    BentoKeyValueRow(key: "内存") {
+                    BentoKeyValueRow(key: String(localized: "内存")) {
                         HStack(spacing: BentoSpace.s6) {
                             BentoMemoryText(bytes: core.memory)
-                            BentoMemoryText(bytes: store.totalMemory, prefix: "· 连同所有 MCP 合计 ")
+                            BentoMemoryText(bytes: store.totalMemory, prefix: String(localized: "· 连同所有 MCP 合计 "))
                                 .foregroundStyle(BentoColor.Ink.secondary)
                         }
                         .bentoText(.body)
@@ -209,7 +222,7 @@ private struct BentoCoreSettingsCard: View {
                     .lineLimit(1)
             }
             if core?.state == .notInstalled {
-                BentoNote(tag: "说明", text: "网关还没接入：MCP 由 App 启动并常驻，能检测、试调用、看内存；客户端还连不上，所以调用记录里只有试调用。")
+                BentoNote(tag: String(localized: "说明"), text: String(localized: "网关还没接入：MCP 由 App 启动并常驻，能检测、试调用、看内存；客户端还连不上，所以调用记录里只有试调用。"))
             }
         }
     }
@@ -221,9 +234,9 @@ private struct BentoConfigCard: View {
 
     var body: some View {
         let canManage = store.core?.canManage ?? false
-        BentoSettingsCard(title: "配置") {
+        BentoSettingsCard(title: String(localized: "配置")) {
             let path = ConfigStore.url.path(percentEncoded: false).replacingOccurrences(of: NSHomeDirectory(), with: "~")
-            BentoKeyValueRow(key: "配置文件") {
+            BentoKeyValueRow(key: String(localized: "配置文件")) {
                 Text(path)
                     .bentoText(.mono)
                     .lineLimit(1)
@@ -240,11 +253,11 @@ private struct BentoConfigCard: View {
                 Button {
                     ConfigTransfer.revealConfigFile()
                 } label: {
-                    Label("在访达中显示", bento: .folder)
+                    Label(String(localized: "在访达中显示"), bento: .folder)
                 }
                 .buttonStyle(.bento(.panel, size: .small))
             }
-            BentoNote(tag: "说明", text: "导入支持本软件导出的文件和 Claude Code、Cursor 等的 mcpServers 配置，同名会覆盖；导出的文件含密钥明文。")
+            BentoNote(tag: String(localized: "说明"), text: String(localized: "导入支持本软件导出的文件和 Claude Code、Cursor 等的 mcpServers 配置，同名会覆盖；导出的文件含密钥明文。"))
         }
     }
 }
@@ -255,7 +268,7 @@ private struct BentoAboutCard: View {
 
     var body: some View {
         let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
-        BentoSettingsCard(title: "关于") {
+        BentoSettingsCard(title: String(localized: "关于")) {
             HStack(spacing: BentoSpace.s12) {
                 BentoIconCircle(icon: .brand, size: BentoMetric.railButton,
                                 fill: BentoColor.Ink.black, ink: BentoColor.Ink.inverse)
@@ -266,8 +279,8 @@ private struct BentoAboutCard: View {
                 }
             }
             VStack(alignment: .leading, spacing: 0) {
-                BentoKeyValueRow("App 版本", appVersion ?? "开发版")
-                BentoKeyValueRow("MCP", "\(store.mcps.count) 个，\(store.mcps.reduce(0) { $0 + $1.toolCount }) 个工具")
+                BentoKeyValueRow(String(localized: "App 版本"), appVersion ?? String(localized: "开发版"))
+                BentoKeyValueRow("MCP", String(localized: "\(store.mcps.count) 个，\(store.mcps.reduce(0) { $0 + $1.toolCount }) 个工具"))
             }
             Button("检查更新…") { Updates.checkNow() }
                 .buttonStyle(.bento(.panel, size: .small))
@@ -286,7 +299,7 @@ private struct BentoPortRow: View {
 
     var body: some View {
         let dirty = text.trimmingCharacters(in: .whitespaces) != String(port)
-        BentoKeyValueRow(key: "端口") {
+        BentoKeyValueRow(key: String(localized: "端口")) {
             VStack(alignment: .leading, spacing: BentoSpace.s4) {
                 HStack(spacing: BentoSpace.s6) {
                     Text("127.0.0.1:").bentoText(.mono, BentoColor.Ink.secondary)
@@ -319,7 +332,7 @@ private struct BentoPortRow: View {
 
     private func save() {
         guard let n = Int(text.trimmingCharacters(in: .whitespaces)) else {
-            store.showToast("端口要填数字", style: .error)
+            store.showToast(String(localized: "端口要填数字"), style: .error)
             text = String(port)
             return
         }

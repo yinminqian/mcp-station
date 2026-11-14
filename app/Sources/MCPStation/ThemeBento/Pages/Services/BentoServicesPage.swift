@@ -16,7 +16,7 @@ struct BentoServicesPage: View {
                 if let service = services.first(where: { $0.name == nav.selectedService }) {
                     BentoServiceDetail(service: service, tab: $tab)
                 } else {
-                    BentoEmptyState(icon: .services, text: "在左边选一个服务")
+                    BentoEmptyState(icon: .services, text: String(localized: "在左边选一个服务"))
                         .frame(maxHeight: .infinity)
                 }
             }
@@ -46,12 +46,12 @@ private struct BentoServiceList: View {
                 Button {
                     nav.request = .createService
                 } label: {
-                    Label("新建服务", bento: .add)
+                    Label(String(localized: "新建服务"), bento: .add)
                 }
                 .buttonStyle(.bento(.ink, size: .small))
                 .disabled(!coreRunning)
                 .popover(isPresented: creating, arrowEdge: .bottom) {
-                    BentoNamePopover(title: "新建服务", actionTitle: "创建") { name in
+                    BentoNamePopover(title: String(localized: "新建服务"), actionTitle: String(localized: "创建")) { name in
                         let ok = await store.createService(name)
                         if ok { nav.selectedService = name }
                         return ok
@@ -96,7 +96,7 @@ private struct BentoServiceCard: View {
                         BentoIconCircle(BentoCatalog.icon(of: service), on: tone)
                         Text(service.path).bentoText(.mono, tone.ink).lineLimit(1)
                         Spacer(minLength: BentoSpace.s4)
-                        BentoPillChip("\(service.sessions) 个会话")
+                        BentoPillChip(String(localized: "\(service.sessions) 个会话"))
                     }
                     Text(service.name)
                         .bentoText(.title)
@@ -107,7 +107,7 @@ private struct BentoServiceCard: View {
                         .contentTransition(.numericText())
                     HStack(spacing: BentoSpace.s6) {
                         BentoStatusDot(status: health.status)
-                        Text(service.isDefault ? "= 所有开关打开的 MCP · \(health.text)" : health.text)
+                        Text(service.isDefault ? String(localized: "= 所有开关打开的 MCP · \(health.text)") : health.text)
                             .bentoText(.label, tone.ink)
                             .lineLimit(1)
                     }

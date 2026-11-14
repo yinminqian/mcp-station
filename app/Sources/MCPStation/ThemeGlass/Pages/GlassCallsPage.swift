@@ -63,9 +63,9 @@ private struct GlassCallSummary: View {
                 }
                 .padding(10)
                 Divider()
-                pairs([("调用数（1 小时）", Format.count(s.total1h)), ("错误", "\(s.errors1h)")])
+                pairs([(String(localized: "调用数（1 小时）"), Format.count(s.total1h)), (String(localized: "错误"), "\(s.errors1h)")])
                 Divider()
-                pairs([("平均耗时", Format.duration(s.avgDuration)), ("P95", Format.duration(s.p95Duration))])
+                pairs([(String(localized: "平均耗时"), Format.duration(s.avgDuration)), ("P95", Format.duration(s.p95Duration))])
             }
             .overlay(RoundedRectangle(cornerRadius: 6).strokeBorder(.separator))
             .fixedSize()

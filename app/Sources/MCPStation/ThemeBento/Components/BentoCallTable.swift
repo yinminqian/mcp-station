@@ -32,7 +32,7 @@ struct BentoCallTable: View {
                 .bentoCardList(underHeader: true)
                 // 空状态盖在上面，不用 if/else 换掉 List：现建的原生列表第一帧是空的，会闪
                 .overlay(alignment: .top) {
-                    if rows.isEmpty { BentoEmptyState(icon: .calls, text: "没有符合条件的调用") }
+                    if rows.isEmpty { BentoEmptyState(icon: .calls, text: String(localized: "没有符合条件的调用")) }
                 }
             }
             .frame(maxHeight: .infinity, alignment: .top)

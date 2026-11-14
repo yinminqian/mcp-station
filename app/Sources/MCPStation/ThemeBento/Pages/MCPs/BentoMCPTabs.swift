@@ -17,7 +17,7 @@ struct BentoMCPOverviewTab: View {
                 BentoMCPStateCard(mcp: mcp, othersHealthy: othersHealthy)
                 definition
                 let tail = mcp.stderr.suffix(Self.logTail)
-                BentoLogBlock(title: tail.isEmpty ? "最近日志（stderr）" : "最近日志（stderr 最后 \(tail.count) 行）",
+                BentoLogBlock(title: tail.isEmpty ? String(localized: "最近日志（stderr）") : String(localized: "最近日志（stderr 最后 \(tail.count) 行）"),
                               lines: tail.map(BentoLogLine.init))
             }
         }
@@ -27,8 +27,8 @@ struct BentoMCPOverviewTab: View {
     private var definition: some View {
         BentoCard {
             VStack(alignment: .leading, spacing: 0) {
-                BentoSectionLabel("定义").padding(.bottom, BentoSpace.s4)
-                BentoKeyValueRow("类型", mcp.kind.label)
+                BentoSectionLabel(String(localized: "定义")).padding(.bottom, BentoSpace.s4)
+                BentoKeyValueRow(String(localized: "类型"), mcp.kind.label)
                 ForEach(mcp.definition) { field in
                     if field.secret {
                         BentoSecretRow(key: field.key, value: field.value)
@@ -36,13 +36,13 @@ struct BentoMCPOverviewTab: View {
                         BentoKeyValueRow(field.key, field.value, monospaced: field.monospaced)
                     }
                 }
-                BentoKeyValueRow("用到它的服务", usedBy.isEmpty ? "没有" : usedBy.joined(separator: "、"))
+                BentoKeyValueRow(String(localized: "用到它的服务"), usedBy.isEmpty ? String(localized: "没有") : usedBy.joined(separator: "、"))
                 if let port {
                     let url = Format.mcpURL(mcp.name, port: port)
-                    BentoKeyValueRow(key: "单独地址") {
+                    BentoKeyValueRow(key: String(localized: "单独地址")) {
                         BentoValueText(url, monospaced: true)
                     } trailing: {
-                        BentoCopyButton(text: url, key: "mcp-url:\(mcp.name)", tone: .panel, label: "复制单独地址")
+                        BentoCopyButton(text: url, key: "mcp-url:\(mcp.name)", tone: .panel, label: String(localized: "复制单独地址"))
                     }
                 }
             }
@@ -60,8 +60,8 @@ private struct BentoMCPStateCard: View {
         case let .backoff(reason, retryAt, attempts):
             BentoAlertCard(tone: .peach, bounce: attempts) {
                 BentoCountdown(target: retryAt) { seconds in
-                    seconds > 0 ? "连不上上游，\(seconds) 秒后自动重试（已重试 \(attempts) 次）"
-                                : "正在重试…（已重试 \(attempts) 次）"
+                    seconds > 0 ? String(localized: "连不上上游，\(seconds) 秒后自动重试（已重试 \(attempts) 次）")
+                                : String(localized: "正在重试…（已重试 \(attempts) 次）")
                 }
             } message: {
                 Text(reason)
@@ -102,12 +102,12 @@ private struct BentoMCPRuntimeCard: View {
         BentoCard(tone: tone, radius: BentoRadius.xl) {
             HStack(alignment: .top, spacing: BentoSpace.s12) {
                 BentoIconCircle(.check, on: tone)
-                fact("进程") { Text(verbatim: mcp.pid.map { "pid \($0)" } ?? "无本地进程") }
-                fact("已运行") {
+                fact(String(localized: "进程")) { Text(verbatim: mcp.pid.map { "pid \($0)" } ?? String(localized: "无本地进程")) }
+                fact(String(localized: "已运行")) {
                     if let startedAt = mcp.startedAt { BentoUptime(since: startedAt, prefix: "") } else { Text("—") }
                 }
-                fact("重启次数") { Text("\(mcp.restarts) 次") }
-                fact("内存") {
+                fact(String(localized: "重启次数")) { Text("\(mcp.restarts) 次") }
+                fact(String(localized: "内存")) {
                     HStack(spacing: BentoSpace.s8) {
                         BentoMemoryText(bytes: mcp.memory).fixedSize()
                         if mcp.memoryHistory.count > 1 {
@@ -137,7 +137,7 @@ struct BentoMCPToolsTab: View {
 
     var body: some View {
         if tools.isEmpty {
-            BentoCard { BentoEmptyState(icon: .tools, text: "还没拿到工具列表") }
+            BentoCard { BentoEmptyState(icon: .tools, text: String(localized: "还没拿到工具列表")) }
         } else {
             BentoCard(padding: 0) {
                 List(tools) { tool in
@@ -192,14 +192,14 @@ struct BentoMCPCapabilitiesTab: View {
         VStack(spacing: BentoSpace.s12) {
             BentoCard {
                 VStack(alignment: .leading, spacing: 0) {
-                    BentoSectionLabel("除了工具，它还提供").padding(.bottom, BentoSpace.s4)
-                    BentoKeyValueRow("Resources", "\(mcp.resourceCount) 个")
-                    BentoKeyValueRow("Prompts", "\(mcp.promptCount) 个")
-                    BentoKeyValueRow("使用说明", mcp.instructionsLength > 0
-                        ? "\(Format.count(mcp.instructionsLength)) 字" : "没有")
+                    BentoSectionLabel(String(localized: "除了工具，它还提供")).padding(.bottom, BentoSpace.s4)
+                    BentoKeyValueRow("Resources", String(localized: "\(mcp.resourceCount) 个"))
+                    BentoKeyValueRow("Prompts", String(localized: "\(mcp.promptCount) 个"))
+                    BentoKeyValueRow(String(localized: "使用说明"), mcp.instructionsLength > 0
+                        ? String(localized: "\(Format.count(mcp.instructionsLength)) 字") : String(localized: "没有"))
                 }
             }
-            BentoNote(tag: "说明", text: "聚合进服务时：resources 的 URI 保持原样，prompts 的名字加上「\(mcp.name)__」前缀，使用说明前面加「## \(mcp.name)」小标题后拼在一起。",
+            BentoNote(tag: String(localized: "说明"), text: String(localized: "聚合进服务时：resources 的 URI 保持原样，prompts 的名字加上「\(mcp.name)__」前缀，使用说明前面加「## \(mcp.name)」小标题后拼在一起。"),
                       tone: .surface)
         }
     }

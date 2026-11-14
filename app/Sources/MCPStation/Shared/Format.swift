@@ -5,9 +5,9 @@ enum Format {
     static func uptime(since: Date, now: Date = .now) -> String {
         let s = max(0, Int(now.timeIntervalSince(since)))
         let h = s / 3600, m = (s % 3600) / 60
-        if h > 0 { return "\(h) 小时 \(m) 分" }
-        if m > 0 { return "\(m) 分钟" }
-        return "刚刚"
+        if h > 0 { return String(localized: "\(h) 小时 \(m) 分") }
+        if m > 0 { return String(localized: "\(m) 分钟") }
+        return String(localized: "刚刚")
     }
 
     static func duration(_ d: Duration?) -> String {
@@ -37,11 +37,11 @@ enum Format {
     /// 状态的一句话描述（不含倒计时，倒计时由视图用 TimelineView 单独渲染）。
     static func stateLabel(_ s: MCPState) -> String {
         switch s {
-        case .starting: "启动中"
-        case .ready: "正常"
-        case .backoff: "等待重试"
-        case .configError: "配置错误"
-        case .stopped: "已停止"
+        case .starting: String(localized: "启动中")
+        case .ready: String(localized: "正常")
+        case .backoff: String(localized: "等待重试")
+        case .configError: String(localized: "配置错误")
+        case .stopped: String(localized: "已停止")
         }
     }
 
@@ -76,4 +76,5 @@ enum ClientTarget: String, CaseIterable, Identifiable {
     case container = "Docker 容器里"
     case json = "JSON 配置"
     var id: String { rawValue }
+    var title: String { String(localized: String.LocalizationValue(rawValue)) }
 }

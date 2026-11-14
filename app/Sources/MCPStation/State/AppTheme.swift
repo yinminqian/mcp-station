@@ -16,8 +16,8 @@ enum AppTheme: String, CaseIterable, Identifiable {
 
     var subtitle: String {
         switch self {
-        case .glass: "原生风格，跟随系统外观"
-        case .bento: "柔和卡片风格，浅色"
+        case .glass: String(localized: "原生风格，跟随系统外观")
+        case .bento: String(localized: "柔和卡片风格，浅色")
         }
     }
 }

@@ -269,7 +269,12 @@ app/Sources/MCPStation/
 - **主题 = 两套完整界面**，只共享 store / navigator；切换主题停留在当前页、保留选中项。
 - **数据是推的**：按粒度推送，Observation 按属性追踪，调用记录刷新不会让 MCP 列表重绘。内存趋势由界面按每 5 秒的采样自己攒。
 - **配置的读写全在内核**，App 只用 `ConfigStore.url` 做"在访达中显示"，以及启动时把改名前的数据目录（MCP Mac）搬过来。
-- **构建**：`scripts/build-app.sh [--debug] [--install] [--install-core]`。
+- **多语言（中文 / English）**：苹果自带的本地化。界面上的中文就是 key，`app/Resources/en.lproj/Localizable.strings` 里是英文；`CFBundleDevelopmentRegion` 是英文，所以系统语言是中文时显示中文、其他语言一律英文。设置页「外观」里可以切换，写进 App 自己的 AppleLanguages，重新打开生效。
+  - 写界面文字：直接写在 `Text` / `Button` / `Label` 等里的中文会自动翻译；经过 `String` 传的（组件参数、返回 String 的函数）要写成 `String(localized: "…")`。枚举的原始值不能改，给它加一个 `title`（`String(localized: String.LocalizationValue(rawValue))`）。
+  - 补翻译：`swift build --build-path /tmp/l10n -Xswiftc -emit-localized-strings -Xswiftc -emit-localized-strings-path -Xswiftc /tmp/l10n-strings`，编译目录下每个源文件会有一个 `.stringsdata`（JSON，里面是 key，插值已换成 `%lld` / `%@`），把还没有英文的 key 补进 `en.lproj/Localizable.strings`。参数顺序和中文不同时用 `%1$@`、`%2$@`。
+  - 内核（Rust）给的说明文字（出错原因、状态原因）目前只有中文。
+- **自动更新**：Sparkle 2（和 paster 同一套）。更新源是仓库里的 `appcast.xml`，安装包是 GitHub Release 上的 DMG，App 里带 EdDSA 公钥、私钥在发版人的钥匙串里（`generate_keys --account mcp-station`）。启动时悄悄查一次、之后每两天一次；菜单和设置页有「检查更新…」。App 更新后发现正在跑的内核版本和包里的不一样，自动升级内核。发版：改 `VERSION`，提交推送，在图形界面的终端里 `PUBLISH=1 NOTES=更新说明.md scripts/release.sh`（SSH 会话读不了钥匙串）。更新源要能匿名访问，仓库必须是公开的。
+- **构建**：`scripts/build-app.sh [--debug] [--install] [--install-core]`。版本号来自仓库根目录的 `VERSION`（App 和内核一致），构建号是提交数。
 - **验证**：`swift test`；内核 `cargo test`（配置解析、导入、变量展开、名字规则、SSE 切分、调用记录旧格式）；`MCPSTATION_SNAPSHOT_DIR=<目录>` 启动会逐页自截图后退出。
 
 ## 6. 和 CC Switch 的关系

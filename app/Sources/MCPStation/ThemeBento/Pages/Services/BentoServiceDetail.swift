@@ -6,10 +6,10 @@ enum BentoServiceTab: String, CaseIterable, Identifiable {
 
     func label(for service: ServiceSummary) -> BentoCountLabel {
         switch self {
-        case .members: BentoCountLabel("组成")
-        case .tools: BentoCountLabel("聚合后的工具", count: service.toolCount)
-        case .instructions: BentoCountLabel("合并后的说明")
-        case .calls: BentoCountLabel("调用")
+        case .members: BentoCountLabel(String(localized: "组成"))
+        case .tools: BentoCountLabel(String(localized: "聚合后的工具"), count: service.toolCount)
+        case .instructions: BentoCountLabel(String(localized: "合并后的说明"))
+        case .calls: BentoCountLabel(String(localized: "调用"))
         }
     }
 }
@@ -45,7 +45,7 @@ struct BentoServiceDetail: View {
                         BentoClientConfigCard(service: service, port: port)
                     }
                     BentoServiceChecksCard(service: service)
-                    BentoNote(tag: "说明", text: note, tone: .surface)
+                    BentoNote(tag: String(localized: "说明"), text: note, tone: .surface)
                 }
             }
             .scrollIndicators(.never)
@@ -61,12 +61,12 @@ struct BentoServiceDetail: View {
     /// 开关和勾选的关系，用这个服务自己的成员举例。
     private var note: String {
         if service.isDefault {
-            return "默认服务 = 所有开关打开的 MCP。在这里勾选，和在 MCP 页拨开关是同一件事。"
+            return String(localized: "默认服务 = 所有开关打开的 MCP。在这里勾选，和在 MCP 页拨开关是同一件事。")
         }
         let offByDefault = service.members.filter { !$0.inDefault }.map(\.name)
-        let base = "开关只管默认服务；命名服务按勾选。"
+        let base = String(localized: "开关只管默认服务；命名服务按勾选。")
         guard !offByDefault.isEmpty else { return base }
-        return base + "\(offByDefault.joined(separator: "、")) 的默认开关是关的，但在 \(service.name) 里照样有。"
+        return base + String(localized: "\(offByDefault.joined(separator: "、")) 的默认开关是关的，但在 \(service.name) 里照样有。")
     }
 }
 
@@ -92,11 +92,11 @@ private struct BentoServiceDetailHeader: View {
                 Button {
                     renaming = true
                 } label: {
-                    Label("重命名", bento: .edit)
+                    Label(String(localized: "重命名"), bento: .edit)
                 }
                 .buttonStyle(.bentoSecondary)
                 .popover(isPresented: $renaming, arrowEdge: .bottom) {
-                    BentoNamePopover(title: "重命名「\(service.name)」", actionTitle: "保存", initial: service.name) { newName in
+                    BentoNamePopover(title: String(localized: "重命名「\(service.name)」"), actionTitle: String(localized: "保存"), initial: service.name) { newName in
                         let ok = await store.renameService(service.name, to: newName)
                         if ok { nav.selectedService = newName }
                         return ok
@@ -105,7 +105,7 @@ private struct BentoServiceDetailHeader: View {
                 Button {
                     confirmingDelete = true
                 } label: {
-                    Label("删除", bento: .delete)
+                    Label(String(localized: "删除"), bento: .delete)
                 }
                 .buttonStyle(.bento(.rose))
                 .confirmationDialog("删除服务「\(service.name)」？", isPresented: $confirmingDelete) {

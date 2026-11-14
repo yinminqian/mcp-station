@@ -20,7 +20,7 @@ struct BentoServiceRow<Trailing: View>: View {
                 }
                 .lineLimit(1)
                 Spacer(minLength: BentoSpace.s4)
-                BentoPillChip("\(service.members.count) 个 · \(service.toolCount) 工具")
+                BentoPillChip(String(localized: "\(service.members.count) 个 · \(service.toolCount) 工具"))
                 trailing
             }
         }

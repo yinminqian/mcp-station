@@ -20,6 +20,8 @@ struct GlassSettingsPage: View {
                 Text("两套界面共用同一份数据，切换后停留在当前页面。")
             }
 
+            GlassLanguageSection()
+
             Section {
                 LabeledContent("配置文件") {
                     Text(ConfigStore.url.path(percentEncoded: false).replacingOccurrences(of: NSHomeDirectory(), with: "~"))
@@ -71,7 +73,7 @@ struct GlassSettingsPage: View {
             }
 
             Section("关于") {
-                LabeledContent("版本", value: Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "开发版")
+                LabeledContent("版本", value: Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? String(localized: "开发版"))
                 LabeledContent("有新版时会提示，也可以手动检查") {
                     Button("检查更新…") { Updates.checkNow() }
                         .disabled(!Updates.available)
@@ -197,11 +199,33 @@ private struct GlassPortRow: View {
 
     private func save() {
         guard let n = Int(text.trimmingCharacters(in: .whitespaces)) else {
-            store.showToast("端口要填数字", style: .error)
+            store.showToast(String(localized: "端口要填数字"), style: .error)
             text = String(port)
             return
         }
         guard n != port else { return }
         Task { if !(await store.setPort(n)) { text = String(port) } }
+    }
+}
+
+/// 语言：中文 / English。切换后重新打开 App 生效。
+private struct GlassLanguageSection: View {
+    @State private var chosen = AppLanguage.chosen
+
+    var body: some View {
+        Section {
+            Picker("语言", selection: $chosen) {
+                ForEach(AppLanguage.allCases) { Text(verbatim: $0.name).tag($0) }
+            }
+            .pickerStyle(.segmented)
+            .onChange(of: chosen) { AppLanguage.choose(chosen) }
+            if chosen != AppLanguage.current {
+                LabeledContent("重新打开 App 后生效") {
+                    Button("立即重启") { AppLanguage.relaunch() }
+                }
+            }
+        } header: {
+            Text("语言")
+        }
     }
 }

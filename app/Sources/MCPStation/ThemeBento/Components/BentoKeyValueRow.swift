@@ -67,7 +67,7 @@ struct BentoSecretRow: View {
                     .bentoText(.mono)
                     .contentTransition(.opacity)
             } trailing: {
-                Label(revealed ? "点击隐藏" : "点击显示", bento: revealed ? .conceal : .reveal)
+                Label(revealed ? String(localized: "点击隐藏") : String(localized: "点击显示"), bento: revealed ? .conceal : .reveal)
                     .labelStyle(BentoLabelStyle())
                     .bentoText(.label, BentoColor.Ink.tertiary)
                     .contentTransition(.symbolEffect(.replace))
@@ -75,7 +75,7 @@ struct BentoSecretRow: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        .accessibilityLabel("\(key)，\(revealed ? "已显示" : "已隐藏")")
+        .accessibilityLabel("\(key)，\(revealed ? String(localized: "已显示") : String(localized: "已隐藏"))")
         .accessibilityHint(revealed ? "点击隐藏" : "点击显示")
     }
 }

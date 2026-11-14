@@ -37,7 +37,7 @@ struct GlassMCPPage: View {
                 }
                 .width(min: 52, ideal: 58)
                 TableColumn("服务") { r in
-                    Text(r.usedBy.isEmpty ? "无" : r.usedBy.joined(separator: "、"))
+                    Text(r.usedBy.isEmpty ? String(localized: "无") : r.usedBy.joined(separator: "、"))
                         .foregroundStyle(r.usedBy.isEmpty ? .tertiary : .secondary)
                 }
                 .width(min: 56, ideal: 70)
@@ -171,7 +171,7 @@ private struct GlassMCPOverview: View {
                     Label("没有服务用到它，所以没在运行", systemImage: "pause.circle")
                         .foregroundStyle(.secondary)
                 } footer: {
-                    Text("打开\"默认\"开关，或在某个命名服务里勾选它，它就会启动。")
+                    Text(String(localized: "打开\"默认\"开关，或在某个命名服务里勾选它，它就会启动。"))
                 }
             }
 
@@ -198,7 +198,7 @@ private struct GlassMCPOverview: View {
                 }
                 LabeledContent("用到它的服务") {
                     let used = store.usedBy(server)
-                    Text(used.isEmpty ? "无" : used.joined(separator: "、"))
+                    Text(used.isEmpty ? String(localized: "无") : used.joined(separator: "、"))
                 }
                 LabeledContent("单独地址") {
                     HStack(spacing: 6) {
@@ -207,7 +207,7 @@ private struct GlassMCPOverview: View {
                             .lineLimit(1)
                             .truncationMode(.middle)
                         GlassCopyButton(text: Format.mcpURL(server.name, port: port),
-                                        key: "addr:\(server.name)", label: "复制单独地址")
+                                        key: "addr:\(server.name)", label: String(localized: "复制单独地址"))
                     }
                 }
             }
@@ -227,14 +227,14 @@ private struct GlassMCPOverview: View {
                             Sparkline(values: server.memoryHistory.map(Double.init), color: .purple, baselineAtZero: false)
                                 .frame(width: 90, height: 18)
                         }
-                        Text(server.memory == nil ? (server.kind == .http ? "无本地进程" : "—") : Format.bytes(server.memory))
+                        Text(server.memory == nil ? (server.kind == .http ? String(localized: "无本地进程") : "—") : Format.bytes(server.memory))
                             .monospacedDigit()
                     }
                 }
                 .help("进程组（含子进程）的 RSS 合计，每 5 秒采样")
-                LabeledContent("能力", value: "\(server.toolCount) 工具 · \(server.resourceCount) resources · \(server.promptCount) prompts")
+                LabeledContent("能力", value: String(localized: "\(server.toolCount) 工具 · \(server.resourceCount) resources · \(server.promptCount) prompts"))
                 if server.instructionsLength > 0 {
-                    LabeledContent("使用说明", value: "\(server.instructionsLength) 字")
+                    LabeledContent("使用说明", value: String(localized: "\(server.instructionsLength) 字"))
                 }
             }
 
@@ -283,7 +283,7 @@ private struct GlassResourcesInfo: View {
             Section {
                 LabeledContent("Resources", value: "\(server.resourceCount)")
                 LabeledContent("Prompts", value: "\(server.promptCount)")
-                LabeledContent("使用说明", value: server.instructionsLength > 0 ? "\(server.instructionsLength) 字" : "无")
+                LabeledContent("使用说明", value: server.instructionsLength > 0 ? String(localized: "\(server.instructionsLength) 字") : String(localized: "无"))
             } footer: {
                 Text("聚合到服务时，resources 按原 URI 路由回 \(server.name)，prompts 以 \(server.name)__ 为前缀。")
             }

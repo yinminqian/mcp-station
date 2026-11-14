@@ -10,11 +10,11 @@ enum BentoGroup: String, CaseIterable, Identifiable {
 
     var title: String {
         switch self {
-        case .all: "全部"
-        case .dev: "开发"
-        case .data: "数据"
-        case .design: "设计"
-        case .system: "系统"
+        case .all: String(localized: "全部")
+        case .dev: String(localized: "开发")
+        case .data: String(localized: "数据")
+        case .design: String(localized: "设计")
+        case .system: String(localized: "系统")
         }
     }
 

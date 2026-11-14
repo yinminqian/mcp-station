@@ -23,7 +23,7 @@ struct GlassServicesPage: View {
             .frame(minWidth: 380)
             .safeAreaInset(edge: .bottom, spacing: 0) {
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("\"默认\" = 所有开关打开的 MCP")
+                    Text(String(localized: "\"默认\" = 所有开关打开的 MCP"))
                     Text("每个 MCP 也有自己的单独地址 /servers/<名字>/mcp（工具名不加前缀）")
                 }
                 .font(.caption)
@@ -86,14 +86,14 @@ private struct GlassServiceMembers: View {
                     .toggleStyle(.checkbox)
                 }
             } header: {
-                Text("\(service.name) 包含的 MCP · \(service.members.count) 个\(service.healthy == service.members.count ? "都正常" : "，\(service.members.count - service.healthy) 个异常")")
+                Text("\(service.name) 包含的 MCP · \(service.members.count) 个\(service.healthy == service.members.count ? String(localized: "都正常") : String(localized: "，\(service.members.count - service.healthy) 个异常"))")
             } footer: {
-                Text(service.isDefault ? "这里的勾选就是各 MCP 的\"默认\"开关。" : "勾选即生效，不受\"默认服务\"开关影响。")
+                Text(service.isDefault ? String(localized: "这里的勾选就是各 MCP 的\"默认\"开关。") : String(localized: "勾选即生效，不受\"默认服务\"开关影响。"))
             }
 
             Section {
                 Picker("客户端", selection: $client) {
-                    ForEach(ClientTarget.allCases) { Text($0.rawValue).tag($0) }
+                    ForEach(ClientTarget.allCases) { Text($0.title).tag($0) }
                 }
                 HStack(alignment: .top) {
                     Text(Format.clientCommand(service: service, client: client, port: port))
@@ -101,7 +101,7 @@ private struct GlassServiceMembers: View {
                         .textSelection(.enabled)
                         .frame(maxWidth: .infinity, alignment: .leading)
                     GlassCopyButton(text: Format.clientCommand(service: service, client: client, port: port),
-                                    key: "cmd:\(service.name):\(client.rawValue)", label: "复制配置")
+                                    key: "cmd:\(service.name):\(client.rawValue)", label: String(localized: "复制配置"))
                 }
             } header: {
                 Text("客户端配置")
@@ -111,12 +111,12 @@ private struct GlassServiceMembers: View {
 
             Section("检查") {
                 LabeledContent("工具名") {
-                    check(service.longestToolName <= ServiceSummary.toolNameLimit, "最长 \(service.longestToolName) 字符（上限 \(ServiceSummary.toolNameLimit)）")
+                    check(service.longestToolName <= ServiceSummary.toolNameLimit, String(localized: "最长 \(service.longestToolName) 字符（上限 \(ServiceSummary.toolNameLimit)）"))
                 }
-                LabeledContent("名字冲突") { check(true, "无") }
+                LabeledContent("名字冲突") { check(true, String(localized: "无")) }
                 LabeledContent("合并后的说明") {
-                    check(true, service.withInstructions == 0 ? "没有 MCP 带说明"
-                          : "\(service.withInstructions) 个 MCP 有说明，共 \(Format.count(service.instructionsLength)) 字")
+                    check(true, service.withInstructions == 0 ? String(localized: "没有 MCP 带说明")
+                          : String(localized: "\(service.withInstructions) 个 MCP 有说明，共 \(Format.count(service.instructionsLength)) 字"))
                 }
             }
         }
@@ -125,8 +125,8 @@ private struct GlassServiceMembers: View {
     }
 
     private func subtitle(_ m: MCPServer) -> String {
-        var parts = ["\(m.toolCount) 工具"]
-        if !service.isDefault && !m.inDefault { parts.append("默认已关") }
+        var parts = [String(localized: "\(m.toolCount) 工具")]
+        if !service.isDefault && !m.inDefault { parts.append(String(localized: "默认已关")) }
         if m.state != .ready { parts.append(Format.stateLabel(m.state)) }
         return parts.joined(separator: " · ")
     }
@@ -164,7 +164,7 @@ private struct GlassMergedInstructions: View {
         Form {
             Section {
                 ForEach(service.members.filter { $0.instructionsLength > 0 }) { m in
-                    LabeledContent("## \(m.name)", value: "\(m.instructionsLength) 字")
+                    LabeledContent("## \(m.name)", value: String(localized: "\(m.instructionsLength) 字"))
                 }
             } footer: {
                 Text("客户端 initialize 时拿到的说明，按 MCP 加小标题后拼接。")

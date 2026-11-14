@@ -54,13 +54,13 @@ enum CoreError: LocalizedError {
 
     var errorDescription: String? {
         switch self {
-        case .notRunning: "后台服务没有运行"
-        case .unknownMCP(let n): "找不到 MCP「\(n)」"
-        case .invalidName(let n): "名字「\(n)」不合法：只能用字母、数字、- 和 _"
-        case .duplicateName(let n): "已经有叫「\(n)」的服务了"
-        case .duplicateMCP(let n): "已经有叫「\(n)」的 MCP 了"
-        case .missingField(let f): "请填写「\(f)」"
-        case .invalidPort(let p): "端口 \(p) 不行：要在 1024 到 65535 之间"
+        case .notRunning: String(localized: "后台服务没有运行")
+        case .unknownMCP(let n): String(localized: "找不到 MCP「\(n)」")
+        case .invalidName(let n): String(localized: "名字「\(n)」不合法：只能用字母、数字、- 和 _")
+        case .duplicateName(let n): String(localized: "已经有叫「\(n)」的服务了")
+        case .duplicateMCP(let n): String(localized: "已经有叫「\(n)」的 MCP 了")
+        case .missingField(let f): String(localized: "请填写「\(f)」")
+        case .invalidPort(let p): String(localized: "端口 \(p) 不行：要在 1024 到 65535 之间")
         }
     }
 }

@@ -14,7 +14,7 @@ struct BentoServiceToolsTab: View {
             mcp.tools.map { Row(id: "\(mcp.name)__\($0.name)", summary: $0.summary) }
         }
         if rows.isEmpty {
-            BentoCard { BentoEmptyState(icon: .tools, text: "这个服务里还没有工具") }
+            BentoCard { BentoEmptyState(icon: .tools, text: String(localized: "这个服务里还没有工具")) }
         } else {
             BentoCard(padding: 0) {
                 List(rows) { BentoToolRow(name: $0.id, summary: $0.summary, nameWidth: 340) }
@@ -33,7 +33,7 @@ struct BentoServiceInstructionsTab: View {
             VStack(spacing: BentoSpace.s12) {
                 BentoCard {
                     VStack(alignment: .leading, spacing: 0) {
-                        BentoSectionLabel("拼接顺序（共 \(Format.count(service.instructionsLength)) 字）")
+                        BentoSectionLabel(String(localized: "拼接顺序（共 \(Format.count(service.instructionsLength)) 字）"))
                             .padding(.bottom, BentoSpace.s4)
                         ForEach(service.members) { mcp in
                             HStack(spacing: BentoSpace.s12) {
@@ -45,11 +45,11 @@ struct BentoServiceInstructionsTab: View {
                             .frame(minHeight: BentoSpace.s32)
                         }
                         if service.members.isEmpty {
-                            BentoEmptyState(icon: .document, text: "这个服务里还没有 MCP")
+                            BentoEmptyState(icon: .document, text: String(localized: "这个服务里还没有 MCP"))
                         }
                     }
                 }
-                BentoNote(tag: "说明", text: "客户端连上时在 initialize 里拿到这段合并后的说明。如果客户端对长度有上限，后面的会被截掉。",
+                BentoNote(tag: String(localized: "说明"), text: String(localized: "客户端连上时在 initialize 里拿到这段合并后的说明。如果客户端对长度有上限，后面的会被截掉。"),
                           tone: .surface)
             }
         }

@@ -51,6 +51,8 @@ rm -rf "$OUT"
 mkdir -p "$OUT/Contents/MacOS" "$OUT/Contents/Resources" "$OUT/Contents/Frameworks"
 cp "$BIN" "$OUT/Contents/MacOS/MCPStation"
 cp "$CORE_BIN" "$OUT/Contents/Resources/mcp-core"
+# 多语言：界面上的中文是 key，en.lproj 里是英文；中文以外的系统语言都落到英文（CFBundleDevelopmentRegion）
+for l in "$ROOT"/app/Resources/*.lproj; do ditto "$l" "$OUT/Contents/Resources/$(basename "$l")"; done
 # Sparkle 是动态框架，放进 Frameworks，并让可执行文件去那里找
 ditto "$(swift build -c "$CONFIG" --show-bin-path)/Sparkle.framework" "$OUT/Contents/Frameworks/Sparkle.framework"
 install_name_tool -add_rpath "@executable_path/../Frameworks" "$OUT/Contents/MacOS/MCPStation" 2>/dev/null || true
@@ -70,7 +72,8 @@ cat > "$OUT/Contents/Info.plist" <<PLIST
   <key>SUPublicEDKey</key><string>$ED_PUBLIC_KEY</string>
   <key>SUEnableAutomaticChecks</key><true/>
   <key>SUScheduledCheckInterval</key><integer>172800</integer>
-  <key>CFBundleDevelopmentRegion</key><string>zh-Hans</string>
+  <key>CFBundleDevelopmentRegion</key><string>en</string>
+  <key>CFBundleLocalizations</key><array><string>en</string><string>zh-Hans</string><string>zh-Hant</string></array>
   <key>LSMinimumSystemVersion</key><string>26.0</string>
   <key>LSApplicationCategoryType</key><string>public.app-category.developer-tools</string>
   <key>NSHighResolutionCapable</key><true/>
