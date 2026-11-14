@@ -107,7 +107,7 @@ struct BentoChartColumn: Identifiable, Hashable {
     }
 }
 
-/// 堆叠柱状图。当前（或鼠标指着的）那一根描黑边，横轴上它的小时也变成黑色药丸。
+/// 堆叠柱状图。当前（或鼠标指着的）那一小时背后铺一条浅底，横轴上它的小时变成黑色药丸。
 private struct BentoCallChart: View {
     let columns: [BentoChartColumn]
     let tones: BentoServiceTones
@@ -165,11 +165,15 @@ private struct BentoCallChart: View {
                 }
             }
         }
+        .chartBackground { proxy in
+            GeometryReader { geometry in
+                if let anchor = proxy.plotFrame { focusBand(proxy: proxy, plot: geometry[anchor]) }
+            }
+        }
         .chartOverlay { proxy in
             GeometryReader { geometry in
                 if let anchor = proxy.plotFrame {
                     let plot = geometry[anchor]
-                    focusOutline(proxy: proxy, plot: plot)
                     Color.clear
                         .contentShape(Rectangle())
                         .frame(width: plot.width, height: plot.height)
@@ -187,17 +191,15 @@ private struct BentoCallChart: View {
         .accessibilityLabel("最近 \(columns.count) 小时的调用数")
     }
 
+    /// 选中那一小时：柱子背后一条整列高的浅底。
     @ViewBuilder
-    private func focusOutline(proxy: ChartProxy, plot: CGRect) -> some View {
-        if let column = columns.first(where: { $0.label == focus }), column.total > 0,
-           let x = proxy.position(forX: column.label),
-           let top = proxy.position(forY: Double(column.total)) {
+    private func focusBand(proxy: ChartProxy, plot: CGRect) -> some View {
+        if let focus, let x = proxy.position(forX: focus) {
             let width = plot.width / CGFloat(columns.count) * Self.barRatio + Self.gap * 4
-            let height = plot.height - top + Self.gap * 2
             RoundedRectangle(cornerRadius: BentoRadius.sm, style: .continuous)
-                .strokeBorder(BentoColor.Ink.black, lineWidth: BentoMetric.selectionStroke)
-                .frame(width: width, height: max(height, BentoSpace.s12))
-                .position(x: plot.minX + x, y: plot.minY + plot.height - height / 2 + Self.gap)
+                .fill(BentoColor.Bg.panel)
+                .frame(width: width, height: plot.height + Self.gap * 2)
+                .position(x: plot.minX + x, y: plot.midY)
                 .allowsHitTesting(false)
         }
     }

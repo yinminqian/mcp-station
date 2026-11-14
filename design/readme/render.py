@@ -306,7 +306,7 @@ def page_overview(lang):
 .bar{flex:1;display:flex;flex-direction:column;align-items:center;gap:8px}
 .stack{width:100%;display:flex;flex-direction:column;gap:3px;justify-content:flex-end;border-radius:12px;padding:3px}
 .stack i{display:block;border-radius:9px}
-.bar.cur .stack{box-shadow:0 0 0 2px #111}
+.bar.cur .stack{background:#F2EFEA;box-shadow:0 0 0 4px #F2EFEA}
 .bar span{font-size:12px;color:#A5A099;height:22px;display:flex;align-items:center;padding:0 8px;border-radius:99px}
 .bar span.hcur{background:#111;color:#fff}
 .legend{display:flex;gap:16px;font-size:12px;color:#6E6963;margin-top:10px}
