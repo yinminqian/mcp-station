@@ -9,7 +9,8 @@
 # 签名用的 EdDSA 私钥在发版人 Mac 的钥匙串里（Sparkle 的 generate_keys --account mcp-station 生成），
 # App 里带着对应的公钥（build-app.sh 的 ED_PUBLIC_KEY）。要在图形界面的终端里跑：SSH 会话读不了钥匙串。
 #
-# 现在是 ad-hoc 签名、没有公证：自己和同事能用；从网上下载的 DMG 第一次打开要右键「打开」。
+# 现在是 ad-hoc 签名、没有公证（公证要付费开发者账号的 Developer ID 证书）：从网上下载的第一次打开会被拦，
+# 到「系统设置 → 隐私与安全性」点「仍要打开」；之后的自动更新由 Sparkle 处理，不受影响。
 # 更新源要能匿名访问：仓库必须是公开的（raw.githubusercontent.com 读 appcast，Release 下载 DMG）。
 set -euo pipefail
 
