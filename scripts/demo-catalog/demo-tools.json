@@ -1,0 +1,1296 @@
+{
+ "desktop": {
+  "tools": [
+   [
+    "get_config",
+    "Get the complete server configuration as JSON. Config includes fields for:"
+   ],
+   [
+    "set_config_value",
+    "Set a specific configuration value by key."
+   ],
+   [
+    "read_file",
+    "Read contents from files and URLs."
+   ],
+   [
+    "read_multiple_files",
+    "Read the contents of multiple files simultaneously."
+   ],
+   [
+    "write_file",
+    "Write or append to file contents."
+   ],
+   [
+    "write_pdf",
+    "Create a new PDF file or modify an existing one."
+   ],
+   [
+    "create_directory",
+    "Create a new directory or ensure a directory exists."
+   ],
+   [
+    "list_directory",
+    "Get a detailed listing of all files and directories in a specified path."
+   ],
+   [
+    "move_file",
+    "Move or rename files and directories."
+   ],
+   [
+    "start_search",
+    "Start a streaming search that can return results progressively."
+   ],
+   [
+    "get_more_search_results",
+    "Get more results from an active search with offset-based pagination."
+   ],
+   [
+    "stop_search",
+    "Stop an active search."
+   ],
+   [
+    "list_searches",
+    "List all active searches."
+   ],
+   [
+    "get_file_info",
+    "Retrieve detailed metadata about a file or directory including:"
+   ],
+   [
+    "edit_block",
+    "Apply surgical edits to files."
+   ],
+   [
+    "start_process",
+    "Start a terminal process on the authorized device with intelligent state detection."
+   ],
+   [
+    "read_process_output",
+    "Read output from a running process with file-like pagination support."
+   ],
+   [
+    "interact_with_process",
+    "Send input to an existing terminal or REPL process and return newly available output."
+   ],
+   [
+    "force_terminate",
+    "Force terminate a running terminal session."
+   ],
+   [
+    "list_sessions",
+    "List all active terminal sessions."
+   ],
+   [
+    "list_processes",
+    "List all running processes."
+   ],
+   [
+    "kill_process",
+    "Terminate a running process by PID."
+   ],
+   [
+    "get_usage_stats",
+    "Get usage statistics for debugging and analysis."
+   ],
+   [
+    "get_recent_tool_calls",
+    "Get recent local tool call history with arguments and outputs."
+   ],
+   [
+    "give_feedback_to_desktop_commander",
+    "Open feedback form in browser to provide feedback about Desktop Commander."
+   ]
+  ],
+  "resources": 2,
+  "prompts": 0,
+  "instr": 786,
+  "server": {
+   "name": "desktop-commander",
+   "version": "0.3.3"
+  }
+ },
+ "mobile": {
+  "tools": [
+   [
+    "mobile_list_available_devices",
+    "List all available devices. This includes both physical mobile devices and mobile simula…"
+   ],
+   [
+    "mobile_list_apps",
+    "List all the installed apps on the device"
+   ],
+   [
+    "mobile_launch_app",
+    "Launch an app on mobile device. Use this to open a specific app. You can find the packag…"
+   ],
+   [
+    "mobile_terminate_app",
+    "Stop and terminate an app on mobile device"
+   ],
+   [
+    "mobile_install_app",
+    "Install an app on mobile device"
+   ],
+   [
+    "mobile_uninstall_app",
+    "Uninstall an app from mobile device"
+   ],
+   [
+    "mobile_get_screen_size",
+    "Get the screen size of the mobile device in pixels"
+   ],
+   [
+    "mobile_click_on_screen_at_coordinates",
+    "Click on the screen at given x,y coordinates. If clicking on an element, use the list_el…"
+   ],
+   [
+    "mobile_double_tap_on_screen",
+    "Double-tap on the screen at given x,y coordinates."
+   ],
+   [
+    "mobile_long_press_on_screen_at_coordinates",
+    "Long press on the screen at given x,y coordinates. If long pressing on an element, use t…"
+   ],
+   [
+    "mobile_list_elements_on_screen",
+    "List elements on screen and their coordinates, with display text or accessibility label.…"
+   ],
+   [
+    "mobile_press_button",
+    "Press a button on device"
+   ],
+   [
+    "mobile_open_url",
+    "Open a URL in browser on device"
+   ],
+   [
+    "mobile_swipe_on_screen",
+    "Swipe on the screen"
+   ],
+   [
+    "mobile_type_keys",
+    "Type text into the focused element"
+   ],
+   [
+    "mobile_save_screenshot",
+    "Save a screenshot of the mobile device to a file"
+   ],
+   [
+    "mobile_take_screenshot",
+    "Take a screenshot of the mobile device. Use this to understand what's on screen, if you …"
+   ],
+   [
+    "mobile_set_orientation",
+    "Change the screen orientation of the device"
+   ],
+   [
+    "mobile_get_orientation",
+    "Get the current screen orientation of the device"
+   ],
+   [
+    "mobile_start_screen_recording",
+    "Start recording the screen of a mobile device. The recording runs in the background unti…"
+   ],
+   [
+    "mobile_stop_screen_recording",
+    "Stop an active screen recording on a mobile device. Returns the file path, size, and app…"
+   ],
+   [
+    "mobile_list_crashes",
+    "List crash reports available on the device"
+   ],
+   [
+    "mobile_get_crash",
+    "Get the full content of a crash report by its ID. Use mobile_list_crashes to find availa…"
+   ]
+  ],
+  "resources": 0,
+  "prompts": 0,
+  "instr": 0,
+  "server": {
+   "name": "mobile-mcp",
+   "version": "0.0.62"
+  }
+ },
+ "iterm": {
+  "tools": [
+   [
+    "write_to_terminal",
+    "Writes text to the active iTerm terminal - often used to run a command in the terminal"
+   ],
+   [
+    "read_terminal_output",
+    "Reads the output from the active iTerm terminal"
+   ],
+   [
+    "send_control_character",
+    "Sends a control character to the active iTerm terminal (e.g., Control-C, or special sequ…"
+   ]
+  ],
+  "resources": 0,
+  "prompts": 0,
+  "instr": 0,
+  "server": {
+   "name": "iterm-mcp",
+   "version": "0.1.0"
+  }
+ },
+ "chrome-devtools": {
+  "tools": [
+   [
+    "click",
+    "Clicks on the provided element"
+   ],
+   [
+    "close_page",
+    "Closes the page by its index. The last open page cannot be closed."
+   ],
+   [
+    "drag",
+    "Drag an element onto another element"
+   ],
+   [
+    "emulate",
+    "Emulates various features on the target page. Each call replaces all emulation settings …"
+   ],
+   [
+    "evaluate_script",
+    "Evaluate JavaScript inside the target page. The source can be provided inline or loaded …"
+   ],
+   [
+    "fill",
+    "Type text into an input, text area or select an option from a <select> element."
+   ],
+   [
+    "fill_form",
+    "Fill out multiple form elements (inputs, selects, checkboxes, radios) at once. ALWAYS pr…"
+   ],
+   [
+    "get_console_message",
+    "Gets a console message by its ID. You can get all messages by calling list_console_messa…"
+   ],
+   [
+    "get_css_styles",
+    "Retrieve matched CSS rules, inline styles (element.style), inherited styles, custom prop…"
+   ],
+   [
+    "get_network_request",
+    "Gets a network request by an optional reqid, if omitted returns the currently selected r…"
+   ],
+   [
+    "handle_dialog",
+    "If a browser dialog was opened, use this command to handle it"
+   ],
+   [
+    "hover",
+    "Hover over the provided element"
+   ],
+   [
+    "lighthouse_audit",
+    "Get Lighthouse scores, failing audits, and the DOM nodes they flag for accessibility, SE…"
+   ],
+   [
+    "list_console_messages",
+    "List all console messages for the target page since the last navigation."
+   ],
+   [
+    "list_network_requests",
+    "Lists the most recent requests for the target page since the last navigation."
+   ],
+   [
+    "list_pages",
+    "Get a list of pages open in the browser."
+   ],
+   [
+    "navigate_page",
+    "Go to a URL, or back, forward, or reload. Use project URL if not specified otherwise."
+   ],
+   [
+    "new_page",
+    "Open a new tab and load a URL. Use project URL if not specified otherwise."
+   ],
+   [
+    "performance_analyze_insight",
+    "Provides more detailed information on a specific Performance Insight of an insight set t…"
+   ],
+   [
+    "performance_start_trace",
+    "Start a performance trace on the target webpage. Use to find frontend performance issues…"
+   ],
+   [
+    "performance_stop_trace",
+    "Stop the active performance trace recording on the target webpage."
+   ],
+   [
+    "press_key",
+    "Press a key or key combination. Use this when other input methods like fill() cannot be …"
+   ],
+   [
+    "resize_page",
+    "Resizes the page's window so that the page has specified dimension"
+   ],
+   [
+    "screencast_start",
+    "Starts recording a screencast (video) of the target page."
+   ],
+   [
+    "screencast_stop",
+    "Stops the active screencast recording on the target page."
+   ],
+   [
+    "select_page",
+    "Select a page as a context for future tool calls."
+   ],
+   [
+    "set_logpoints",
+    "Set the complete set of logpoints of the selected page: logpoints not in the list are re…"
+   ],
+   [
+    "take_heapsnapshot",
+    "Capture a heap snapshot of the target page. Use to analyze the memory distribution of Ja…"
+   ],
+   [
+    "take_screenshot",
+    "Take a screenshot of the page or element."
+   ],
+   [
+    "take_snapshot",
+    "Take a text snapshot of the target page based on the a11y tree. The snapshot lists page …"
+   ],
+   [
+    "type_text",
+    "Type text using keyboard into a previously focused input"
+   ],
+   [
+    "upload_file",
+    "Upload a file through a provided element."
+   ],
+   [
+    "wait_for",
+    "Wait for the specified text to appear on the selected page. By default, hidden text is a…"
+   ]
+  ],
+  "resources": 0,
+  "prompts": 0,
+  "instr": 0,
+  "server": {
+   "name": "chrome_devtools",
+   "version": "1.13.0"
+  }
+ },
+ "mongodb-log": {
+  "tools": [
+   [
+    "aggregate-db",
+    "Run an aggregation against a MongoDB database"
+   ],
+   [
+    "aggregate",
+    "Run an aggregation against a MongoDB collection"
+   ],
+   [
+    "collection-indexes",
+    "Describe the indexes for a collection"
+   ],
+   [
+    "collection-schema",
+    "Describe the schema for a collection"
+   ],
+   [
+    "collection-storage-size",
+    "Gets the size of the collection"
+   ],
+   [
+    "connect",
+    "Connect to a MongoDB instance and get back a connectionId to pass to the other MongoDB t…"
+   ],
+   [
+    "count",
+    "Gets the number of documents in a MongoDB collection using db.collection.count() and que…"
+   ],
+   [
+    "db-stats",
+    "Returns statistics that reflect the use state of a single database"
+   ],
+   [
+    "disconnect",
+    "Close a MongoDB connection and revoke its connectionId. Disconnecting a connection the s…"
+   ],
+   [
+    "explain",
+    "Returns statistics describing the execution of the winning plan chosen by the query opti…"
+   ],
+   [
+    "export",
+    "Export a query or aggregation results in the specified EJSON format."
+   ],
+   [
+    "find",
+    "Run a find query against a MongoDB collection"
+   ],
+   [
+    "list-collections",
+    "List all collections for a given database"
+   ],
+   [
+    "list-connections",
+    "List the active MongoDB connections and their connectionIds. Use this to discover the co…"
+   ],
+   [
+    "list-databases",
+    "List all databases for a MongoDB connection"
+   ],
+   [
+    "mongodb-logs",
+    "Returns the most recent logged mongod events"
+   ],
+   [
+    "atlas-local-list-deployments",
+    "List MongoDB Atlas local deployments"
+   ],
+   [
+    "atlas-local-connect-deployment",
+    "Connect to a MongoDB Atlas Local deployment and get back a connectionId to pass to the o…"
+   ],
+   [
+    "search-knowledge",
+    "Search for information in the MongoDB Assistant knowledge base. This includes official d…"
+   ],
+   [
+    "list-knowledge-sources",
+    "List available data sources in the MongoDB Assistant knowledge base. Use this to explore…"
+   ]
+  ],
+  "resources": 2,
+  "prompts": 0,
+  "instr": 0,
+  "server": {
+   "name": "MongoDB MCP Server",
+   "version": "3.3.0"
+  }
+ },
+ "XcodeBuildMCP": {
+  "tools": [
+   [
+    "session_show_defaults",
+    "Show current active defaults. Required before your first build/run/test call in a sessio…"
+   ],
+   [
+    "session_use_defaults_profile",
+    "Switch the active session defaults profile."
+   ],
+   [
+    "session_set_defaults",
+    "Set session defaults for the active profile, or for a specified profile and make it acti…"
+   ],
+   [
+    "session_clear_defaults",
+    "Clear session defaults for the active profile or a specified profile."
+   ],
+   [
+    "list_sims",
+    "List iOS simulators."
+   ],
+   [
+    "boot_sim",
+    "Boot iOS simulator for manual/non-build flows. Not required before simulator build-and-r…"
+   ],
+   [
+    "open_sim",
+    "Open the simulator frontend for visibility and manual workflows. Not required before sim…"
+   ],
+   [
+    "build_sim",
+    "Build for iOS sim (compile-only, no launch)."
+   ],
+   [
+    "build_run_sim",
+    "Build, install, and launch on iOS Simulator, booting it when needed. Runtime logs are ca…"
+   ],
+   [
+    "test_sim",
+    "Test on iOS sim."
+   ],
+   [
+    "get_sim_app_path",
+    "Get sim built app path."
+   ],
+   [
+    "install_app_sim",
+    "Install app on sim."
+   ],
+   [
+    "launch_app_sim",
+    "Launch app on simulator. Runtime logs are captured automatically and the log file path i…"
+   ],
+   [
+    "stop_app_sim",
+    "Stop sim app."
+   ],
+   [
+    "record_sim_video",
+    "Record sim video."
+   ],
+   [
+    "clean",
+    "Clean build products."
+   ],
+   [
+    "discover_projs",
+    "Scans a directory (defaults to workspace root) to find Xcode project (.xcodeproj) and wo…"
+   ],
+   [
+    "list_schemes",
+    "List Xcode schemes."
+   ],
+   [
+    "show_build_settings",
+    "Show build settings."
+   ],
+   [
+    "get_app_bundle_id",
+    "Extract bundle id from .app."
+   ],
+   [
+    "screenshot",
+    "Capture screenshot."
+   ],
+   [
+    "snapshot_ui",
+    "Capture a semantic rs/1 runtime UI snapshot with elementRef targets. Observe once, use t…"
+   ],
+   [
+    "get_coverage_report",
+    "Show per-target code coverage from an xcresult bundle."
+   ],
+   [
+    "get_file_coverage",
+    "Show function-level coverage and uncovered line ranges for a specific file."
+   ]
+  ],
+  "resources": 4,
+  "prompts": 0,
+  "instr": 2254,
+  "server": {
+   "name": "xcodebuildmcp",
+   "version": "2.7.0"
+  }
+ },
+ "clickhouse": {
+  "tools": [
+   [
+    "list_databases",
+    "List available ClickHouse databases"
+   ],
+   [
+    "list_tables",
+    "List available ClickHouse tables in a database, including schema, comment,"
+   ],
+   [
+    "run_query",
+    "Execute SQL queries in ClickHouse. Queries run in read-only mode by default. Bind option…"
+   ]
+  ],
+  "resources": 0,
+  "prompts": 0,
+  "instr": 278,
+  "server": {
+   "name": "mcp-clickhouse",
+   "version": "0.7.0"
+  }
+ },
+ "oss-mcp": {
+  "tools": [
+   [
+    "upload_to_oss",
+    "将文件上传到阿里云OSS"
+   ],
+   [
+    "list_oss_configs",
+    "列出可用的阿里云OSS配置"
+   ]
+  ],
+  "resources": 0,
+  "prompts": 0,
+  "instr": 0,
+  "server": {
+   "name": "@yhy2001/oss-mcp",
+   "version": "1.0.0"
+  }
+ },
+ "obsidian": {
+  "tools": [
+   [
+    "vault_list",
+    "List files and subdirectories inside a vault directory. Returns an array of names; direc…"
+   ],
+   [
+    "vault_read",
+    "Read a vault file's content and metadata. Returns a JSON object with: content (full mark…"
+   ],
+   [
+    "vault_write",
+    "Create or overwrite a vault file with the given content. Creates any missing parent dire…"
+   ],
+   [
+    "vault_append",
+    "Append content to the end of a vault file. Creates the file if it does not already exist."
+   ],
+   [
+    "vault_patch",
+    "Edit a vault file with a single structured instruction: an operation applied to a scope …"
+   ],
+   [
+    "vault_delete",
+    "Delete a file from the vault. Throws if the file does not exist. By default, moves the f…"
+   ],
+   [
+    "vault_move",
+    "Move (rename) a vault file to a new path. Creates any missing parent directories at the …"
+   ],
+   [
+    "vault_copy",
+    "Copy a vault file to a new path. Creates any missing parent directories at the destinati…"
+   ],
+   [
+    "vault_get_document_map",
+    "Return the structure of a vault file as a document map: its heading tree, block referenc…"
+   ],
+   [
+    "active_file_get_path",
+    "Return the vault-relative path of the file currently open in Obsidian. Use this path wit…"
+   ],
+   [
+    "search_query",
+    "Search vault files using a JsonLogic query evaluated against each note's metadata."
+   ],
+   [
+    "search_simple",
+    "Search vault files using Obsidian's built-in simple search. Returns an array of {filenam…"
+   ],
+   [
+    "tag_list",
+    "Return all tags used across the vault, each with a usage count. Tag names do not include…"
+   ],
+   [
+    "command_list",
+    "Return all registered Obsidian commands. Each entry has an 'id' and a human-readable 'na…"
+   ],
+   [
+    "command_execute",
+    "Execute an Obsidian command by its ID. Use command_list to discover available command ID…"
+   ],
+   [
+    "open_file",
+    "Open a file in the Obsidian UI. If the file does not exist, Obsidian will create a new d…"
+   ]
+  ],
+  "resources": 1,
+  "prompts": 0,
+  "instr": 0,
+  "server": {
+   "name": "obsidian-local-rest-api",
+   "version": "1.0.0"
+  }
+ },
+ "genimg": {
+  "tools": [
+   [
+    "generate_image",
+    "根据文字描述生成图片。图片会存到磁盘并把预览返回给你，你可以直接看到生成结果并据此判断是否需要调整。若要在生成结果上继续修改，用 edit_image 并传入返回的 image…"
+   ],
+   [
+    "edit_image",
+    "在已有图片上做修改（迭代）。传入之前生成的 image_path 和修改要求，返回修改后的图片预览。适合『把背景改成红色』『去掉左边那个物体』这类局部调整。"
+   ]
+  ],
+  "resources": 0,
+  "prompts": 0,
+  "instr": 0,
+  "server": {
+   "name": "genimg",
+   "version": "1.0.0"
+  }
+ },
+ "pencil": {
+  "tools": [
+   [
+    "browser",
+    "Interact with a real website loaded in the app's integrated browser: open a URL, reprodu…"
+   ],
+   [
+    "execute",
+    "Use get_app_state if you don't have execute documentation"
+   ],
+   [
+    "get_app_state",
+    "Get info about the current state of the pen.dev app., current user selections and other …"
+   ],
+   [
+    "get_style",
+    "Load visual style archetypes for working with .pen files. Styles provide configurable fo…"
+   ],
+   [
+    "read_skill",
+    "Read the pen-dev skill that teaches how to design on the pen.dev canvas."
+   ],
+   [
+    "save",
+    "Save the .pen document to disk."
+   ]
+  ],
+  "resources": 0,
+  "prompts": 0,
+  "instr": 384,
+  "server": {
+   "name": "pencil",
+   "version": "1.0.0"
+  }
+ },
+ "peekaboo": {
+  "tools": [
+   [
+    "sleep",
+    "Pauses execution for a specified duration."
+   ],
+   [
+    "action",
+    "Invokes a named accessibility action on an element, such as AXPress, AXShowMenu, or AXIn…"
+   ],
+   [
+    "window",
+    "List and manipulate application windows."
+   ],
+   [
+    "set_value",
+    "Sets an accessibility element value directly without synthesizing keystrokes."
+   ],
+   [
+    "dock",
+    "Inspect the macOS Dock under immutable background-only authority. The available action i…"
+   ],
+   [
+    "press",
+    "Presses one or more raw keyboard chords. Use `keys` for an xdotool-style chord sequence …"
+   ],
+   [
+    "browser",
+    "Controls and inspects Chrome web pages through one existing exact DevTools connection un…"
+   ],
+   [
+    "image",
+    "Screenshot only; use see for element detection."
+   ],
+   [
+    "paste",
+    "Deliver one direct text payload to an explicit app or PID UI target, optionally pinned t…"
+   ],
+   [
+    "click",
+    "Clicks on UI elements or coordinates."
+   ],
+   [
+    "verify_state",
+    "Waits for 1–8 AND predicates against one exact app/PID and its exact resolved window."
+   ],
+   [
+    "type",
+    "Types text into UI elements, a targeted app process, or one exact background window."
+   ],
+   [
+    "capture",
+    "Capture live screens/windows/regions or ingest a video file and return kept PNG frames,"
+   ],
+   [
+    "analyze",
+    "Analyzes a pre-existing image file from the local filesystem using a configured AI model."
+   ],
+   [
+    "scroll",
+    "Scrolls a fresh UI target in the background without interrupting the user. Peekaboo pref…"
+   ],
+   [
+    "app",
+    "Control applications under immutable background-only authority. Available actions are `l…"
+   ],
+   [
+    "clipboard",
+    "Read or snapshot the macOS clipboard under immutable background-only authority. Availabl…"
+   ],
+   [
+    "dialog",
+    "Inspect and interact with system dialogs under immutable background-only authority. Avai…"
+   ],
+   [
+    "space",
+    "Inspect macOS Spaces or move an exact window without following it under immutable backgr…"
+   ],
+   [
+    "inspect_ui",
+    "Inspects the accessibility tree of the active UI and returns visible text, labels,"
+   ],
+   [
+    "menu",
+    "Inspect or click application menu items under immutable background-only authority. Avail…"
+   ],
+   [
+    "agent",
+    "Execute complex automation tasks using the configured AI provider."
+   ],
+   [
+    "see",
+    "Captures a screenshot of the active UI and generates an element map."
+   ],
+   [
+    "permissions",
+    "Check macOS system permissions required for automation."
+   ]
+  ],
+  "resources": 0,
+  "prompts": 0,
+  "instr": 0,
+  "server": {
+   "name": "peekaboo-mcp",
+   "version": "4.6.0"
+  }
+ },
+ "metro": {
+  "tools": [
+   [
+    "get_console_logs",
+    "Get recent console output. Filter by level or search text."
+   ],
+   [
+    "clear_console_logs",
+    "Clear the console log buffer."
+   ],
+   [
+    "get_network_requests",
+    "Get recent network requests from the React Native app."
+   ],
+   [
+    "get_request_details",
+    "Get full details of a specific network request including headers and body."
+   ],
+   [
+    "get_response_body",
+    "Get response body for a network request (cached if small; requires active session if lar…"
+   ],
+   [
+    "search_network",
+    "Search network requests by URL pattern, method, or status code."
+   ],
+   [
+    "clear_network_requests",
+    "Clear the network request buffer."
+   ],
+   [
+    "get_network_stats",
+    "Get aggregated network statistics: breakdown by domain, status code, and response times."
+   ],
+   [
+    "get_errors",
+    "Get recent uncaught exceptions from the React Native app."
+   ],
+   [
+    "clear_errors",
+    "Clear the error buffer."
+   ],
+   [
+    "get_bundle_errors",
+    "Get recent Metro compilation/transform errors."
+   ],
+   [
+    "evaluate_js",
+    "Execute a JavaScript expression in the running React Native app and return the result. U…"
+   ],
+   [
+    "list_devices",
+    "List connected devices and debuggable targets from Metro bundler."
+   ],
+   [
+    "get_app_info",
+    "Get information about the connected React Native app (bundle URL, platform, device name)."
+   ],
+   [
+    "get_connection_status",
+    "Check the connection status to Metro bundler."
+   ],
+   [
+    "reload_app",
+    "Reload the connected app and verify a fresh runtime. Uses Page.reload, with a directed M…"
+   ],
+   [
+    "symbolicate",
+    "Symbolicate a stack trace using Metro bundler source maps. Converts minified/bundled loc…"
+   ],
+   [
+    "get_redux_state",
+    "Get the current Redux state tree or a specific slice. Works without client SDK if Redux …"
+   ],
+   [
+    "dispatch_redux_action",
+    "Dispatch a Redux action to the store."
+   ],
+   [
+    "get_redux_actions",
+    "Get recent Redux actions (requires metro-mcp client SDK for real-time tracking)."
+   ],
+   [
+    "get_component_tree",
+    "Get a paged flat React component tree. Follow nextCursor to complete the snapshot and ch…"
+   ],
+   [
+    "find_components",
+    "Search for components by name inside the app runtime. Check traversal.complete before tr…"
+   ],
+   [
+    "inspect_component",
+    "Get props, state, and hooks for the first exact component-name match, with traversal com…"
+   ],
+   [
+    "get_testable_elements",
+    "Get elements with testID or accessibilityLabel. Check traversal.complete before treating…"
+   ],
+   [
+    "get_storage_keys",
+    "List all AsyncStorage keys in the React Native app."
+   ],
+   [
+    "get_storage_item",
+    "Read a specific AsyncStorage key value."
+   ],
+   [
+    "get_all_storage",
+    "Dump all AsyncStorage key-value pairs."
+   ],
+   [
+    "take_screenshot",
+    "Capture a screenshot from the connected iOS simulator or Android device."
+   ],
+   [
+    "list_simulators",
+    "List available iOS simulators or Android emulators."
+   ],
+   [
+    "install_certificate",
+    "Install a root certificate on the iOS simulator or Android device."
+   ],
+   [
+    "get_native_logs",
+    "Get native platform logs from iOS simulator (syslog) or Android device (logcat)."
+   ],
+   [
+    "app_lifecycle",
+    "Launch, terminate, install, or uninstall an app on the simulator/emulator."
+   ],
+   [
+    "get_screen_orientation",
+    "Get the current screen orientation of the device."
+   ],
+   [
+    "open_deeplink",
+    "Open a URL or deep link on the connected iOS simulator or Android device."
+   ],
+   [
+    "list_url_schemes",
+    "List URL schemes registered by an installed iOS app or Android package."
+   ],
+   [
+    "list_permissions",
+    "List all app permission statuses on the connected iOS simulator or Android emulator. Ret…"
+   ],
+   [
+    "grant_permission",
+    "Grant a permission to the app on the connected iOS simulator or Android emulator."
+   ],
+   [
+    "revoke_permission",
+    "Revoke a permission from the app on the connected iOS simulator or Android emulator."
+   ],
+   [
+    "reset_permissions",
+    "Reset one or all permissions for the app on the connected iOS simulator or Android emula…"
+   ],
+   [
+    "open_app_settings",
+    "Open the connected app's system settings page using React Native Linking.openSettings()."
+   ],
+   [
+    "list_elements",
+    "Get labelled or interactive elements from the focused React screen. Check traversal.comp…"
+   ],
+   [
+    "tap_element",
+    "Tap by label, testID, or logical device-point coordinates. Uses React handlers, then ins…"
+   ],
+   [
+    "type_text",
+    "Type text into an input field. Targets a specific input by testID/label, or the first vi…"
+   ],
+   [
+    "long_press",
+    "Long press using a React handler by label/testID, then semantic native input through Sim…"
+   ],
+   [
+    "swipe",
+    "Scroll through React, then use installed SimView or IDB on iOS and the selected ADB seri…"
+   ],
+   [
+    "press_button",
+    "Press a device button (HOME, BACK, VOLUME_UP, etc.)."
+   ],
+   [
+    "get_navigation_state",
+    "Get the full React Navigation / Expo Router state tree including current route, params, …"
+   ],
+   [
+    "get_current_route",
+    "Get the currently focused route name and params."
+   ],
+   [
+    "get_route_history",
+    "Get the navigation back stack / history."
+   ],
+   [
+    "list_routes",
+    "List registered route names from available navigation state. Uninitialized nested naviga…"
+   ],
+   [
+    "audit_accessibility",
+    "Audit the current screen within bounded Fiber traversal limits. Checks labels, roles, te…"
+   ],
+   [
+    "check_element_accessibility",
+    "Check accessibility properties of a specific component by name or testID."
+   ],
+   [
+    "get_accessibility_summary",
+    "Quick overview: counts of elements with and without proper accessibility props."
+   ],
+   [
+    "list_commands",
+    "List all custom commands registered by the app. Commands are registered on global.__METR…"
+   ],
+   [
+    "run_command",
+    "Execute a custom command registered by the app. Pass parameters as a JSON object."
+   ],
+   [
+    "start_test_recording",
+    "Inject interaction interceptors into the running app via the React fiber tree. Captures …"
+   ],
+   [
+    "stop_test_recording",
+    "Stop the active recording, retrieve all captured events, and store them for test generat…"
+   ],
+   [
+    "generate_test_from_recording",
+    "Convert the most recent recording into a test file. Supports three formats: appium (Webd…"
+   ],
+   [
+    "generate_wdio_config",
+    "Generate a minimal but runnable wdio.conf.ts for Appium + React Native testing, along wi…"
+   ],
+   [
+    "add_recording_annotation",
+    "Add a human-readable annotation (comment marker) to the current recording. Useful for la…"
+   ],
+   [
+    "save_test_recording",
+    "Save the current recording events to disk as JSON so they can be reloaded later. Useful …"
+   ],
+   [
+    "load_test_recording",
+    "Load a previously saved recording from disk and make it available for test generation. A…"
+   ],
+   [
+    "list_test_recordings",
+    "List all previously saved test recordings in ~/.metro-mcp/recordings/. Returns filenames…"
+   ],
+   [
+    "start_profiling",
+    "Start profiling the running React Native app. Primary path: injects into the React DevTo…"
+   ],
+   [
+    "stop_profiling",
+    "Stop profiling and return an analysis of the captured data. DevTools hook mode: returns …"
+   ],
+   [
+    "get_profile_status",
+    "Check whether profiling is active, which mode is in use, and whether a previous profile …"
+   ],
+   [
+    "get_flamegraph",
+    "Return the current profiling results as a human-readable text chart. Shows React DevTool…"
+   ],
+   [
+    "get_react_renders",
+    "Read React render timing data collected via <Profiler onRender={trackRender}>. Returns a…"
+   ],
+   [
+    "get_memory_info",
+    "Get current JavaScript heap memory usage from the running app. Returns used heap, total …"
+   ],
+   [
+    "profile_action",
+    "Profile a specific JavaScript expression or code path in a single call. Starts profiling…"
+   ],
+   [
+    "start_heap_sampling",
+    "Start Hermes heap allocation sampling via CDP HeapProfiler. Records memory allocation ca…"
+   ],
+   [
+    "stop_heap_sampling",
+    "Stop heap allocation sampling and return the top allocation sites. Shows which functions…"
+   ],
+   [
+    "wait_for_element",
+    "Poll the component tree until an element matching the given testID or accessibilityLabel…"
+   ],
+   [
+    "wait_for_condition",
+    "Poll a JavaScript expression in the app until it returns a truthy value, then return tha…"
+   ],
+   [
+    "wait_for_navigation",
+    "Poll the active navigation route until it matches the expected route name, then return. …"
+   ],
+   [
+    "setup_statusline",
+    "Writes the Metro CDP connection status script to ~/.claude/metro-mcp-statusline.sh. Does…"
+   ],
+   [
+    "list_debug_globals",
+    "Auto-discover well-known global debugging objects (Redux stores, Apollo Client, Expo Rou…"
+   ],
+   [
+    "inspect_at_point",
+    "Inspect the smallest measured host component at screen coordinates. Uses awaited Fabric/…"
+   ],
+   [
+    "open_devtools",
+    "Open the React Native DevTools debugger panel in Chrome. Connects through the CDP proxy …"
+   ],
+   [
+    "get_app_directories",
+    "Get known app sandbox directory paths (documents, cache, temp, library). Returns absolut…"
+   ],
+   [
+    "list_directory",
+    "List files and directories in an app sandbox path. Call get_app_directories first to obt…"
+   ],
+   [
+    "read_file",
+    "Read the contents of a file from the app sandbox. Enforces a configurable size cap (defa…"
+   ],
+   [
+    "get_file_info",
+    "Get file or directory metadata: size, modification date, and whether it is a directory."
+   ],
+   [
+    "delete_file",
+    "Delete a file from the app sandbox. Requires confirm: true to prevent accidental deletion."
+   ],
+   [
+    "get_build_info",
+    "Return build-time and runtime flags for the running React Native app: __DEV__, platform,…"
+   ],
+   [
+    "get_env_vars",
+    "Return a filtered subset of process.env from the running app. Credential-like keys (SECR…"
+   ],
+   [
+    "get_platform_constants",
+    "Return the full Platform.constants object from React Native, including OS-specific build…"
+   ],
+   [
+    "get_expo_config",
+    "Return expo-constants manifest/expoConfig fields if the app uses Expo, otherwise null."
+   ]
+  ],
+  "resources": 17,
+  "prompts": 10,
+  "instr": 331,
+  "server": {
+   "name": "metro-mcp",
+   "version": "0.15.0"
+  }
+ },
+ "wordcraft": {
+  "tools": [
+   [
+    "list_commands",
+    "Every WordCraft command: id, label, ribbon location, shortcut and params. Filter with `q…"
+   ],
+   [
+    "execute",
+    "Run one command by id with params, e.g. {command:\"format.bold\"} or {command:\"insert.tabl…"
+   ],
+   [
+    "batch",
+    "Run commands in order; stops at the first error unless keepGoing."
+   ],
+   [
+    "new_document",
+    "Start a document: blank, sample, letter, resume or report."
+   ],
+   [
+    "open_document",
+    "Open a .docx, .doc, .odt, .rtf, .md, .tex, .html, .txt or .json file, or any other text …"
+   ],
+   [
+    "save_document",
+    "Save (format from the extension: docx, pdf, odt, rtf, html, md, tex, txt, png)."
+   ],
+   [
+    "type_text",
+    "Type at the caret (replacing the selection). Use \\n... for line breaks inside text; use …"
+   ],
+   [
+    "select_text",
+    "Select the n-th occurrence of some text."
+   ],
+   [
+    "get_text",
+    "Body text with tracked deletions omitted."
+   ],
+   [
+    "inspect_document",
+    "Structure: blocks with text, styles, formatting runs, lists, tables, sections, parts, se…"
+   ],
+   [
+    "render_page",
+    "Render a page to PNG to look at the result."
+   ],
+   [
+    "parity",
+    "WordCraft's command coverage of the word-processor feature catalog."
+   ],
+   [
+    "screenshot",
+    "Screenshot of the whole WordCraft window (desktop app only)."
+   ],
+   [
+    "click",
+    "Click at window coordinates (desktop app only)."
+   ],
+   [
+    "key",
+    "Press a key with modifiers (desktop app only), e.g. {key:\"B\", cmd:true}."
+   ],
+   [
+    "ui_inspect",
+    "UI state: tab, panes, dialog, page rectangles on screen, caret (desktop app only)."
+   ]
+  ],
+  "resources": 2,
+  "prompts": 0,
+  "instr": 674,
+  "server": {
+   "name": "wordcraft",
+   "version": "0.11.0"
+  }
+ }
+}

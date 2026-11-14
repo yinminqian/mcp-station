@@ -1,0 +1,6 @@
+bench window onScreen=true occluded=false
+bench[forced] overview: first 241 | again 247 162 ms
+bench[forced] mcps: first 401 | again 204 192 ms
+bench[forced] services: first 282 | again 147 154 ms
+bench[forced] calls: first - | again 168 129 165 ms
+bench[forced] settings: first 145 | again 159 149 125 ms

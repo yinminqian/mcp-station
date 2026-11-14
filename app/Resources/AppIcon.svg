@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <!-- MCP Mac 图标：中间是网关（黑底白闪电，和 App 侧边栏的品牌圆标一致），四角是粉彩色的 MCP 接口，粗线把它们汇到中间。
+       颜色取自 Pastel Bento 的设计变量（app/Sources/MCPMac/ThemeBento/BentoTokens.swift）。 -->
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#EEE9E2"/>
+    </linearGradient>
+    <linearGradient id="hub" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2B2A27"/>
+      <stop offset="1" stop-color="#111111"/>
+    </linearGradient>
+  </defs>
+
+  <!-- 底：macOS 图标网格里 824×824 的圆角方块 -->
+  <rect x="100" y="100" width="824" height="824" rx="186" fill="url(#bg)"/>
+  <rect x="100.5" y="100.5" width="823" height="823" rx="185.5" fill="none" stroke="#000000" stroke-opacity="0.08"/>
+
+  <!-- 连线 -->
+  <g stroke="#1D1C1A" stroke-width="26" stroke-linecap="round">
+    <line x1="292" y1="292" x2="512" y2="512"/>
+    <line x1="732" y1="292" x2="512" y2="512"/>
+    <line x1="292" y1="732" x2="512" y2="512"/>
+    <line x1="732" y1="732" x2="512" y2="512"/>
+  </g>
+
+  <!-- 四个 MCP 接口：粉彩底 + 深色插孔 -->
+  <circle cx="292" cy="292" r="84" fill="#D9D2F9"/>
+  <circle cx="732" cy="292" r="84" fill="#CDE4F6"/>
+  <circle cx="292" cy="732" r="84" fill="#C2ECD8"/>
+  <circle cx="732" cy="732" r="84" fill="#F9DDBD"/>
+  <g stroke-width="14" fill="none">
+    <circle cx="292" cy="292" r="34" stroke="#40348F"/>
+    <circle cx="732" cy="292" r="34" stroke="#1F4E74"/>
+    <circle cx="292" cy="732" r="34" stroke="#1A5C42"/>
+    <circle cx="732" cy="732" r="34" stroke="#7C4A12"/>
+  </g>
+
+  <!-- 网关：黑底白闪电 -->
+  <circle cx="512" cy="512" r="176" fill="#FBF9F6"/>
+  <circle cx="512" cy="512" r="158" fill="url(#hub)"/>
+  <path d="M546 386 L446 532 L506 532 L478 640 L580 488 L518 488 Z" fill="#FFFFFF" stroke="#FFFFFF" stroke-width="10" stroke-linejoin="round"/>
+</svg>

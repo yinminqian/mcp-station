@@ -1,0 +1,38 @@
+== step3 glass: staying_seen=1 截图时刻(时钟)=13:57:45 用时 195s  (lldb) expr -l objc -O -- @import AppKit; NSWindow *w = nil; for (NSWindow *x in (NSArray *)[(NSApplication *)NSApp windows]) { if ([x isVisible] && [x canBecomeMainWindow]) { w = x; break; } } NSView *v = [(NSView *)[w contentView] superview]; if (!v) { v = (NSView *)[w contentView]; } NSRect b = (NSRect)[v bounds]; NSBitmapImageRep *rep = (NSBitmapImageRep *)[v bitmapImageRepForCachingDisplayInRect:b]; [v cacheDisplayInRect:b toBitmapImageRep:rep]; NSData *d = (NSData *)[rep representationUsingType:(NSBitmapImageFileType)4 properties:@{}]; BOOL ok = (BOOL)[d writeToFile:@"/Users/yinminqian/Code/iHealth/mcp-mac/docs/perf/raw/step3-after-hidden-glass-calls.png" atomically:YES]; [NSString stringWithFormat:@"SNAPSHOT ok=%d size=%.0fx%.0f bytes=%lu", (int)ok, b.size.width, b.size.height, (unsigned long)[d length]]
+bench window onScreen=true occluded=false
+bench[forced] overview: first - | again 192 ms
+bench[forced] mcps: first - | again  ms
+bench[forced] services: first - | again  ms
+bench[forced] calls: first 300 | again 312 ms
+bench[forced] settings: first - | again  ms
+bench done, staying
+== step3 bento: staying_seen=1 截图时刻(时钟)=14:00:59 用时 191s  SNAPSHOT ok=1 size=1180x800 bytes=438058
+bench window onScreen=true occluded=false
+bench[forced] overview: first - | again 34 ms
+bench[forced] mcps: first - | again  ms
+bench[forced] services: first - | again  ms
+bench[forced] calls: first 96 | again 71 ms
+bench[forced] settings: first - | again  ms
+bench done, staying
+FRESH-DONE
+cond theme run avg% peak% median% rss_before_MB rss_after_MB top_MEM | 采样前 | 采样后
+step1:fresh:overview glass 1 3.4 5.7 3.4 145 131 75M | active=false onscreen_windows=1 | active=false onscreen_windows=1
+step3:alive:overview glass 1 4.7 10.9 4.3 208 219 158M | active=false onscreen_windows=1 | active=false onscreen_windows=1
+step1:fresh:overview bento 1 4.6 14.2 2.6 148 126 101M | active=false onscreen_windows=1 | active=false onscreen_windows=1
+step3:alive:overview bento 1 9.5 30.1 6.6 166 174 145M | active=false onscreen_windows=1 | active=false onscreen_windows=1
+step1:fresh:overview glass 2 5.5 37.4 1.4 160 174 109M | active=true onscreen_windows=1 | active=false onscreen_windows=0
+step3:alive:overview glass 2 4.3 13.8 4.2 216 205 157M | active=true onscreen_windows=1 | active=true onscreen_windows=1
+step1:fresh:overview bento 2 3.9 16.5 2.2 103 112 100M | active=true onscreen_windows=1 | active=true onscreen_windows=1
+step3:alive:overview bento 2 6.2 20.7 4.5 162 186 138M | active=true onscreen_windows=1 | active=true onscreen_windows=1
+step1:fresh:overview glass 3 4.3 9.3 4.4 133 134 92M | active=true onscreen_windows=1 | active=true onscreen_windows=1
+step3:alive:overview glass 3 5.3 13.1 5.5 209 197 153M | active=true onscreen_windows=1 | active=true onscreen_windows=1
+step1:fresh:overview bento 3 4.6 14.7 2.9 121 115 100M | active=true onscreen_windows=1 | active=true onscreen_windows=1
+step3:alive:overview bento 3 6.1 34.6 4.2 190 206 142M | active=true onscreen_windows=1 | active=true onscreen_windows=1
+ALL-DONE
+cond theme run avg% peak% median% rss_before_MB rss_after_MB top_MEM | 采样前 | 采样后
+step1:fresh:calls glass 1 5.0 12.6 4.8 137 158 98M | active=true onscreen_windows=1 | active=false onscreen_windows=0
+step3:alive:calls glass 1 5.1 11.4 5.2 203 220 159M | active=true onscreen_windows=1 | active=true onscreen_windows=1
+step1:fresh:calls bento 1 10.6 50.2 3.5 143 140 94M | active=true onscreen_windows=1 | active=true onscreen_windows=1
+step3:alive:calls bento 1 3.1 8.5 3.0 162 177 124M | active=true onscreen_windows=1 | active=true onscreen_windows=1
+step1:fresh:calls glass 2 3.3 6.6 4.0 124 130 86M | active=true onscreen_windows=1 | active=true onscreen_windows=1
+step3:alive:calls glass 2 7.1 14.8 7.8 205 214 162M | active=true onscreen_windows=1 | active=false onscreen_windows=1

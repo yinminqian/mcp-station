@@ -1,0 +1,6 @@
+start	duration	hang-type	thread	process
+1924381750	312700083	Microhang	Main Thread (0x22535d4) (MCPMac, pid: 53465)	MCPMac (53465)
+6274658083	1162353167	Hang	Main Thread (0x22535d4) (MCPMac, pid: 53465)	MCPMac (53465)
+7666332958	680352667	Hang	Main Thread (0x22535d4) (MCPMac, pid: 53465)	MCPMac (53465)
+8680487583	502998125	Hang	Main Thread (0x22535d4) (MCPMac, pid: 53465)	MCPMac (53465)
+9614219333	279679625	Microhang	Main Thread (0x22535d4) (MCPMac, pid: 53465)	MCPMac (53465)

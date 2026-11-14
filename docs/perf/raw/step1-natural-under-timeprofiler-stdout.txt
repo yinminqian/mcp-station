@@ -1,0 +1,9 @@
+2026-11-14 11:57:47.539151+0800 MCPMac[39585:36383141] WARNING <SwiftUI.AppKitToolbarItem: 0x101372940> -> view was automatically measured but had an ambiguous height or width and the view's frame size had a zero height or width. Did you forget to add constraints on your view or its subview(s)? Try adding constraints or give the view an intrinsicContentSize
+2026-11-14 11:57:47.587589+0800 MCPMac[39585:36383141] WARNING <SwiftUI.AppKitToolbarItem: 0x101372940> -> view was automatically measured but had an ambiguous height or width and the view's frame size had a zero height or width. Did you forget to add constraints on your view or its subview(s)? Try adding constraints or give the view an intrinsicContentSize
+2026-11-14 11:57:47.729134+0800 MCPMac[39585:36383141] WARNING <SwiftUI.AppKitToolbarItem: 0x101372940> -> view was automatically measured but had an ambiguous height or width and the view's frame size had a zero height or width. Did you forget to add constraints on your view or its subview(s)? Try adding constraints or give the view an intrinsicContentSize
+2026-11-14 11:57:47.887140+0800 MCPMac[39585:36383680] [Common] Unable to obtain a task name port right for pid 409: (os/kern) failure (0x5)
+bench[natural] overview: first - | again 248 52 228 ms
+bench[natural] mcps: first 457 | again 108 103 420 ms
+bench[natural] services: first 358 | again 368 332 ms
+bench[natural] calls: first 263 | again 115 66 ms
+bench[natural] settings: first 360 | again 260 260 ms

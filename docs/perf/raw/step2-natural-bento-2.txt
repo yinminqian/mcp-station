@@ -1,0 +1,2 @@
+bench window onScreen=true occluded=true
+bench error: 窗口被遮挡，natural 模式无法测量（请让窗口在当前桌面可见，或用 MCPMAC_SWITCH_MODE=forced）

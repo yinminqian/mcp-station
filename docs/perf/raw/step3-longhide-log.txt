@@ -1,0 +1,17 @@
+== longhide-step3-glass  load: 28.22 13.65 9.95
+bench window onScreen=true occluded=false
+before switch 2: active=true onscreen_windows=1
+before switch 3: active=true onscreen_windows=1
+before switch 4: active=true onscreen_windows=1
+before switch 5: active=true onscreen_windows=1
+staying seen at 13:48:37
+snapshot done at 13:48:37: file bytes
+== longhide-step3-bento  load: 7.76 9.49 9.18
+bench window onScreen=true occluded=false
+before switch 2: active=true onscreen_windows=1
+before switch 3: active=true onscreen_windows=1
+before switch 4: active=true onscreen_windows=1
+before switch 5: active=true onscreen_windows=1
+staying seen at 13:53:59
+snapshot done at 13:53:59: file bytes
+LONGHIDE-DONE

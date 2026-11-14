@@ -1,0 +1,5 @@
+bench calls: 273 225 228 ms
+bench mcps: 410 343 353 ms
+bench overview: 0 181 184 210 ms
+bench services: 295 284 259 ms
+bench settings: 208 133 124 ms

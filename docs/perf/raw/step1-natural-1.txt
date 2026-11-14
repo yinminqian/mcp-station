@@ -1,0 +1,5 @@
+bench[natural] overview: first - | again 240 211 218 ms
+bench[natural] mcps: first 466 | again 568 407 592 ms
+bench[natural] services: first 397 | again 376 340 ms
+bench[natural] calls: first 233 | again 332 266 ms
+bench[natural] settings: first 102 | again 249 317 ms

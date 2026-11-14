@@ -1,0 +1,40 @@
+# step2 glass alive   t(s since launch)  rss_MB  top_MEM  cpu%(10s avg)  active
+40 167 157M 8.7 active=false
+55 177 150M 5.3 active=false
+69 197 175M 8.4 active=false
+84 199 175M 8.4 active=false
+99 201 171M 7.7 active=false
+113 202 167M 5.0 active=false
+127 203 177M 7.8 active=false
+142 204 182M 7.6 active=false
+157 202 181M 7.9 active=false
+172 187 179M 6.5 active=false
+187 181 184M 6.3 active=false
+202 184 179M 6.5 active=false
+# step2 glass fresh   t(s since launch)  rss_MB  top_MEM  cpu%(10s avg)  active
+39 145 90M 3.2 active=false
+54 128 90M 3.6 active=false
+68 129 85M 3.3 active=false
+82 127 91M 3.2 active=false
+97 108 86M 2.5 active=false
+112 111 90M 3.7 active=false
+127 112 91M 3.5 active=false
+141 112 91M 3.9 active=false
+156 113 91M 3.1 active=false
+170 112 90M 3.0 active=false
+184 113 91M 3.0 active=false
+199 111 86M 2.6 active=false
+# step1 glass fresh   t(s since launch)  rss_MB  top_MEM  cpu%(10s avg)  active
+39 141 85M 5.2 active=false
+53 126 74M 3.5 active=false
+68 127 75M 3.4 active=false
+82 127 70M 3.7 active=false
+96 127 76M 4.0 active=false
+111 127 75M 3.0 active=false
+126 123 70M 2.4 active=false
+141 124 76M 5.1 active=false
+155 123 70M 3.2 active=false
+169 123 71M 3.9 active=false
+183 124 76M 5.0 active=false
+198 120 76M 3.9 active=false
+MEM-DONE

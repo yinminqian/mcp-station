@@ -1,0 +1,7 @@
+build/
+app/.build/
+app/.build-*/
+.DS_Store
+*.xcuserstate
+build-baseline/
+build-step*/

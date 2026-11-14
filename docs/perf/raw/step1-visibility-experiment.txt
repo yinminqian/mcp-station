@@ -1,0 +1,14 @@
+bg mid-run: active=false onscreen_windows=0 topmost_normal_window_owner=Rex Beta(89115)
+bg late: active=false onscreen_windows=0 topmost_normal_window_owner=Rex Beta(89115)
+act mid-run: active=true onscreen_windows=1 bounds=194,135,1180x800 topmost_normal_window_owner=MCP Mac(51814)
+act late: active=true onscreen_windows=1 bounds=194,135,1180x800 topmost_normal_window_owner=MCP Mac(51814)
+vis-bg.stdout.txt:bench[forced] overview: first - | again 230 198 197 ms
+vis-bg.stdout.txt:bench[forced] mcps: first 302 | again 251 263 307 ms
+vis-bg.stdout.txt:bench[forced] services: first 195 | again 179 219 ms
+vis-bg.stdout.txt:bench[forced] calls: first 206 | again 221 231 ms
+vis-bg.stdout.txt:bench[forced] settings: first 176 | again 188 165 ms
+vis-act.stdout.txt:bench[forced] overview: first - | again 220 193 270 ms
+vis-act.stdout.txt:bench[forced] mcps: first 387 | again 322 368 310 ms
+vis-act.stdout.txt:bench[forced] services: first 204 | again 250 197 ms
+vis-act.stdout.txt:bench[forced] calls: first 237 | again 244 245 ms
+vis-act.stdout.txt:bench[forced] settings: first 197 | again 177 258 ms

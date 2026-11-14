@@ -1,0 +1,11 @@
+start	duration	hang-type	thread	process
+1512108125	325641250	Microhang	Main Thread (0x225bd7f) (MCPMac, pid: 60136)	MCPMac (60136)
+6027419916	544495167	Hang	Main Thread (0x225bd7f) (MCPMac, pid: 60136)	MCPMac (60136)
+6930174083	461709625	Microhang	Main Thread (0x225bd7f) (MCPMac, pid: 60136)	MCPMac (60136)
+7755165958	266039583	Microhang	Main Thread (0x225bd7f) (MCPMac, pid: 60136)	MCPMac (60136)
+9778185000	460345958	Microhang	Main Thread (0x225bd7f) (MCPMac, pid: 60136)	MCPMac (60136)
+10617202000	298497041	Microhang	Main Thread (0x225bd7f) (MCPMac, pid: 60136)	MCPMac (60136)
+11393321625	365102875	Microhang	Main Thread (0x225bd7f) (MCPMac, pid: 60136)	MCPMac (60136)
+13594935833	430156917	Microhang	Main Thread (0x225bd7f) (MCPMac, pid: 60136)	MCPMac (60136)
+14415806083	394781833	Microhang	Main Thread (0x225bd7f) (MCPMac, pid: 60136)	MCPMac (60136)
+15209861000	272328416	Microhang	Main Thread (0x225bd7f) (MCPMac, pid: 60136)	MCPMac (60136)

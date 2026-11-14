@@ -1,0 +1,74 @@
+== tp-baseline-1  load: 7.67 7.07 7.76
+bench calls: 301 205 251 ms
+bench mcps: 441 432 336 ms
+bench overview: 0 263 408 163 ms
+bench services: 313 288 246 ms
+bench settings: 124 133 117 ms
+== tp-step1-1  load: 8.28 7.26 7.79
+bench[forced] overview: first - | again 192 179 210 ms
+bench[forced] mcps: first 326 | again 279 281 282 ms
+bench[forced] services: first 227 | again 218 185 ms
+bench[forced] calls: first 198 | again 308 217 ms
+bench[forced] settings: first 182 | again 183 185 ms
+== tp-baseline-2  load: 13.56 8.85 8.35
+bench calls: 263 423 256 ms
+bench mcps: 571 464 355 ms
+bench overview: 0 273 194 196 ms
+bench services: 361 458 250 ms
+bench settings: 372 141 175 ms
+== tp-step1-2  load: 14.38 9.62 8.65
+bench[forced] overview: first - | again 164 284 249 ms
+bench[forced] mcps: first 328 | again 277 454 316 ms
+bench[forced] services: first 186 | again 216 205 ms
+bench[forced] calls: first 198 | again 259 275 ms
+bench[forced] settings: first 184 | again 265 173 ms
+== tp-baseline-3  load: 34.92 17.03 11.51
+bench calls: 297 281 246 ms
+bench mcps: 400 373 361 ms
+bench overview: 0 324 242 246 ms
+bench services: 505 294 299 ms
+bench settings: 136 136 118 ms
+== tp-step1-3  load: 22.98 16.35 11.54
+bench[forced] overview: first - | again 222 187 200 ms
+bench[forced] mcps: first 1362 | again 286 318 328 ms
+bench[forced] services: first 179 | again 201 252 ms
+bench[forced] calls: first 228 | again 188 673 ms
+bench[forced] settings: first 280 | again 201 213 ms
+ALL-DONE
+== tp-baseline-4  load: 9.21 12.63 10.90
+bench calls: 223 218 336 ms
+bench mcps: 471 360 389 ms
+bench overview: 0 209 170 166 ms
+bench services: 282 324 245 ms
+bench settings: 126 126 128 ms
+== tp-step1-4  load: 9.64 12.33 10.87
+bench[forced] overview: first - | again 190 185 730 ms
+bench[forced] mcps: first 337 | again 331 302 449 ms
+bench[forced] services: first 324 | again 183 198 ms
+bench[forced] calls: first 215 | again 242 283 ms
+bench[forced] settings: first 198 | again 187 217 ms
+== tp-baseline-5  load: 8.05 11.61 10.67
+bench calls: 314 233 251 ms
+bench mcps: 407 383 354 ms
+bench overview: 0 213 181 191 ms
+bench services: 320 313 328 ms
+bench settings: 137 221 134 ms
+== tp-step1-5  load: 10.85 11.78 10.77
+bench[forced] overview: first - | again 213 237 187 ms
+bench[forced] mcps: first 353 | again 364 281 283 ms
+bench[forced] services: first 217 | again 207 202 ms
+bench[forced] calls: first 207 | again 238 225 ms
+bench[forced] settings: first 183 | again 169 189 ms
+== tp-baseline-6  load: 8.48 11.03 10.54
+bench calls: 286 254 251 ms
+bench mcps: 531 1132 404 ms
+bench overview: 0 221 270 215 ms
+bench services: 311 580 292 ms
+bench settings: 276 206 139 ms
+== tp-step1-6  load: 10.73 11.14 10.59
+bench[forced] overview: first - | again 195 223 195 ms
+bench[forced] mcps: first 353 | again 313 375 307 ms
+bench[forced] services: first 197 | again 207 192 ms
+bench[forced] calls: first 411 | again 224 206 ms
+bench[forced] settings: first 171 | again 175 170 ms
+ALL-DONE

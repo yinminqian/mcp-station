@@ -1,0 +1,5 @@
+bench[forced] overview: first - | again 181 171 176 ms
+bench[forced] mcps: first 318 | again 254 323 275 ms
+bench[forced] services: first 224 | again 183 215 ms
+bench[forced] calls: first 183 | again 200 211 ms
+bench[forced] settings: first 216 | again 164 171 ms

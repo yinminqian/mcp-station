@@ -1,0 +1,104 @@
+== tp-step1-glass-1  load: 10.89 14.82 12.31  active=true onscreen_windows=1 bounds=194,135,1180x800
+bench[forced] overview: first - | again 223 268 223 ms
+bench[forced] mcps: first 396 | again 301 302 326 ms
+bench[forced] services: first 208 | again 224 207 ms
+bench[forced] calls: first 229 | again 232 340 ms
+bench[forced] settings: first 207 | again 293 300 ms
+== tp-step2-glass-1  load: 10.92 14.22 12.21  active=true onscreen_windows=1 bounds=194,135,1180x800
+bench window onScreen=true occluded=false
+bench[forced] overview: first - | again 115 210 143 ms
+bench[forced] mcps: first 369 | again 228 152 179 ms
+bench[forced] services: first 212 | again 145 142 ms
+bench[forced] calls: first 446 | again 176 187 ms
+bench[forced] settings: first 200 | again 158 151 ms
+== tp-step1-bento-1  load: 8.78 13.36 11.98  active=true onscreen_windows=1 bounds=194,135,1180x800
+bench[forced] overview: first - | again 87 159 87 ms
+bench[forced] mcps: first 158 | again 79 96 75 ms
+bench[forced] services: first 92 | again 90 103 ms
+bench[forced] calls: first 95 | again 87 155 ms
+bench[forced] settings: first 64 | again 122 105 ms
+== tp-step2-bento-1  load: 8.92 12.80 11.84  active=true onscreen_windows=1 bounds=194,135,1180x800
+bench window onScreen=true occluded=false
+bench[forced] overview: first - | again 10 9 12 ms
+bench[forced] mcps: first 129 | again 8 9 9 ms
+bench[forced] services: first 91 | again 10 8 ms
+bench[forced] calls: first 89 | again 8 15 ms
+bench[forced] settings: first 69 | again 8 8 ms
+== tp-step1-glass-2  load: 7.93 12.06 11.61  active=true onscreen_windows=1 bounds=194,135,1180x800
+bench[forced] overview: first - | again 261 186 373 ms
+bench[forced] mcps: first 578 | again 322 295 342 ms
+bench[forced] services: first 229 | again 202 183 ms
+bench[forced] calls: first 302 | again 240 229 ms
+bench[forced] settings: first 175 | again 168 280 ms
+== tp-step2-glass-2  load: 7.73 11.53 11.43  active=true onscreen_windows=1 bounds=194,135,1180x800
+bench window onScreen=true occluded=false
+bench[forced] overview: first - | again 185 139 139 ms
+bench[forced] mcps: first 360 | again 175 175 208 ms
+bench[forced] services: first 203 | again 158 140 ms
+bench[forced] calls: first 267 | again 140 170 ms
+bench[forced] settings: first 214 | again 169 141 ms
+== tp-step1-bento-2  load: 7.68 11.07 11.26  active=true onscreen_windows=1 bounds=194,135,1180x800
+bench[forced] overview: first - | again 67 63 76 ms
+bench[forced] mcps: first 121 | again 123 71 110 ms
+bench[forced] services: first 77 | again 66 63 ms
+bench[forced] calls: first 66 | again 65 53 ms
+bench[forced] settings: first 58 | again 68 46 ms
+== tp-step2-bento-2  load: 7.70 10.67 11.11  active=true onscreen_windows=1 bounds=194,135,1180x800
+bench window onScreen=true occluded=false
+bench[forced] overview: first - | again 8 7 21 ms
+bench[forced] mcps: first 131 | again 7 8 7 ms
+bench[forced] services: first 83 | again 8 7 ms
+bench[forced] calls: first 79 | again 7 7 ms
+bench[forced] settings: first 84 | again 7 7 ms
+== tp-step1-glass-3  load: 7.51 10.17 10.90  active=true onscreen_windows=1 bounds=194,135,1180x800
+bench[forced] overview: first - | again 218 227 190 ms
+bench[forced] mcps: first 342 | again 306 318 327 ms
+bench[forced] services: first 210 | again 187 201 ms
+bench[forced] calls: first 223 | again 311 245 ms
+bench[forced] settings: first 192 | again 178 159 ms
+== tp-step2-glass-3  load: 6.56 9.66 10.69  active=true onscreen_windows=1 bounds=194,135,1180x800
+bench window onScreen=true occluded=false
+bench[forced] overview: first - | again 128 146 128 ms
+bench[forced] mcps: first 384 | again 142 162 157 ms
+bench[forced] services: first 230 | again 135 159 ms
+bench[forced] calls: first 268 | again 164 151 ms
+bench[forced] settings: first 214 | again 181 155 ms
+== tp-step1-bento-3  load: 10.14 10.14 10.81  active=true onscreen_windows=1 bounds=194,135,1180x800
+bench[forced] overview: first - | again 71 78 91 ms
+bench[forced] mcps: first 114 | again 74 72 68 ms
+bench[forced] services: first 79 | again 125 81 ms
+bench[forced] calls: first 61 | again 59 76 ms
+bench[forced] settings: first 72 | again 56 59 ms
+== tp-step2-bento-3  load: 8.69 9.83 10.67  active=true onscreen_windows=1 bounds=194,135,1180x800
+bench window onScreen=true occluded=false
+bench[forced] overview: first - | again 8 6 8 ms
+bench[forced] mcps: first 120 | again 6 7 6 ms
+bench[forced] services: first 75 | again 6 8 ms
+bench[forced] calls: first 87 | again 12 9 ms
+bench[forced] settings: first 66 | again 11 6 ms
+== tp-step1-glass-4  load: 7.26 9.34 10.45  active=true onscreen_windows=1 bounds=194,135,1180x800
+bench[forced] overview: first - | again 225 346 402 ms
+bench[forced] mcps: first 399 | again 349 395 509 ms
+bench[forced] services: first 231 | again 805 222 ms
+bench[forced] calls: first 207 | again 357 292 ms
+bench[forced] settings: first 192 | again 372 373 ms
+== tp-step2-glass-4  load: 5.67 8.71 10.17  active=true onscreen_windows=1 bounds=194,135,1180x800
+bench window onScreen=true occluded=false
+bench[forced] overview: first - | again 123 182 158 ms
+bench[forced] mcps: first 388 | again 205 173 205 ms
+bench[forced] services: first 213 | again 127 143 ms
+bench[forced] calls: first 345 | again 254 131 ms
+bench[forced] settings: first 231 | again 135 142 ms
+== tp-step1-bento-4  load: 6.32 8.49 10.02  active=true onscreen_windows=1 bounds=194,135,1180x800
+bench[forced] overview: first - | again 124 200 119 ms
+bench[forced] mcps: first 153 | again 171 158 118 ms
+bench[forced] services: first 87 | again 97 93 ms
+bench[forced] calls: first 71 | again 73 100 ms
+bench[forced] settings: first 184 | again 83 124 ms
+== tp-step2-bento-4  load: 7.11 8.44 9.94  active=true onscreen_windows=1 bounds=194,135,1180x800
+bench window onScreen=true occluded=false
+bench[forced] overview: first - | again 9 8 7 ms
+bench[forced] mcps: first 199 | again 7 15 8 ms
+bench[forced] services: first 95 | again 8 8 ms
+bench[forced] calls: first 84 | again 8 8 ms
+bench[forced] settings: first 61 | again 7 10 ms
