@@ -1,8 +1,8 @@
-<p align="center"><img src="app/Resources/AppIcon-512.png" width="160" alt="MCP Station"></p>
+<p align="center"><img src="docs/images/hero.png" alt="MCP Station"></p>
 
-<h1 align="center">MCP Station</h1>
+在 Mac 上统一管理和托管 MCP 的菜单栏应用：所有 MCP 只跑一份，Claude Code、Codex、Docker 容器里的客户端都连同一个本机网关。
 
-<p align="center">在 Mac 上统一管理和托管 MCP 的菜单栏应用：所有 MCP 只跑一份，Claude Code、Codex、Docker 容器里的客户端都连同一个本机网关。</p>
+<p align="center"><img src="docs/images/architecture.png" alt="客户端 → MCP Station 网关 → 各个 MCP"></p>
 
 ## 能做什么
 
