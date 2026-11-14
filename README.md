@@ -15,7 +15,9 @@
 
 ## 构建
 
-需要 macOS 26 和 Xcode（Swift 6）。
+需要 macOS 26。下载：[Releases](https://github.com/yinminqian/mcp-station/releases)（还没有苹果公证，第一次打开会被拦，到「系统设置 → 隐私与安全性」点「仍要打开」）。
+
+自己编译需要 Xcode（Swift 6）和 Rust。
 
 ```sh
 scripts/build-app.sh            # 构建到 build/MCP Station.app
