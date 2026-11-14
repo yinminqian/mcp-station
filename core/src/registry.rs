@@ -299,7 +299,7 @@ impl Registry {
     pub fn core_json(&self) -> Value {
         let g = self.gateway.lock().unwrap();
         json!({
-            "version": env!("CARGO_PKG_VERSION"),
+            "version": crate::VERSION,
             "api": crate::control::API_VERSION,
             "pid": std::process::id(),
             "port": g.port,

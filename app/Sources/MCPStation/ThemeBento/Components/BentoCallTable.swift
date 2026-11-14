@@ -3,6 +3,8 @@ import SwiftUI
 /// 调用记录表：白卡片里的一张表，最新的在最上面。
 ///
 /// 自己从 `store.calls` 取数（大约每秒变一次），所以放它的页面不用读调用记录，也就不会跟着重绘。
+/// 表体是原生 List（行复用）；行不带悬停和动画、行高固定——ScrollView + LazyVStack 加每行悬停动画滚起来掉帧
+/// （2026-11-14 用户反馈"帧率不高"，方案出自 Fable 评审）。
 /// 调用页、MCP 详情的「调用」页签、服务详情的「调用」页签共用，各自传筛选条件。
 struct BentoCallTable: View {
     let matches: (CallRecord) -> Bool
@@ -20,20 +22,17 @@ struct BentoCallTable: View {
     var body: some View {
         let rows = Array(store.calls.reversed().lazy.filter(matches).prefix(limit))
         let layout = BentoCallLayout(showsMCP: showsMCP, showsService: showsService, showsClient: showsClient)
-        BentoCard(padding: BentoSpace.s8) {
+        BentoCard(padding: 0) {
             VStack(spacing: 0) {
                 header(layout)
-                if rows.isEmpty {
-                    BentoEmptyState(icon: .calls, text: "没有符合条件的调用")
-                    Spacer(minLength: 0)
-                } else {
-                    ScrollView {
-                        LazyVStack(spacing: 0) {
-                            ForEach(rows) { record in
-                                BentoCallRow(record: record, layout: layout)
-                            }
-                        }
-                    }
+                    .padding([.horizontal, .top], BentoSpace.s8)
+                List(rows) { record in
+                    BentoCallRow(record: record, layout: layout)
+                }
+                .bentoCardList(underHeader: true)
+                // 空状态盖在上面，不用 if/else 换掉 List：现建的原生列表第一帧是空的，会闪
+                .overlay(alignment: .top) {
+                    if rows.isEmpty { BentoEmptyState(icon: .calls, text: "没有符合条件的调用") }
                 }
             }
             .frame(maxHeight: .infinity, alignment: .top)
@@ -100,16 +99,20 @@ private struct BentoCallRow: View {
                 .bentoText(.mono, isSlow ? BentoTone.peach.ink : BentoColor.Ink.secondary)
         } outcome: {
             HStack(spacing: BentoSpace.s6) {
-                BentoStatusDot(status: record.isError ? .error : isSlow ? .warn : .ok)
+                // 纯色圆点：BentoStatusDot 带闪动动画，调用行用不上，只会抬高建行成本
+                Circle()
+                    .fill((record.isError ? BentoStatus.error : isSlow ? .warn : .ok).color)
+                    .frame(width: BentoMetric.statusDot, height: BentoMetric.statusDot)
                 Text(record.isError ? "失败" : "成功")
                     .bentoText(.body, record.isError ? BentoTone.rose.ink : BentoColor.Ink.secondary)
             }
         }
         .lineLimit(1)
-        .frame(minHeight: BentoSpace.s36)
-        .bentoRowHover()
+        .frame(height: BentoSpace.s36)
         .help(errorMessage ?? "")
         .accessibilityElement(children: .combine)
+        .listRowInsets(EdgeInsets())
+        .listRowSeparator(.hidden)
     }
 }
 

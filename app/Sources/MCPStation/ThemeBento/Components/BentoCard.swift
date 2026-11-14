@@ -56,13 +56,18 @@ extension List {
     /// 铺满卡片、按卡片圆角裁切；留白放在内容边距里，所以内容滚到卡片边缘自然消失在圆角下，滚动条贴着卡片边缘、上下避开圆角。
     /// 不要在卡片上加内边距再套列表：内容会在离边缘一段距离处被平直切断，和圆角对不上（2026-11-14 用户反馈）。
     /// 不要用 ScrollView + LazyVStack 做长列表：行不复用、滚动时现建，滑起来不顺（同日用户反馈，方案出自 Fable 评审）。
-    func bentoCardList(radius: CGFloat = BentoRadius.lg) -> some View {
-        self
+    /// `underHeader`：列表上方紧挨着卡片里的表头时传 true——顶部不留白、不裁圆角。
+    func bentoCardList(radius: CGFloat = BentoRadius.lg, underHeader: Bool = false) -> some View {
+        let top: CGFloat = underHeader ? 0 : radius
+        return self
             .listStyle(.plain)
             .scrollContentBackground(.hidden)
-            .contentMargins(BentoSpace.s8, for: .scrollContent)
-            .contentMargins(.vertical, radius / 2, for: .scrollIndicators)
-            .clipShape(RoundedRectangle(cornerRadius: radius, style: .continuous))
+            .contentMargins([.horizontal, .bottom], BentoSpace.s8, for: .scrollContent)
+            .contentMargins(.top, underHeader ? 0 : BentoSpace.s8, for: .scrollContent)
+            .contentMargins(.bottom, radius / 2, for: .scrollIndicators)
+            .contentMargins(.top, top / 2, for: .scrollIndicators)
+            .clipShape(UnevenRoundedRectangle(topLeadingRadius: top, bottomLeadingRadius: radius,
+                                              bottomTrailingRadius: radius, topTrailingRadius: top, style: .continuous))
     }
 }
 

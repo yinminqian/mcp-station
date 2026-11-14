@@ -25,6 +25,13 @@ mod runtime;
 mod upstream;
 
 use std::process::ExitCode;
+
+/// 版本号：打包时由 scripts/build-app.sh 从仓库根目录的 VERSION 传进来（和 App 一致），单独 cargo build 时用 Cargo.toml 里的。
+/// App 更新后发现正在跑的内核版本和包里带的不一样，就自动升级内核。
+pub const VERSION: &str = match option_env!("MCPSTATION_VERSION") {
+    Some(v) => v,
+    None => env!("CARGO_PKG_VERSION"),
+};
 use std::time::Duration;
 use tokio_util::sync::CancellationToken;
 
@@ -42,7 +49,7 @@ fn main() -> ExitCode {
     };
     match args.first().map(String::as_str).unwrap_or("run") {
         "--version" | "version" => {
-            println!("mcp-core {} (api {})", env!("CARGO_PKG_VERSION"), control::API_VERSION);
+            println!("mcp-core {} (api {})", crate::VERSION, control::API_VERSION);
             ExitCode::SUCCESS
         }
         "install" => print(platform::install(args.iter().any(|a| a == "--restart"))),
@@ -85,7 +92,7 @@ fn run() -> ExitCode {
 }
 
 async fn serve() {
-    tracing::info!(version = env!("CARGO_PKG_VERSION"), dir = %paths::data_dir().display(), "内核启动");
+    tracing::info!(version = crate::VERSION, dir = %paths::data_dir().display(), "内核启动");
     children::reap_stale();
     let loaded = config::load();
     if let Some(e) = &loaded.error {

@@ -18,6 +18,8 @@ actor HTTPCoreClient: CoreClient {
     /// 最后一次知道的内核状态（断线时在它的基础上改 state，端口、版本这些还能显示）。
     private var lastCore = CoreStatus(version: "—", port: ConfigFile.defaultPort, state: .restarting, defaultSessions: 0)
     private var lastInstallAttempt: Date = .distantPast
+    /// 这次启动是否已经检查过内核版本（App 更新后，包里带的内核比正在跑的新，升级一次）。
+    private var checkedCoreVersion = false
 
     nonisolated func updates() -> AsyncStream<CoreUpdate> {
         AsyncStream { continuation in
@@ -60,6 +62,15 @@ actor HTTPCoreClient: CoreClient {
         }
     }
 
+    /// App 更新后（Sparkle 换了整个 App 包），正在跑的还是旧内核：版本号对不上就用包里的升级一次，客户端会断一两秒。
+    /// 平时重装 App（开发时）版本号不变，不会动正在跑的内核。
+    private func upgradeCoreIfNeeded(running: String?) {
+        guard !checkedCoreVersion, CoreInstaller.bundled != nil, let running else { return }
+        checkedCoreVersion = true
+        guard running != AppInfo.version else { return }
+        Task { try? await CoreInstaller.ensure(restart: true) }
+    }
+
     /// 内核连不上：问 `mcp-core status` 为什么，没装或没在跑就装 / 拉起一次（最多 30 秒一次）。
     private func diagnose() async -> CoreState {
         let st = await CoreInstaller.status()
@@ -98,6 +109,7 @@ actor HTTPCoreClient: CoreClient {
             guard let d = obj as? [String: Any], let c = d["core"] as? [String: Any] else { return nil }
             let core = Self.core(c)
             lastCore = core
+            upgradeCoreIfNeeded(running: c["version"] as? String)
             return .snapshot(core, (d["mcps"] as? [[String: Any]] ?? []).map(Self.mcp),
                              (d["services"] as? [[String: Any]] ?? []).map(Self.service),
                              (d["calls"] as? [[String: Any]] ?? []).map(Self.call))

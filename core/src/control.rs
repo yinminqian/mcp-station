@@ -91,7 +91,7 @@ async fn auth(State(st): State<Ctl>, req: Request, next: Next) -> Response {
 }
 
 async fn ping() -> Json<Value> {
-    Json(json!({ "version": env!("CARGO_PKG_VERSION"), "api": API_VERSION, "pid": std::process::id() }))
+    Json(json!({ "version": crate::VERSION, "api": API_VERSION, "pid": std::process::id() }))
 }
 
 async fn status(State(st): State<Ctl>) -> Json<Value> {

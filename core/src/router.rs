@@ -94,13 +94,13 @@ fn initialize(reg: &Registry, id: Id, msg: &Message, members: &[Member], route: 
         Route::Single(_) => {
             let st = statuses.first().map(|(_, s)| s);
             let info = st.map(|s| s.server_info.clone()).filter(|i| i.get("name").is_some());
-            result["serverInfo"] = info.unwrap_or_else(|| json!({ "name": "MCP Station", "version": env!("CARGO_PKG_VERSION") }));
+            result["serverInfo"] = info.unwrap_or_else(|| json!({ "name": "MCP Station", "version": crate::VERSION }));
             if let Some(i) = st.and_then(|s| s.instructions.clone()) {
                 result["instructions"] = json!(i);
             }
         }
         _ => {
-            result["serverInfo"] = json!({ "name": "MCP Station", "version": env!("CARGO_PKG_VERSION") });
+            result["serverInfo"] = json!({ "name": "MCP Station", "version": crate::VERSION });
             let merged: Vec<String> = statuses
                 .iter()
                 .filter_map(|(n, s)| Some(format!("## {n}\n\n{}", s.instructions.as_ref()?.trim())))

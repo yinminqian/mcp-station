@@ -30,6 +30,9 @@ final class AppStore {
     @ObservationIgnored private let client: any CoreClient
     @ObservationIgnored private var subscription: Task<Void, Never>?
     @ObservationIgnored private var toastTask: Task<Void, Never>?
+    /// 调用记录攒 300 毫秒再落地：一阵调用不会让表格和统计连着重算好几次。
+    @ObservationIgnored private var pendingCalls: [CallRecord] = []
+    @ObservationIgnored private var flushTask: Task<Void, Never>?
 
     init(client: any CoreClient) {
         self.client = client
@@ -49,6 +52,7 @@ final class AppStore {
         switch update {
         case let .snapshot(c, m, s, k):
             core = c; mcps = m; namedServices = s; calls = k
+            pendingCalls.removeAll()
             retrying = retrying.filter { name in m.contains { $0.name == name && $0.state == .starting } }
             stats = CallStats(calls: calls, now: .now)
         case .core(let c):
@@ -82,10 +86,22 @@ final class AppStore {
                 }
             }
         case .calls(let batch):
-            calls.append(contentsOf: batch)
-            if calls.count > Self.maxCalls { calls.removeFirst(calls.count - Self.maxCalls) }
-            stats = CallStats(calls: calls, now: .now)
+            pendingCalls.append(contentsOf: batch)
+            guard flushTask == nil else { return }
+            flushTask = Task { [weak self] in
+                try? await Task.sleep(for: .milliseconds(300))
+                self?.flushCalls()
+            }
         }
+    }
+
+    private func flushCalls() {
+        flushTask = nil
+        guard !pendingCalls.isEmpty else { return }
+        calls.append(contentsOf: pendingCalls)
+        pendingCalls.removeAll(keepingCapacity: true)
+        if calls.count > Self.maxCalls { calls.removeFirst(calls.count - Self.maxCalls) }
+        stats = CallStats(calls: calls, now: .now)
     }
 
     // MARK: 派生数据

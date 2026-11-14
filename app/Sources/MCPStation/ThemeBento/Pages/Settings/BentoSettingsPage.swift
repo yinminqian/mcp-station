@@ -269,6 +269,9 @@ private struct BentoAboutCard: View {
                 BentoKeyValueRow("App 版本", appVersion ?? "开发版")
                 BentoKeyValueRow("MCP", "\(store.mcps.count) 个，\(store.mcps.reduce(0) { $0 + $1.toolCount }) 个工具")
             }
+            Button("检查更新…") { Updates.checkNow() }
+                .buttonStyle(.bento(.panel, size: .small))
+                .disabled(!Updates.available)
         }
     }
 }

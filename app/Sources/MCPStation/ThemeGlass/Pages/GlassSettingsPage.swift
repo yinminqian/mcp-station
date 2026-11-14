@@ -72,6 +72,10 @@ struct GlassSettingsPage: View {
 
             Section("关于") {
                 LabeledContent("版本", value: Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "开发版")
+                LabeledContent("有新版时会提示，也可以手动检查") {
+                    Button("检查更新…") { Updates.checkNow() }
+                        .disabled(!Updates.available)
+                }
             }
         }
         .formStyle(.grouped)

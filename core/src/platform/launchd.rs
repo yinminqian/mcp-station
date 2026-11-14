@@ -155,7 +155,7 @@ pub fn service_status() -> Value {
         "pid": field("pid").and_then(|v| v.parse::<u64>().ok()),
         "lastExitCode": field("last exit code").and_then(|v| v.parse::<i64>().ok()),
         "label": label(),
-        "bundledVersion": env!("CARGO_PKG_VERSION"),
+        "bundledVersion": crate::VERSION,
         "logTail": tail,
         "port": port,
         "portOwner": super::port_owner(port),

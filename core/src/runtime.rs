@@ -11,7 +11,7 @@ pub fn new_token() -> String {
 pub fn write(port: u16, control_port: u16, token: &str, started_at: f64) {
     let v = json!({
         "pid": std::process::id(),
-        "version": env!("CARGO_PKG_VERSION"),
+        "version": crate::VERSION,
         "api": crate::control::API_VERSION,
         "port": port,
         "controlPort": control_port,

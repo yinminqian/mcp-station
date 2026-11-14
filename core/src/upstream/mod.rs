@@ -389,7 +389,7 @@ pub(crate) fn initialize_params() -> Value {
         "protocolVersion": PROTOCOL_VERSION,
         // 刻意留空：不声明 sampling / roots / elicitation（见模块说明）。
         "capabilities": {},
-        "clientInfo": { "name": "MCP Station", "version": env!("CARGO_PKG_VERSION") }
+        "clientInfo": { "name": "MCP Station", "version": crate::VERSION }
     })
 }
 

@@ -30,8 +30,16 @@ for a in "$@"; do
 done
 
 # 内核（Rust）。release 用全局优化，第一次编要几分钟，之后增量很快。
+# 版本号：VERSION 文件（给人看的，发版时改）；构建号用提交数（只增不减，Sparkle 靠它判断新旧，不用手动改）
+VERSION="$(tr -d '[:space:]' < "$ROOT/VERSION")"
+BUILD_NUMBER="$(git -C "$ROOT" rev-list --count HEAD 2>/dev/null || echo 1)"
+# 自动更新（Sparkle）：更新源是仓库里的 appcast.xml，安装包是 GitHub Release 上的 DMG，用这个公钥验签。
+# 私钥在发版人的钥匙串里（generate_keys --account mcp-station），见 scripts/release.sh。
+FEED_URL="https://raw.githubusercontent.com/yinminqian/mcp-station/main/appcast.xml"
+ED_PUBLIC_KEY="CVNnvpXpZeLXjOOkQk5AqWv/KhJWbESzxSg2BiDafpg="
+
 # 在 core 目录里编：cargo 只从当前目录往上找 .cargo/config.toml（本机可以在那里配 crates 镜像）
-(cd "$ROOT/core" && cargo build --release)
+(cd "$ROOT/core" && MCPSTATION_VERSION="$VERSION" cargo build --release)
 CORE_BIN="$ROOT/core/target/release/mcp-core"
 
 cd "$ROOT/app"
@@ -40,11 +48,12 @@ BIN="$(swift build -c "$CONFIG" --show-bin-path)/MCPStation"
 
 OUT="$ROOT/build/$APP_NAME.app"
 rm -rf "$OUT"
-mkdir -p "$OUT/Contents/MacOS" "$OUT/Contents/Resources"
+mkdir -p "$OUT/Contents/MacOS" "$OUT/Contents/Resources" "$OUT/Contents/Frameworks"
 cp "$BIN" "$OUT/Contents/MacOS/MCPStation"
 cp "$CORE_BIN" "$OUT/Contents/Resources/mcp-core"
-
-VERSION="$(git -C "$ROOT" describe --tags --always 2>/dev/null || echo 0.1.0)"
+# Sparkle 是动态框架，放进 Frameworks，并让可执行文件去那里找
+ditto "$(swift build -c "$CONFIG" --show-bin-path)/Sparkle.framework" "$OUT/Contents/Frameworks/Sparkle.framework"
+install_name_tool -add_rpath "@executable_path/../Frameworks" "$OUT/Contents/MacOS/MCPStation" 2>/dev/null || true
 cat > "$OUT/Contents/Info.plist" <<PLIST
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -55,8 +64,12 @@ cat > "$OUT/Contents/Info.plist" <<PLIST
   <key>CFBundleIdentifier</key><string>$BUNDLE_ID</string>
   <key>CFBundleExecutable</key><string>MCPStation</string>
   <key>CFBundlePackageType</key><string>APPL</string>
-  <key>CFBundleShortVersionString</key><string>0.1.0</string>
-  <key>CFBundleVersion</key><string>$VERSION</string>
+  <key>CFBundleShortVersionString</key><string>$VERSION</string>
+  <key>CFBundleVersion</key><string>$BUILD_NUMBER</string>
+  <key>SUFeedURL</key><string>$FEED_URL</string>
+  <key>SUPublicEDKey</key><string>$ED_PUBLIC_KEY</string>
+  <key>SUEnableAutomaticChecks</key><true/>
+  <key>SUScheduledCheckInterval</key><integer>172800</integer>
   <key>CFBundleDevelopmentRegion</key><string>zh-Hans</string>
   <key>LSMinimumSystemVersion</key><string>26.0</string>
   <key>LSApplicationCategoryType</key><string>public.app-category.developer-tools</string>
@@ -71,8 +84,9 @@ if [ -f "$ROOT/app/Resources/AppIcon.icns" ]; then
   /usr/libexec/PlistBuddy -c "Add :CFBundleIconFile string AppIcon" "$OUT/Contents/Info.plist"
 fi
 
-# 包里的可执行文件先单独签，再签整个包
+# 包里的可执行文件和框架先单独签，再签整个包
 codesign --force --sign "$SIGN_ID" --timestamp=none "$OUT/Contents/Resources/mcp-core"
+codesign --force --deep --sign "$SIGN_ID" --timestamp=none "$OUT/Contents/Frameworks/Sparkle.framework"
 codesign --force --sign "$SIGN_ID" --timestamp=none "$OUT"
 echo "已构建：${OUT}（${CONFIG}）"
 

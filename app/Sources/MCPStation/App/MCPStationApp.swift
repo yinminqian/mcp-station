@@ -95,6 +95,10 @@ struct AppCommands: Commands {
                 .keyboardShortcut("e", modifiers: [.command, .shift])
             Button("在访达中显示配置文件") { ConfigTransfer.revealConfigFile() }
         }
+        CommandGroup(after: .appInfo) {
+            Button("检查更新…") { Updates.checkNow() }
+                .disabled(!Updates.available)
+        }
         CommandGroup(replacing: .appSettings) {
             Button("设置…") {
                 nav.route = .settings

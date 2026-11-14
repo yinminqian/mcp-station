@@ -7,6 +7,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     /// 由 SwiftUI 侧注入（需要 openWindow 环境值），用于 Dock 图标重新打开主窗口。
     var openMainWindow: (() -> Void)?
 
+    func applicationDidFinishLaunching(_ notification: Notification) {
+        Updates.start()
+    }
+
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool { false }
 
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
