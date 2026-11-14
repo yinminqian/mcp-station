@@ -1,16 +1,16 @@
 #!/bin/bash
 # 空闲时在忙什么:对"全部页面常驻后停在概览页"和"只开过概览页"各 attach 录 10 秒 Time Profiler,
-# 输出主线程每秒耗时,以及按 App 自己的符号(@MCPMac)和几类框架符号统计的每秒毫秒数。
-# 用法:scripts/perf/idle-profile.sh <副本名=step2> <主题=glass> <输出目录=/tmp/mcpmac-perf3>
+# 输出主线程每秒耗时,以及按 App 自己的符号(@MCPStation)和几类框架符号统计的每秒毫秒数。
+# 用法:scripts/perf/idle-profile.sh <副本名=step2> <主题=glass> <输出目录=/tmp/mcpstation-perf3>
 set -uo pipefail
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"; P="$ROOT/scripts/perf"
-V="${1:-step2}"; THEME="${2:-glass}"; OUT="${3:-/tmp/mcpmac-perf3}"
-BIN="$ROOT/build-$V/MCP Mac.app/Contents/MacOS/MCPMac"
+V="${1:-step2}"; THEME="${2:-glass}"; OUT="${3:-/tmp/mcpstation-perf3}"
+BIN="$ROOT/build-$V/MCP Station.app/Contents/MacOS/MCPStation"
 cd "$OUT"
 for mode in alive fresh; do
   log="idleprof-$THEME-$mode.stderr.txt"; t="idleprof-$THEME-$mode"
   if [ "$mode" = alive ]; then
-    MCPMAC_SWITCH_BENCH=1 MCPMAC_SWITCH_STAY=1 MCPMAC_SWITCH_MODE=forced "$BIN" -appearance.theme "$THEME" > /dev/null 2> "$log" &
+    MCPSTATION_SWITCH_BENCH=1 MCPSTATION_SWITCH_STAY=1 MCPSTATION_SWITCH_MODE=forced "$BIN" -appearance.theme "$THEME" > /dev/null 2> "$log" &
   else
     "$BIN" -appearance.theme "$THEME" > /dev/null 2> "$log" &
   fi
@@ -43,7 +43,7 @@ for path in sys.argv[1:]:
         w = int(r["weight"]) / 1e6; tot += w; t.append(int(r["time"]))
         fr = set(r["stack"].split("|"))
         for f in fr:
-            if f.endswith("@MCPMac"): app[f] += w
+            if f.endswith("@MCPStation"): app[f] += w
         for n, rx in MARK:
             if any(rx.search(f) for f in fr): mk[n] += w
     secs = (max(t) - min(t)) / 1e9 if t else 1
@@ -52,6 +52,6 @@ for path in sys.argv[1:]:
 print(f"主线程在 CPU 上的时间(ms/秒): 全部常驻 {a_tot:.1f}  只开概览 {f_tot:.1f}")
 print("| 标记(可重叠) | 全部常驻 ms/秒 | 只开概览 ms/秒 |\n|---|---:|---:|")
 for n, _ in MARK: print(f"| {n} | {a_mk.get(n, 0):.1f} | {f_mk.get(n, 0):.1f} |")
-print("| App 符号(@MCPMac,前 25,按全部常驻排序) | 全部常驻 ms/秒 | 只开概览 ms/秒 |\n|---|---:|---:|")
+print("| App 符号(@MCPStation,前 25,按全部常驻排序) | 全部常驻 ms/秒 | 只开概览 ms/秒 |\n|---|---:|---:|")
 for k, v in sorted(a_app.items(), key=lambda x: -x[1])[:25]: print(f"| `{k[:110]}` | {v:.2f} | {f_app.get(k, 0):.2f} |")
 PY

@@ -1,6 +1,6 @@
 import Foundation
 import Testing
-@testable import MCPMac
+@testable import MCPStation
 
 @Suite("配置文件")
 struct ConfigFileTests {

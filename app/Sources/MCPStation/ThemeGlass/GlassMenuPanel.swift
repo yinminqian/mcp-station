@@ -32,7 +32,7 @@ struct GlassMenuPanel: View {
                 Toggle("登录时打开", isOn: .constant(false)).toggleStyle(.switch).controlSize(.mini).labelsHidden().disabled(true)
             }
             .padding(.horizontal, 6).padding(.vertical, 3)
-            MenuRow(shortcut: "⌘Q") { NSApp.terminate(nil) } label: { Text("退出 MCP Mac") }
+            MenuRow(shortcut: "⌘Q") { NSApp.terminate(nil) } label: { Text("退出 MCP Station") }
         }
         .padding(10)
         .frame(width: 340)
@@ -41,7 +41,7 @@ struct GlassMenuPanel: View {
     private var header: some View {
         HStack(alignment: .top) {
             VStack(alignment: .leading, spacing: 2) {
-                Text("MCP Mac").font(.headline)
+                Text("MCP Station").font(.headline)
                 if let core = store.core, case .notInstalled = core.state {
                     Text("网关还没接入").font(.caption).foregroundStyle(.secondary)
                 }

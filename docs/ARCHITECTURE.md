@@ -1,4 +1,4 @@
-# MCP Mac：架构设计（草案 v2，待确认）
+# MCP Station：架构设计（草案 v2，待确认）
 
 本机 MCP 网关，替代 `~/mcp` 下的 mcp-proxy(8090)。形态参照 Clash：原生菜单栏 App 负责配置和查看状态，独立的 core 进程负责干活。
 
@@ -81,10 +81,10 @@
 ## 2. 进程与文件布局
 
 ```
-/Applications/MCP Mac.app            只是界面，可以随便重新编译、退出
+/Applications/MCP Station.app            只是界面，可以随便重新编译、退出
   └─ Contents/Resources/mcp-core     安装包里带的 core，安装或升级时复制到下面
 
-~/Library/Application Support/MCP Mac/
+~/Library/Application Support/MCP Station/
   bin/mcp-core          实际运行的 core（放在 App 外面，重新编译 App 不影响它）
   config.json           0600，唯一的配置来源，只由 core 读写
   runtime.json          0600，core 启动时写入：端口、pid、控制令牌、启动时间
@@ -92,7 +92,7 @@
   snapshot.json         工具、prompts、resources 快照
   logs/core.log         滚动日志，有大小上限
 
-~/Library/LaunchAgents/com.example.mcp-mac.core.plist   由 App 写入并用 launchctl 加载
+~/Library/LaunchAgents/com.example.mcp-station.core.plist   由 App 写入并用 launchctl 加载
 ```
 
 - **后台服务用普通 LaunchAgent plist，不用 SMAppService。** 这台机器上已经有三个这样的 agent 在跑，证明可行；而且不依赖签名。v1 不签名，以后签名用用户本人的账号。
@@ -171,7 +171,7 @@
 | POST | `/control/reload` | 重新读取 config.json | 设置 |
 | GET | `/control/logs?lines=200` | core 自己的日志尾部 | 设置 → 诊断 |
 
-core 连不上时，以上接口全部不可用。App 不依赖这些接口，直接读 `logs/core.log` 和 `launchctl print gui/<uid>/com.example.mcp-mac.core` 来显示原因。安装、启动、停止后台服务也由 App 直接调用 `launchctl`，不经过 core。
+core 连不上时，以上接口全部不可用。App 不依赖这些接口，直接读 `logs/core.log` 和 `launchctl print gui/<uid>/com.example.mcp-station.core` 来显示原因。安装、启动、停止后台服务也由 App 直接调用 `launchctl`，不经过 core。
 
 `GET /control/status` 返回示例：
 
@@ -201,7 +201,7 @@ MCP 的 `state` 有六种：`starting`（启动中）、`ready`（正常）、`b
 普通 App（不是 LSUIElement）：有主窗口和完整菜单栏，另有 `MenuBarExtra(.window)` 菜单栏面板。退出 App 不影响 core。
 
 ```
-app/Sources/MCPMac/
+app/Sources/MCPStation/
 ├── App/          入口、RootView（按主题挂载整套界面）、菜单命令
 ├── Core/         CoreClient 协议、数据模型、SimulatedCore（演示数据）、DemoCatalog（本机 14 个 MCP 的真实工具清单，不含密钥）
 ├── State/        AppStore（@Observable，乐观更新 + 失败回滚）、Navigator（页面与选中项）、AppTheme
@@ -215,7 +215,7 @@ app/Sources/MCPMac/
 - **倒计时**用 `TimelineView` 局部刷新，不靠全局定时器。
 - **演示数据**：`SimulatedCore` 是 actor，开关 / 重试 / 重启 / 服务增删改都真实改变状态；设置里可切演示场景（一切正常 / obsidian 连不上 / 后台服务没运行）。Rust core 就绪后新增 `HTTPCoreClient` 替换它，界面不动。
 - **构建**：`scripts/build-app.sh [--debug] [--install]`，SwiftPM 产物组装成 `.app` 后 ad-hoc 签名。
-- **验证**：`swift test`（模拟 core 生命周期规则、服务名校验、调用统计、客户端配置）；`MCPMAC_SNAPSHOT_DIR=<目录>` 启动会逐页自截图后退出（cacheDisplay 渲染，系统玻璃材质可能画不出来，只用来核对布局）。
+- **验证**：`swift test`（模拟 core 生命周期规则、服务名校验、调用统计、客户端配置）；`MCPSTATION_SNAPSHOT_DIR=<目录>` 启动会逐页自截图后退出（cacheDisplay 渲染，系统玻璃材质可能画不出来，只用来核对布局）。
 - **还没做**：MCP 新增 / 编辑表单、导入向导、开机启动注册、真实 core 连接。
 
 ## 6. 和 CC Switch 的关系
@@ -268,4 +268,4 @@ CC Switch（本机 4.0.29）管的是**客户端那一侧**：它把 MCP 条目�
 
 1. 开关和服务的语义（第 1 节）是否符合你的想法。
 2. 签名："先不要签名，用我自己的账号"是指现在完全不签名，还是用你个人的 Apple Development 证书签（不用公司证书）？
-3. bundle id 草案：`com.example.mcp-mac`。
+3. bundle id 草案：`com.example.mcp-station`。

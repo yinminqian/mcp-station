@@ -1,4 +1,4 @@
-"""由 demo-tools.json 生成 app/Sources/MCPMac/Core/DemoCatalog.swift。凭证字段只写键名，值打码。"""
+"""由 demo-tools.json 生成 app/Sources/MCPStation/Core/DemoCatalog.swift。凭证字段只写键名，值打码。"""
 import json, os
 HERE = os.path.dirname(os.path.abspath(__file__))
 d = json.load(open(os.path.join(HERE, "demo-tools.json")))
@@ -32,5 +32,5 @@ for name,(kind,fields,dflt) in defs.items():
     ts = ",\n                ".join(f"ToolInfo(name: {s(n)}, summary: {s(desc)})" for n,desc in e["tools"])
     lines.append(f"        Entry(name: {s(name)}, kind: .{kind}, inDefault: {'true' if dflt else 'false'},\n              definition: [{fs}],\n              tools: [\n                {ts}\n              ],\n              resources: {e['resources']}, prompts: {e['prompts']}, instructions: {e['instr']}),")
 lines += ["    ]", "}", ""]
-open(os.path.join(HERE, "../../app/Sources/MCPMac/Core/DemoCatalog.swift"),"w").write("\n".join(lines))
+open(os.path.join(HERE, "../../app/Sources/MCPStation/Core/DemoCatalog.swift"),"w").write("\n".join(lines))
 print(len(defs), "entries;", sum(len(d[n]["tools"]) for n in defs), "tools")

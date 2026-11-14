@@ -11,10 +11,10 @@ for i in $(seq 1 "$N"); do
   for theme in $THEMES; do
     for cond in step1-fresh step2-alive step2-fresh; do
       v="${cond%%-*}"
-      BIN="$ROOT/build-$v/MCP Mac.app/Contents/MacOS/MCPMac"
+      BIN="$ROOT/build-$v/MCP Station.app/Contents/MacOS/MCPStation"
       log="/tmp/idle-ka-$cond-$theme-$i.stderr.txt"
       if [ "$cond" = step2-alive ]; then
-        MCPMAC_SWITCH_BENCH=1 MCPMAC_SWITCH_STAY=1 MCPMAC_SWITCH_MODE=forced "$BIN" -appearance.theme "$theme" > /dev/null 2> "$log" &
+        MCPSTATION_SWITCH_BENCH=1 MCPSTATION_SWITCH_STAY=1 MCPSTATION_SWITCH_MODE=forced "$BIN" -appearance.theme "$theme" > /dev/null 2> "$log" &
       else
         "$BIN" -appearance.theme "$theme" > /dev/null 2> "$log" &
       fi

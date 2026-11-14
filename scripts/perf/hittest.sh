@@ -1,18 +1,18 @@
 #!/bin/bash
 # 点击穿透检查(不需要辅助功能权限):用 lldb 附加到进程,在窗口上按 48×32 网格调用 AppKit 的 hitTest:,
 # 记录每个点命中的视图类,以及它有没有"不可见的祖先"(isHidden / alpha≈0 / layer.opacity≈0)。
-# 两种状态各做一次并比较:A 只访问过概览页;B 访问过全部页面后回到概览页(MCPMAC_SWITCH_STAY=1)。
+# 两种状态各做一次并比较:A 只访问过概览页;B 访问过全部页面后回到概览页(MCPSTATION_SWITCH_STAY=1)。
 # 只读:hitTest: 不产生事件。局限:SwiftUI 自绘控件的命中在 NSHostingView 内部决定,这里看不到。
-# 用法:scripts/perf/hittest.sh <副本名=step2> <主题=glass> <输出目录=/tmp/mcpmac-perf3>
+# 用法:scripts/perf/hittest.sh <副本名=step2> <主题=glass> <输出目录=/tmp/mcpstation-perf3>
 set -uo pipefail
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"; P="$ROOT/scripts/perf"
-V="${1:-step2}"; THEME="${2:-glass}"; OUT="${3:-/tmp/mcpmac-perf3}"
-BIN="$ROOT/build-$V/MCP Mac.app/Contents/MacOS/MCPMac"
+V="${1:-step2}"; THEME="${2:-glass}"; OUT="${3:-/tmp/mcpstation-perf3}"
+BIN="$ROOT/build-$V/MCP Station.app/Contents/MacOS/MCPStation"
 mkdir -p "$OUT"
 for state in fresh alive; do
   log="$OUT/hit-$THEME-$state.stderr.txt"
   if [ "$state" = alive ]; then
-    MCPMAC_SWITCH_BENCH=1 MCPMAC_SWITCH_STAY=1 MCPMAC_SWITCH_MODE=forced MCPMAC_SWITCH_COUNT=5 "$BIN" -appearance.theme "$THEME" > /dev/null 2> "$log" &
+    MCPSTATION_SWITCH_BENCH=1 MCPSTATION_SWITCH_STAY=1 MCPSTATION_SWITCH_MODE=forced MCPSTATION_SWITCH_COUNT=5 "$BIN" -appearance.theme "$THEME" > /dev/null 2> "$log" &
   else
     "$BIN" -appearance.theme "$THEME" > /dev/null 2> "$log" &
   fi

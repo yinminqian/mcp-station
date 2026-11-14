@@ -195,8 +195,8 @@ struct CoreStatus: Equatable, Sendable {
 
 /// 安装布局（docs/ARCHITECTURE.md §2）。core 挂掉时界面也要能显示，所以是常量，不从 core 取。
 enum CoreInstall {
-    static let launchdLabel = "com.example.mcp-mac.core"
-    static let supportDir = "~/Library/Application Support/MCP Mac"
+    static let launchdLabel = "com.example.mcp-station.core"
+    static let supportDir = "~/Library/Application Support/MCP Station"
     static let binaryPath = supportDir + "/bin/mcp-core"
     static let configPath = supportDir + "/config.json"
     static let logPath = supportDir + "/logs/core.log"

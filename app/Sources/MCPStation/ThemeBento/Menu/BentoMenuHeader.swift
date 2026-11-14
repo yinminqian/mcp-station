@@ -9,7 +9,7 @@ struct BentoMenuHeader: View {
         let attention = store.attention
         HStack(alignment: .center, spacing: BentoSpace.s8) {
             VStack(alignment: .leading, spacing: 0) {
-                Text("MCP Mac").bentoText(.title, BentoColor.Ink.black)
+                Text("MCP Station").bentoText(.title, BentoColor.Ink.black)
                 HStack(spacing: BentoSpace.s4) {
                     if let core {
                         Text(BentoCopy.address(port: core.port))

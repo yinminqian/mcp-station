@@ -1,16 +1,16 @@
 #!/bin/bash
-# 隐藏 60 秒后切回,数据是不是最新的:calls → overview(60s)→ calls(60s),停在 calls(MCPMAC_SWITCH_STAY=calls)。
+# 隐藏 60 秒后切回,数据是不是最新的:calls → overview(60s)→ calls(60s),停在 calls(MCPSTATION_SWITCH_STAY=calls)。
 # "bench done, staying" 一出现就用 lldb 给窗口截图(App 内 cacheDisplay,不需要屏幕录制权限),并记下当时的时钟。
 # 不挂 Instruments;顺带得到 forced 打印的"调用记录页首次进入"和"隐藏 60 秒后再次进入"。
 # 用法:scripts/perf/freshness.sh <副本名=step3> "<主题...>" [停留毫秒=60000] [切页次数=3]
 set -uo pipefail
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"; P="$ROOT/scripts/perf"
 V="${1:-step3}"; THEMES="${2:-glass bento}"; DWELL="${3:-60000}"; COUNT="${4:-3}"
-BIN="$ROOT/build-$V/MCP Mac.app/Contents/MacOS/MCPMac"; RAW="$ROOT/docs/perf/raw"
+BIN="$ROOT/build-$V/MCP Station.app/Contents/MacOS/MCPStation"; RAW="$ROOT/docs/perf/raw"
 for theme in $THEMES; do
   log="/tmp/fresh-$V-$theme.stderr.txt"
-  MCPMAC_SWITCH_BENCH=1 MCPMAC_SWITCH_MODE=forced MCPMAC_SWITCH_ROUTES=calls,overview MCPMAC_SWITCH_DWELL_MS="$DWELL" \
-    MCPMAC_SWITCH_COUNT="$COUNT" MCPMAC_SWITCH_STAY=calls "$BIN" -appearance.theme "$theme" > /dev/null 2> "$log" &
+  MCPSTATION_SWITCH_BENCH=1 MCPSTATION_SWITCH_MODE=forced MCPSTATION_SWITCH_ROUTES=calls,overview MCPSTATION_SWITCH_DWELL_MS="$DWELL" \
+    MCPSTATION_SWITCH_COUNT="$COUNT" MCPSTATION_SWITCH_STAY=calls "$BIN" -appearance.theme "$theme" > /dev/null 2> "$log" &
   pid=$!; t0=$(date +%s)
   sleep 1.5; osascript -l JavaScript "$P/winstate.js" "$pid" activate > /dev/null 2>&1
   seen=0

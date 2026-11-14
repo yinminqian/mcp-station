@@ -1,6 +1,6 @@
 import Foundation
 import Testing
-@testable import MCPMac
+@testable import MCPStation
 
 /// 记录收到的 setDefault 调用；可设延迟和失败。
 private actor FakeCore: CoreClient {

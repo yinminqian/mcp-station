@@ -70,7 +70,7 @@ struct BentoMenuFooter: View {
                 }
                 .padding(.horizontal, BentoSpace.s12)
                 .frame(height: BentoSpace.s40)
-                BentoMenuActionRow(title: "退出 MCP Mac", shortcut: "⌘Q") {
+                BentoMenuActionRow(title: "退出 MCP Station", shortcut: "⌘Q") {
                     NSApp.terminate(nil)
                 }
                 .keyboardShortcut("q")

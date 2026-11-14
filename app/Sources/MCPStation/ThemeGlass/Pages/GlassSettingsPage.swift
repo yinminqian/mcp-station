@@ -63,7 +63,7 @@ struct GlassSettingsPage: View {
             }
 
             Section {
-                Toggle("登录时打开 MCP Mac", isOn: .constant(false)).disabled(true)
+                Toggle("登录时打开 MCP Station", isOn: .constant(false)).disabled(true)
             } header: {
                 Text("启动")
             } footer: {

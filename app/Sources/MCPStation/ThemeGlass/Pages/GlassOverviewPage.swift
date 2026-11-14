@@ -232,7 +232,7 @@ private struct GlassAttentionForm: View {
                             }
                         } label: {
                             VStack(alignment: .leading, spacing: 1) {
-                                Label(c.name, systemImage: c.name == "MCP Mac" ? "hammer" : "person.crop.circle")
+                                Label(c.name, systemImage: c.name == "MCP Station" ? "hammer" : "person.crop.circle")
                                     .foregroundStyle(.primary)
                                 Text("最近一次 \(Format.time(c.last))").font(.caption).foregroundStyle(.secondary)
                             }

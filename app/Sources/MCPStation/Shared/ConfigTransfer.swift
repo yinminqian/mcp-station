@@ -22,7 +22,7 @@ enum ConfigTransfer {
         panel.title = "导出配置"
         panel.message = "导出的文件里有密钥明文，请妥善保存，不要直接发给别人。"
         panel.prompt = "导出"
-        panel.nameFieldStringValue = "mcp-mac-config.json"
+        panel.nameFieldStringValue = "mcp-station-config.json"
         panel.allowedContentTypes = [.json]
         guard panel.runModal() == .OK, let url = panel.url else { return }
         Task { await store.exportConfig(to: url) }

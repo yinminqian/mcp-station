@@ -365,7 +365,7 @@ actor LocalCore: CoreClient {
         return try ConfigStore.encode(config)
     }
 
-    /// 试调用：真的连上这个 MCP 调一次工具，结果记进调用记录（服务写"试调用"，客户端写"MCP Mac"）。
+    /// 试调用：真的连上这个 MCP 调一次工具，结果记进调用记录（服务写"试调用"，客户端写"MCP Station"）。
     func callTool(mcp name: String, tool: String, argumentsJSON: String) async throws -> ToolCallResult {
         try requireManage()
         guard let entry = config.mcps[name] else { throw CoreError.unknownMCP(name) }
@@ -390,7 +390,7 @@ actor LocalCore: CoreClient {
         case .failure(.config(let m, _)), .failure(.transient(let m, _)):
             result = ToolCallResult(isError: true, text: m, duration: elapsed)
         }
-        recordCall(mcp: name, tool: tool, service: "试调用", client: "MCP Mac", started: started, elapsed: elapsed,
+        recordCall(mcp: name, tool: tool, service: "试调用", client: "MCP Station", started: started, elapsed: elapsed,
                    error: result.isError ? result.text : nil)
         log(name, result.isError ? .warn : .info, "试调用 \(tool)：\(result.isError ? "出错" : "成功")")
         return result
@@ -620,7 +620,7 @@ extension LocalCore {
             return reply([
                 "protocolVersion": params["protocolVersion"] as? String ?? MCPProbe.protocolVersion,
                 "capabilities": ["tools": ["listChanged": false]],
-                "serverInfo": ["name": "MCP Mac", "version": AppInfo.version],
+                "serverInfo": ["name": "MCP Station", "version": AppInfo.version],
             ], headers: ["Mcp-Session-Id": newID])
         }
         // App 重启后旧会话 id 就没了：按规范回 404，客户端会重新 initialize
@@ -677,7 +677,7 @@ extension LocalCore {
         case "prompts/list":
             return reply(["prompts": [Any]()])
         default:
-            return fail(-32601, "MCP Mac 网关还不支持 \(method)")
+            return fail(-32601, "MCP Station 网关还不支持 \(method)")
         }
     }
 

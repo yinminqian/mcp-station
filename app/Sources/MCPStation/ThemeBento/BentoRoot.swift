@@ -78,7 +78,7 @@ private struct BentoWindowTitle: View {
             if showsCoreDown {
                 BentoCoreDownBadge().transition(.opacity)
             } else {
-                Text("MCP Mac — \(nav.route.title)")
+                Text("MCP Station — \(nav.route.title)")
                     .bentoText(.label, BentoColor.Ink.tertiary)
                     .allowsHitTesting(false)
                     .accessibilityHidden(true)

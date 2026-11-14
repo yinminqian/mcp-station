@@ -53,15 +53,31 @@ struct ConfigFile: Codable, Equatable, Sendable {
     }
 }
 
-/// 读写配置文件。路径固定在 `~/Library/Application Support/MCP Mac/config.json`；
-/// 开发时可以用环境变量 `MCPMAC_CONFIG=<路径>` 指到别处，不碰自己的真实配置。
+/// 读写配置文件。路径固定在 `~/Library/Application Support/MCP Station/config.json`；
+/// 开发时可以用环境变量 `MCPSTATION_CONFIG=<路径>` 指到别处，不碰自己的真实配置。
 enum ConfigStore {
     static var url: URL {
-        if let p = ProcessInfo.processInfo.environment["MCPMAC_CONFIG"], !p.isEmpty {
+        if let p = ProcessInfo.processInfo.environment["MCPSTATION_CONFIG"], !p.isEmpty {
             return URL(fileURLWithPath: (p as NSString).expandingTildeInPath)
         }
         return FileManager.default.homeDirectoryForCurrentUser
-            .appendingPathComponent("Library/Application Support/MCP Mac/config.json")
+            .appendingPathComponent("Library/Application Support/MCP Station/config.json")
+    }
+
+    /// 改名前（2026-11-14 以前叫 MCP Mac）的数据：整个目录搬到新名字下，主题设置也带过来。
+    /// 只在新目录还不存在时搬一次；用环境变量指到别处时不碰。
+    static func migrateFromOldName() {
+        let fm = FileManager.default
+        let support = fm.homeDirectoryForCurrentUser.appendingPathComponent("Library/Application Support")
+        let old = support.appendingPathComponent("MCP Mac"), new = support.appendingPathComponent("MCP Station")
+        if ProcessInfo.processInfo.environment["MCPSTATION_CONFIG"] == nil,
+           fm.fileExists(atPath: old.path), !fm.fileExists(atPath: new.path) {
+            try? fm.moveItem(at: old, to: new)
+        }
+        if UserDefaults.standard.object(forKey: AppTheme.storageKey) == nil,
+           let theme = UserDefaults(suiteName: "com.example.mcp-mac")?.string(forKey: AppTheme.storageKey) {
+            UserDefaults.standard.set(theme, forKey: AppTheme.storageKey)
+        }
     }
 
     /// 文件不存在时返回空配置（第一次打开）。文件存在但读不了、格式不对时抛错——此时绝不能用空配置覆盖它。

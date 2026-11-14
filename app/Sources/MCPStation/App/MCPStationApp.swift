@@ -1,7 +1,7 @@
 import SwiftUI
 
 @main
-struct MCPMacApp: App {
+struct MCPStationApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
     @State private var store: AppStore
     @State private var nav = Navigator()
@@ -9,12 +9,13 @@ struct MCPMacApp: App {
     @AppStorage(AppTheme.storageKey) private var theme: AppTheme = .glass
 
     init() {
+        ConfigStore.migrateFromOldName()
         // 配置读写 config.json、MCP 在 App 里真实检测；网关做好后换成 HTTP 版 CoreClient，其余不动。
         _store = State(initialValue: AppStore(client: LocalCore()))
     }
 
     var body: some Scene {
-        Window("MCP Mac", id: "main") {
+        Window("MCP Station", id: "main") {
             RootView()
                 .environment(store)
                 .environment(nav)
@@ -56,7 +57,7 @@ struct MenuBarLabel: View {
             return store.attention.isEmpty ? "puzzlepiece.extension" : "exclamationmark.triangle"
         }()
         Image(systemName: symbol)
-            .accessibilityLabel("MCP Mac")
+            .accessibilityLabel("MCP Station")
             // 菜单栏图标常驻，借它把 openWindow 交给 AppDelegate（Dock 图标重新打开主窗口用）
             .task {
                 appDelegate.openMainWindow = { [openWindow] in

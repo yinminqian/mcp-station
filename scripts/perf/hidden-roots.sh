@@ -4,8 +4,8 @@
 set -uo pipefail
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"; P="$ROOT/scripts/perf"
 V="$1"; THEME="$2"; OUTF="$3"
-BIN="$ROOT/build-$V/MCP Mac.app/Contents/MacOS/MCPMac"; log="/tmp/hr-$V-$THEME.stderr.txt"
-MCPMAC_SWITCH_BENCH=1 MCPMAC_SWITCH_STAY=1 MCPMAC_SWITCH_MODE=forced MCPMAC_SWITCH_COUNT=5 "$BIN" -appearance.theme "$THEME" > /dev/null 2> "$log" &
+BIN="$ROOT/build-$V/MCP Station.app/Contents/MacOS/MCPStation"; log="/tmp/hr-$V-$THEME.stderr.txt"
+MCPSTATION_SWITCH_BENCH=1 MCPSTATION_SWITCH_STAY=1 MCPSTATION_SWITCH_MODE=forced MCPSTATION_SWITCH_COUNT=5 "$BIN" -appearance.theme "$THEME" > /dev/null 2> "$log" &
 pid=$!
 sleep 2; osascript -l JavaScript "$P/winstate.js" "$pid" activate > /dev/null 2>&1
 for _ in $(seq 1 60); do grep -aq staying "$log" && break; sleep 0.5; done

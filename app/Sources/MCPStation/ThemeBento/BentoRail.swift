@@ -42,7 +42,7 @@ struct BentoRail: View {
                             fill: BentoColor.Ink.black, ink: BentoColor.Ink.inverse)
             if !isCompact {
                 VStack(alignment: .leading, spacing: 0) {
-                    Text("MCP Mac").bentoText(.title, BentoColor.Ink.black)
+                    Text("MCP Station").bentoText(.title, BentoColor.Ink.black)
                     Text("本机 MCP 网关").bentoText(.label, BentoColor.Ink.secondary)
                 }
                 .lineLimit(1)

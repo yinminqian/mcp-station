@@ -3,12 +3,12 @@
 # 用法:scripts/perf/step1-modes.sh [轮数=3]
 set -uo pipefail
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
-BIN="$ROOT/build-step1/MCP Mac.app/Contents/MacOS/MCPMac"
+BIN="$ROOT/build-step1/MCP Station.app/Contents/MacOS/MCPStation"
 OUT="$ROOT/docs/perf/raw"; N="${1:-3}"
 for i in $(seq 1 "$N"); do
   for mode in natural forced; do
     f="$OUT/step1-$mode-$i.txt"
-    MCPMAC_SWITCH_BENCH=1 MCPMAC_SWITCH_MODE="$mode" "$BIN" -appearance.theme glass 2>&1 | grep -a '^bench' > "$f"
+    MCPSTATION_SWITCH_BENCH=1 MCPSTATION_SWITCH_MODE="$mode" "$BIN" -appearance.theme glass 2>&1 | grep -a '^bench' > "$f"
     echo "== $mode $i (exit ${PIPESTATUS[0]})  load: $(uptime | sed 's/.*load averages: //')"; cat "$f"
     sleep 2
   done

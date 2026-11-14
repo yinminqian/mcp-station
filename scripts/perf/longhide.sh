@@ -1,12 +1,12 @@
 #!/bin/bash
 # 隐藏很久后切回:calls ↔ overview 来回切,每次停留 60 秒,全程 Time Profiler 录制。
-# 切到最后停在 calls(MCPMAC_SWITCH_STAY=calls),"staying" 一出现就用 lldb 给窗口截图,核对表格第一行是不是刚刚的数据。
+# 切到最后停在 calls(MCPSTATION_SWITCH_STAY=calls),"staying" 一出现就用 lldb 给窗口截图,核对表格第一行是不是刚刚的数据。
 # 每次切页前 4 秒把窗口重新激活到前台(用户在用机器时窗口会被盖住)。
-# 用法:scripts/perf/longhide.sh <副本名=step3> "<主题...>" <输出目录=/tmp/mcpmac-perf4> [切页次数=5] [停留毫秒=60000]
+# 用法:scripts/perf/longhide.sh <副本名=step3> "<主题...>" <输出目录=/tmp/mcpstation-perf4> [切页次数=5] [停留毫秒=60000]
 set -uo pipefail
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"; P="$ROOT/scripts/perf"
-V="${1:-step3}"; THEMES="${2:-glass bento}"; OUT="${3:-/tmp/mcpmac-perf4}"; COUNT="${4:-5}"; DWELL="${5:-60000}"
-BIN="$ROOT/build-$V/MCP Mac.app/Contents/MacOS/MCPMac"
+V="${1:-step3}"; THEMES="${2:-glass bento}"; OUT="${3:-/tmp/mcpstation-perf4}"; COUNT="${4:-5}"; DWELL="${5:-60000}"
+BIN="$ROOT/build-$V/MCP Station.app/Contents/MacOS/MCPStation"
 RAW="$ROOT/docs/perf/raw"
 mkdir -p "$OUT"; cd "$OUT"
 for theme in $THEMES; do
@@ -29,8 +29,8 @@ for theme in $THEMES; do
     lldb -p "$pid" --batch -s "$t.snapshot.lldb" > "$t.lldb.txt" 2>&1
     echo "snapshot done at $(date +%H:%M:%S): $(ls -la "$png" 2>&1 | awk '{print $5}') bytes" >> "$t.winstate.txt" ) &
   xcrun xctrace record --template 'Time Profiler' --output "$t.trace" --time-limit "${LIMIT}s" \
-    --env MCPMAC_SWITCH_BENCH=1 --env MCPMAC_SWITCH_MODE=forced --env MCPMAC_SWITCH_ROUTES=calls,overview \
-    --env MCPMAC_SWITCH_DWELL_MS="$DWELL" --env MCPMAC_SWITCH_COUNT="$COUNT" --env MCPMAC_SWITCH_STAY=calls \
+    --env MCPSTATION_SWITCH_BENCH=1 --env MCPSTATION_SWITCH_MODE=forced --env MCPSTATION_SWITCH_ROUTES=calls,overview \
+    --env MCPSTATION_SWITCH_DWELL_MS="$DWELL" --env MCPSTATION_SWITCH_COUNT="$COUNT" --env MCPSTATION_SWITCH_STAY=calls \
     --target-stdout "$t.stdout.txt" --launch -- "$BIN" -appearance.theme "$theme" > "$t.rec.log" 2>&1
   wait
   pkill -f "^$BIN" 2>/dev/null

@@ -1,8 +1,8 @@
 #!/bin/bash
-# 组装 MCP Mac.app（SwiftPM 产物 → .app bundle → ad-hoc 签名）。
+# 组装 MCP Station.app（SwiftPM 产物 → .app bundle → ad-hoc 签名）。
 #
 # 用法：
-#   scripts/build-app.sh            release 构建，产物在 build/MCP Mac.app
+#   scripts/build-app.sh            release 构建，产物在 build/MCP Station.app
 #   scripts/build-app.sh --debug    debug 构建（编译快，调试用）
 #   scripts/build-app.sh --install  构建后安装到 /Applications（已存在则先退出旧进程再覆盖）
 #
@@ -10,8 +10,8 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-APP_NAME="MCP Mac"
-BUNDLE_ID="com.example.mcp-mac"
+APP_NAME="MCP Station"
+BUNDLE_ID="com.example.mcp-station"
 SIGN_ID="-"
 CONFIG=release
 INSTALL=0
@@ -24,13 +24,13 @@ for a in "$@"; do
 done
 
 cd "$ROOT/app"
-swift build -c "$CONFIG" --product MCPMac
-BIN="$(swift build -c "$CONFIG" --show-bin-path)/MCPMac"
+swift build -c "$CONFIG" --product MCPStation
+BIN="$(swift build -c "$CONFIG" --show-bin-path)/MCPStation"
 
 OUT="$ROOT/build/$APP_NAME.app"
 rm -rf "$OUT"
 mkdir -p "$OUT/Contents/MacOS" "$OUT/Contents/Resources"
-cp "$BIN" "$OUT/Contents/MacOS/MCPMac"
+cp "$BIN" "$OUT/Contents/MacOS/MCPStation"
 
 VERSION="$(git -C "$ROOT" describe --tags --always 2>/dev/null || echo 0.1.0)"
 cat > "$OUT/Contents/Info.plist" <<PLIST
@@ -41,7 +41,7 @@ cat > "$OUT/Contents/Info.plist" <<PLIST
   <key>CFBundleName</key><string>$APP_NAME</string>
   <key>CFBundleDisplayName</key><string>$APP_NAME</string>
   <key>CFBundleIdentifier</key><string>$BUNDLE_ID</string>
-  <key>CFBundleExecutable</key><string>MCPMac</string>
+  <key>CFBundleExecutable</key><string>MCPStation</string>
   <key>CFBundlePackageType</key><string>APPL</string>
   <key>CFBundleShortVersionString</key><string>0.1.0</string>
   <key>CFBundleVersion</key><string>$VERSION</string>

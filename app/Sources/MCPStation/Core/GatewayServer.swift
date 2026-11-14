@@ -29,7 +29,7 @@ final class GatewayServer: @unchecked Sendable {
         case failed(String)
     }
 
-    private let queue = DispatchQueue(label: "mcp-mac.gateway")
+    private let queue = DispatchQueue(label: "mcp-station.gateway")
     private var listener: NWListener?
 
     /// 只监听本机回环地址：Docker 容器经 host.docker.internal 访问时由 Docker 转到本机回环，局域网里的别人连不上。

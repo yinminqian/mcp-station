@@ -2,21 +2,21 @@
 import PackageDescription
 
 let package = Package(
-    name: "MCPMac",
+    name: "MCPStation",
     defaultLocalization: "zh-Hans",
     platforms: [.macOS("26.0")],
     targets: [
         .executableTarget(
-            name: "MCPMac",
-            path: "Sources/MCPMac",
+            name: "MCPStation",
+            path: "Sources/MCPStation",
             swiftSettings: [
                 .enableUpcomingFeature("StrictConcurrency"),
             ]
         ),
         .testTarget(
-            name: "MCPMacTests",
-            dependencies: ["MCPMac"],
-            path: "Tests/MCPMacTests"
+            name: "MCPStationTests",
+            dependencies: ["MCPStation"],
+            path: "Tests/MCPStationTests"
         ),
     ]
 )

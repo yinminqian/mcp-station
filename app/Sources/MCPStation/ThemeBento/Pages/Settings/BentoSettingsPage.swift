@@ -260,7 +260,7 @@ private struct BentoAboutCard: View {
                 BentoIconCircle(icon: .brand, size: BentoMetric.railButton,
                                 fill: BentoColor.Ink.black, ink: BentoColor.Ink.inverse)
                 VStack(alignment: .leading, spacing: 0) {
-                    Text("MCP Mac").bentoText(.title)
+                    Text("MCP Station").bentoText(.title)
                     Text("本机 MCP 网关：一个地址，背后有哪些 MCP 由开关和服务决定")
                         .bentoText(.label, BentoColor.Ink.secondary)
                 }

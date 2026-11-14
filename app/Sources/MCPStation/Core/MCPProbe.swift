@@ -25,7 +25,7 @@ enum MCPProbe {
         case transient(String, log: [String])
     }
 
-    static let clientName = "MCP Mac"
+    static let clientName = "MCP Station"
     static let protocolVersion = "2025-06-18"
 
     /// 握手、列出工具 / resources / prompts，成功后连接不关，交给调用方（它负责 `close()`）。失败时连接已经关掉。
@@ -314,7 +314,7 @@ enum ProbeEnvironment {
             let shell = getpwuid(getuid()).map { String(cString: $0.pointee.pw_shell) } ?? ""
             let p = Process()
             p.executableURL = URL(fileURLWithPath: shell.isEmpty ? "/bin/zsh" : shell)
-            p.arguments = ["-ilc", "printf '\\n__MCPMAC_PATH__%s' \"$PATH\""]
+            p.arguments = ["-ilc", "printf '\\n__MCPSTATION_PATH__%s' \"$PATH\""]
             let out = Pipe()
             p.standardOutput = out
             p.standardError = FileHandle.nullDevice
@@ -326,7 +326,7 @@ enum ProbeEnvironment {
                 let data = await Task.detached { handle.value.readDataToEndOfFile() }.value
                 killer.cancel()
                 if let text = String(data: data, encoding: .utf8),
-                   let r = text.range(of: "__MCPMAC_PATH__", options: .backwards) {
+                   let r = text.range(of: "__MCPSTATION_PATH__", options: .backwards) {
                     let found = text[r.upperBound...].trimmingCharacters(in: .whitespacesAndNewlines)
                     if !found.isEmpty { result = found }
                 }
@@ -422,7 +422,7 @@ private final class StdioTransport: Transport, @unchecked Sendable {
                   let msg = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else { continue }
             // 对方发来的请求（比如 roots/list）：回一个"不支持"，免得它一直等
             if let m = msg["method"] as? String, let rid = msg["id"] {
-                try? write(["jsonrpc": "2.0", "id": rid, "error": ["code": -32601, "message": "MCP Mac 不支持 \(m)"]])
+                try? write(["jsonrpc": "2.0", "id": rid, "error": ["code": -32601, "message": "MCP Station 不支持 \(m)"]])
                 continue
             }
             guard (msg["id"] as? Int) == id else { continue }

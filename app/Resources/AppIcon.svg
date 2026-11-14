@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
-  <!-- MCP Mac 图标：中间是网关（黑底白闪电，和 App 侧边栏的品牌圆标一致），四角是粉彩色的 MCP 接口，粗线把它们汇到中间。
-       颜色取自 Pastel Bento 的设计变量（app/Sources/MCPMac/ThemeBento/BentoTokens.swift）。 -->
+  <!-- MCP Station 图标：中间是网关（黑底白闪电，和 App 侧边栏的品牌圆标一致），四角是粉彩色的 MCP 接口，粗线把它们汇到中间。
+       颜色取自 Pastel Bento 的设计变量（app/Sources/MCPStation/ThemeBento/BentoTokens.swift）。 -->
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stop-color="#FFFFFF"/>
