@@ -107,7 +107,10 @@ struct BentoChartColumn: Identifiable, Hashable {
     }
 }
 
-/// 堆叠柱状图。当前（或鼠标指着的）那一小时背后铺一条浅底，横轴上它的小时变成黑色药丸。
+/// 堆叠柱状图。当前（或鼠标指着的）那一小时背后铺一圈浅底，横轴上它的小时变成黑色药丸。
+///
+/// 横轴不用 Charts 自带的：小时、药丸、浅底都在同一层里按 `ChartProxy` 量出来的位置画，中心线才是同一条。
+/// 2026-11-14 用户反馈浅底和药丸没对齐，方案出自 Fable 评审。
 private struct BentoCallChart: View {
     let columns: [BentoChartColumn]
     let tones: BentoServiceTones
@@ -116,60 +119,63 @@ private struct BentoCallChart: View {
 
     /// 柱宽占一格的比例。
     private static let barRatio = 0.74
-    /// 分段之间的缝，以及描边离柱子的距离。
+    /// 分段之间的缝。
     private static let gap = BentoSpace.s2
     /// 空小时那截矮桩的高度（点）。
     private static let stub = BentoSpace.s4
+    /// 小时药丸的高度。
+    private static let pill = BentoSpace.s20
+    /// 药丸离柱子底的距离：浅底往下伸出 4pt，再留 4pt。
+    private static let pillTop = BentoSpace.s8
 
     var body: some View {
-        let peak = max(1, columns.map(\.total).max() ?? 1)
-        // 分段之间留缝：把缝的点数换算成数据单位，从每段顶上减掉。
-        let gapUnits = Double(peak) * Self.gap / BentoMetric.chartHeight
-        // 没有调用的小时画一截矮桩，七个小时的位置一直都在，看得出是条时间轴
-        let stubUnits = Double(peak) * Self.stub / BentoMetric.chartHeight
+        // 横轴自己画、高度固定，所以绘图区高度 = 总高 - 横轴高，缝和矮桩才能按真实点数换算
+        GeometryReader { geometry in
+            chart(plotHeight: max(1, geometry.size.height - Self.pillTop - Self.pill))
+        }
+    }
 
-        Chart(columns) { column in
-            if column.segments.isEmpty {
+    private func chart(plotHeight: CGFloat) -> some View {
+        let peak = max(1, columns.map(\.total).max() ?? 1)
+        let unitsPerPoint = Double(peak) / Double(plotHeight)
+        // 分段之间留缝：把缝的点数换算成数据单位，从每段顶上减掉。
+        let gapUnits = Double(Self.gap) * unitsPerPoint
+        let stubUnits = Double(Self.stub) * unitsPerPoint
+
+        return Chart(columns) { column in
+            // 没有调用、或者少到画不出来的小时，都画一截矮桩：七个小时的位置一直都在，看得出是条时间轴
+            if Self.top(of: column, gapUnits: gapUnits) < stubUnits {
                 BarMark(x: .value("小时", column.label),
                         yStart: .value("起", 0.0), yEnd: .value("止", stubUnits),
                         width: .ratio(Self.barRatio))
                     .clipShape(RoundedRectangle(cornerRadius: BentoRadius.xs, style: .continuous))
-                    .foregroundStyle(BentoColor.Bg.sunken)
-            }
-            ForEach(column.segments) { segment in
-                BarMark(x: .value("小时", column.label),
-                        yStart: .value("起", Double(segment.from)),
-                        yEnd: .value("止", max(Double(segment.from), Double(segment.to) - gapUnits)),
-                        width: .ratio(Self.barRatio))
-                    .clipShape(RoundedRectangle(cornerRadius: BentoRadius.xs + 1, style: .continuous))
-                    .foregroundStyle(tones[segment.service].fill)
+                    .foregroundStyle(column.segments.first.map { tones[$0.service].fill }
+                        ?? (column.label == focus ? BentoColor.Ink.tertiary : BentoColor.Bg.sunken))
+            } else {
+                ForEach(column.segments) { segment in
+                    BarMark(x: .value("小时", column.label),
+                            yStart: .value("起", Double(segment.from)),
+                            yEnd: .value("止", max(Double(segment.from), Double(segment.to) - gapUnits)),
+                            width: .ratio(Self.barRatio))
+                        .clipShape(RoundedRectangle(cornerRadius: BentoRadius.xs + 1, style: .continuous))
+                        .foregroundStyle(tones[segment.service].fill)
+                }
             }
         }
         // 横轴固定七个小时：只有一个小时有数据时，柱子也只占一格宽，不会撑满整张图
         .chartXScale(domain: columns.map(\.label))
         .chartYScale(domain: 0...Double(peak))
+        .chartXAxis(.hidden)
         .chartYAxis(.hidden)
-        .chartXAxis {
-            AxisMarks { value in
-                AxisValueLabel {
-                    if let label = value.as(String.self) {
-                        let isFocus = label == focus
-                        // 不用 bentoText：它的固定行高会把数字往下挤，在胶囊里不居中
-                        Text(label)
-                            .font(BentoTextStyle.label.font)
-                            .foregroundStyle(isFocus ? BentoColor.Ink.inverse : BentoColor.Ink.tertiary)
-                            .monospacedDigit()
-                            .padding(.horizontal, BentoSpace.s6)
-                            .frame(height: BentoSpace.s20)
-                            .background(isFocus ? BentoColor.Ink.black : .clear, in: Capsule())
-                            .padding(.top, BentoSpace.s4)
-                    }
-                }
-            }
-        }
         .chartBackground { proxy in
             GeometryReader { geometry in
-                if let anchor = proxy.plotFrame { focusBand(proxy: proxy, plot: geometry[anchor]) }
+                if let anchor = proxy.plotFrame {
+                    let plot = geometry[anchor]
+                    // 柱子底的真实位置，量出来的，不假设它就是 plot.maxY
+                    let baseline = plot.minY + (proxy.position(forY: 0.0) ?? plot.height)
+                    focusBand(proxy: proxy, plot: plot, baseline: baseline, gapUnits: gapUnits, stubUnits: stubUnits)
+                    hourLabels(proxy: proxy, plot: plot, baseline: baseline)
+                }
             }
         }
         .chartOverlay { proxy in
@@ -189,23 +195,53 @@ private struct BentoCallChart: View {
                 }
             }
         }
+        // 横轴那一行画在图的下面，这里给它留位置
+        .padding(.bottom, Self.pillTop + Self.pill)
         .animation(BentoMotion.snappy, value: focus)
         .accessibilityLabel("最近 \(columns.count) 小时的调用数")
     }
 
-    /// 选中那一小时：柱子背后一圈浅底，跟着柱子的实际高度（空的小时就包住那截矮桩）。
+    /// 这一小时实际画到多高（数据单位），一段都画不出来时是 0。柱子和浅底都用它，才对得齐。
+    private static func top(of column: BentoChartColumn, gapUnits: Double) -> Double {
+        column.segments.last { Double($0.to) - gapUnits > Double($0.from) }.map { Double($0.to) - gapUnits } ?? 0
+    }
+
+    /// 选中那一小时：柱子背后一圈浅底，四边各大出 pad，跟着柱子的实际高度（空的小时就包住那截矮桩）。
     @ViewBuilder
-    private func focusBand(proxy: ChartProxy, plot: CGRect) -> some View {
-        if let column = columns.first(where: { $0.label == focus }), let x = proxy.position(forX: column.label) {
+    private func focusBand(proxy: ChartProxy, plot: CGRect, baseline: CGFloat, gapUnits: Double, stubUnits: Double) -> some View {
+        if let column = columns.first(where: { $0.label == focus }),
+           let x = proxy.position(forX: column.label),
+           let y = proxy.position(forY: max(Self.top(of: column, gapUnits: gapUnits), stubUnits)) {
             let pad = Self.gap * 2
-            let barHeight = column.total > 0 ? plot.height - (proxy.position(forY: Double(column.total)) ?? plot.height) : Self.stub
-            let width = plot.width / CGFloat(columns.count) * Self.barRatio + pad * 2
-            let height = barHeight + pad * 2
+            // 一格的宽度直接量相邻两格的中心距，和 BarMark 的 .ratio 用的是同一个基准
+            let centers = columns.compactMap { proxy.position(forX: $0.label) }
+            let step = centers.count > 1 ? centers[1] - centers[0] : plot.width
+            let top = plot.minY + y
             RoundedRectangle(cornerRadius: BentoRadius.sm, style: .continuous)
                 .fill(BentoColor.Bg.panel)
-                .frame(width: width, height: height)
-                .position(x: plot.minX + x, y: plot.maxY - height / 2 + pad)
+                .frame(width: step * Self.barRatio + pad * 2, height: baseline - top + pad * 2)
+                .position(x: plot.minX + x, y: (top + baseline) / 2)
                 .allowsHitTesting(false)
+        }
+    }
+
+    /// 横轴上的小时。和浅底用同一个中心 x、同一条柱底线；选中的那个垫一颗黑色药丸。
+    private func hourLabels(proxy: ChartProxy, plot: CGRect, baseline: CGFloat) -> some View {
+        ForEach(columns) { column in
+            if let x = proxy.position(forX: column.label) {
+                let isFocus = column.label == focus
+                // 不用 bentoText：它的固定行高会把数字往下挤，在药丸里不居中
+                Text(column.label)
+                    .font(BentoTextStyle.label.font)
+                    .monospacedDigit()
+                    .foregroundStyle(isFocus ? BentoColor.Ink.inverse : BentoColor.Ink.tertiary)
+                    .padding(.horizontal, BentoSpace.s6)
+                    .frame(height: Self.pill)
+                    .background(isFocus ? BentoColor.Ink.black : .clear, in: Capsule())
+                    .position(x: plot.minX + x, y: baseline + Self.pillTop + Self.pill / 2)
+                    .accessibilityHidden(true)
+                    .allowsHitTesting(false)
+            }
         }
     }
 }
