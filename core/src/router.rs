@@ -16,6 +16,10 @@ use std::time::{Duration, Instant};
 pub struct Ctx {
     pub route: Route,
     pub client: String,
+    /// 会话 id（客户端取消请求时按它找）。
+    pub session: Option<String>,
+    /// 这次请求的响应是 SSE 流时，进度通知往这里推。
+    pub progress: Option<tokio::sync::mpsc::UnboundedSender<Message>>,
 }
 
 /// 内核刚启动、MCP 还在冷启动时，客户端要清单最多等这么久。
@@ -24,7 +28,12 @@ const KNOWN_PROTOCOLS: [&str; 3] = ["2025-06-18", "2025-03-26", "2024-11-05"];
 
 /// 处理一条客户端报文。返回 None 表示这是通知，不用回。
 pub async fn handle(reg: &Arc<Registry>, msg: Message, ctx: &Ctx) -> Option<Message> {
-    let id = msg.id.clone()?;
+    let Some(id) = msg.id.clone() else {
+        if msg.method_str() == "notifications/cancelled" {
+            cancel(reg, &msg, ctx);
+        }
+        return None;
+    };
     let Some(members) = reg.members(&ctx.route) else {
         return Some(Message::error(id, code::INVALID_REQUEST, "这个地址对应的服务不存在了"));
     };
@@ -53,13 +62,13 @@ pub async fn handle(reg: &Arc<Registry>, msg: Message, ctx: &Ctx) -> Option<Mess
         }
         "tools/call" => tools_call(reg, id, msg, &members, ctx).await,
         "prompts/get" => match by_name(&members, &msg) {
-            Some((m, original)) => forward_renamed(reg, &m.name, id, msg, &original, upstream::LIST_TIMEOUT).await,
+            Some((m, original)) => forward_renamed(reg, &m.name, id, msg, &original, upstream::LIST_TIMEOUT, ctx).await,
             None => Message::error(id, code::INVALID_PARAMS, format!("没有这个 prompt：{}", msg.param_name().unwrap_or(""))),
         },
         "resources/read" => {
             let uri = msg.params.as_ref().and_then(|p| p.get("uri")).and_then(Value::as_str).unwrap_or("").to_string();
             match resource_owner(reg, &members, &uri) {
-                Some(owner) => forward(reg, &owner, id, msg, upstream::LIST_TIMEOUT).await,
+                Some(owner) => forward_tracked(reg, &owner, id, msg, upstream::LIST_TIMEOUT, ctx).await,
                 None => Message::error(id, code::INVALID_PARAMS, format!("没有哪个 MCP 提供 {uri}")),
             }
         }
@@ -153,7 +162,7 @@ async fn tools_call(reg: &Arc<Registry>, id: Id, msg: Message, members: &[Member
     };
     let timeout = reg.config().entry(&m.name).and_then(Result::ok).and_then(|e| e.x.and_then(|x| x.timeout_secs)).map_or(Duration::from_secs(600), Duration::from_secs);
     let started = Instant::now();
-    let reply = forward_renamed(reg, &m.name, id, msg, &tool, timeout).await;
+    let reply = forward_renamed(reg, &m.name, id, msg, &tool, timeout, ctx).await;
     let error = reply
         .error
         .as_ref()
@@ -176,11 +185,52 @@ async fn tools_call(reg: &Arc<Registry>, id: Id, msg: Message, members: &[Member
     reply
 }
 
-async fn forward_renamed(reg: &Registry, mcp: &str, id: Id, mut msg: Message, original: &str, timeout: Duration) -> Message {
+async fn forward_renamed(reg: &Registry, mcp: &str, id: Id, mut msg: Message, original: &str, timeout: Duration, ctx: &Ctx) -> Message {
     if !msg.set_param_name(original) {
         return Message::error(id, code::INVALID_PARAMS, "params 不是对象");
     }
-    forward(reg, mcp, id, msg, timeout).await
+    forward_tracked(reg, mcp, id, msg, timeout, ctx).await
+}
+
+/// 客户端发来 notifications/cancelled：找到它在哪个 MCP 上跑，让那个上游取消。
+fn cancel(reg: &Registry, msg: &Message, ctx: &Ctx) {
+    let (Some(session), Some(p)) = (&ctx.session, msg.params.as_ref()) else { return };
+    let Some(req) = p.get("requestId").and_then(|v| serde_json::from_value::<Id>(v.clone()).ok()) else { return };
+    if let Some((_, f)) = reg.inflight.remove(&(session.clone(), req.to_string())) {
+        let reason = p.get("reason").and_then(Value::as_str).map(str::to_string);
+        if let Some(h) = reg.handle(&f.mcp) {
+            tracing::info!(mcp = %f.mcp, request = %req, "客户端取消了请求，转给上游");
+            h.cancel(f.id, reason);
+        }
+    }
+}
+
+/// 转给上游，同时登记以便取消、改写进度 token 以便把进度推回这个客户端。
+/// 发给上游的 id 用网关自己编的（全局唯一），回来再换回客户端的。
+async fn forward_tracked(reg: &Registry, mcp: &str, id: Id, mut msg: Message, timeout: Duration, ctx: &Ctx) -> Message {
+    let uid = Id::Str(format!("c-{}", reg.next_uid()));
+    let key = ctx.session.as_ref().map(|s| (s.clone(), id.to_string()));
+    if let Some(k) = &key {
+        reg.inflight.insert(k.clone(), crate::registry::Inflight { mcp: mcp.to_string(), id: uid.clone() });
+    }
+    let mut ptoken = None;
+    if let (Some(tx), Some(meta)) = (&ctx.progress, msg.params.as_mut().and_then(|p| p.get_mut("_meta"))) {
+        if let Some(original) = meta.get("progressToken").cloned() {
+            let gw = format!("p-{}", reg.next_uid());
+            meta["progressToken"] = json!(gw);
+            reg.progress.insert(gw.clone(), crate::registry::ProgressSink { token: original, tx: tx.clone() });
+            ptoken = Some(gw);
+        }
+    }
+    let mut reply = forward(reg, mcp, uid, msg, timeout).await;
+    reply.id = Some(id);
+    if let Some(k) = key {
+        reg.inflight.remove(&k);
+    }
+    if let Some(t) = ptoken {
+        reg.progress.remove(&t);
+    }
+    reply
 }
 
 /// 转给上游。id 由上游 actor 换成网关自己的、回来再换回来。

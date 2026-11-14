@@ -172,6 +172,8 @@ async fn run_once(
     // 请求 task 发现会话失效时报回来，由 actor 决定重新握手（不算失败、不退避）。
     let (lost_tx, mut lost_rx) = mpsc::channel::<String>(1);
     let mut next = io.next;
+    // 还在跑的请求：客户端带下来的 id → （上游认识的 id，请求 task）。取消时用。
+    let mut inflight: std::collections::HashMap<Id, (Id, tokio::task::AbortHandle)> = Default::default();
     let outcome = loop {
         tokio::select! {
             biased;
@@ -187,12 +189,22 @@ async fn run_once(
                     let conn = conn.clone();
                     tokio::spawn(async move { let _ = conn.post(&msg).send().await; });
                 }
+                Some(Command::Cancel { id, reason }) => {
+                    if let Some((up_id, task)) = inflight.remove(&id) {
+                        task.abort(); // 调用方会收到"处理请求时退出"
+                        let (conn, note) = (conn.clone(), super::cancelled(&up_id, &reason));
+                        tokio::spawn(async move { let _ = conn.post(&note).send().await; });
+                    }
+                }
                 Some(Command::Call { mut msg, timeout, reply }) => {
                     next += 1;
                     let id = gw_id(next);
                     let downstream_id = msg.id.replace(id.clone());
+                    inflight.retain(|_, (_, t)| !t.is_finished());
+                    let key = downstream_id.clone();
+                    let up_id = id.clone();
                     let (conn, name, inbound, lost_tx) = (conn.clone(), spec.name.clone(), inbound.clone(), lost_tx.clone());
-                    tokio::spawn(async move {
+                    let task = tokio::spawn(async move {
                         let method = msg.method_str().to_string();
                         let started = Instant::now();
                         let out = match tokio::time::timeout(timeout, call(&conn, &msg, &id, &name, &inbound)).await {
@@ -212,6 +224,9 @@ async fn run_once(
                         };
                         let _ = reply.send(out);
                     });
+                    if let Some(k) = key {
+                        inflight.insert(k, (up_id, task.abort_handle()));
+                    }
                 }
             },
         }

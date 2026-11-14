@@ -211,9 +211,10 @@ pub enum Inbound {
 
 pub(crate) enum Command {
     Call { msg: Message, timeout: Duration, reply: oneshot::Sender<Result<Message, UpstreamError>> },
-    /// 转发给上游的通知（客户端取消请求等，M7 用）。
     #[allow(dead_code)]
     Notify(Message),
+    /// 客户端取消了一个还在跑的请求：`id` 是调用时带下来的 id。actor 换成上游认识的 id 发 notifications/cancelled，并结束这个请求。
+    Cancel { id: Id, reason: Option<String> },
     /// 立即重连：手动重启，或"立即重试"提前结束退避。
     Restart,
 }
@@ -243,6 +244,10 @@ impl UpstreamHandle {
     #[allow(dead_code)]
     pub fn notify(&self, msg: Message) {
         let _ = self.tx.try_send(Command::Notify(msg));
+    }
+
+    pub fn cancel(&self, id: Id, reason: Option<String>) {
+        let _ = self.tx.try_send(Command::Cancel { id, reason });
     }
 
     /// 手动重启：计一次重启次数。
@@ -364,7 +369,7 @@ async fn drain(rx: &mut mpsc::Receiver<Command>, how_long: Option<Duration>, sh:
             cmd = rx.recv() => match cmd {
                 None => return Drained::Shutdown,
                 Some(Command::Restart) => return Drained::Proceed,
-                Some(Command::Notify(_)) => {}
+                Some(Command::Notify(_)) | Some(Command::Cancel { .. }) => {}
                 Some(Command::Call { reply, .. }) => {
                     let reason = sh.status().error.unwrap_or_else(|| "正在重连".into());
                     let _ = reply.send(Err(UpstreamError::Unavailable { slug: sh.name.to_string(), reason }));
@@ -425,4 +430,12 @@ async fn paged(r: &mut impl Rpc, method: &str, key: &str) -> Result<Vec<Value>, 
 /// 网关向上游发请求用自己的 id 空间（多个客户端的 id 会撞），以 gw- 开头便于在上游日志里认出来。
 pub(crate) fn gw_id(n: u64) -> Id {
     Id::as_gateway(n)
+}
+
+pub(crate) fn cancelled(upstream_id: &Id, reason: &Option<String>) -> Message {
+    let mut p = json!({ "requestId": upstream_id });
+    if let Some(r) = reason {
+        p["reason"] = json!(r);
+    }
+    Message::notification("notifications/cancelled", Some(p))
 }

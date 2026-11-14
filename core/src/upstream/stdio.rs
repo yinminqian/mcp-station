@@ -161,6 +161,14 @@ async fn run_once(
                         break RunOutcome::Failed(format!("写标准输入失败：{e}"));
                     }
                 }
+                Some(Command::Cancel { id, reason }) => {
+                    let key = pending.iter().find(|(_, p)| p.downstream_id.as_ref() == Some(&id)).map(|(k, _)| k.clone());
+                    if let Some(k) = key {
+                        let p = pending.remove(&k).unwrap();
+                        let _ = write_msg(&mut stdin, &super::cancelled(&k, &reason)).await;
+                        let _ = p.reply.send(Err(UpstreamError::Unavailable { slug: name.to_string(), reason: "客户端取消了这个请求".into() }));
+                    }
+                }
                 Some(Command::Call { mut msg, timeout, reply }) => {
                     next += 1;
                     let id = gw_id(next);

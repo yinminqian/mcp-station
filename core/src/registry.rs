@@ -71,7 +71,24 @@ pub struct Gateway {
     pub error: Option<String>,
 }
 
+/// 一个还在跑的客户端请求：在哪个 MCP 上、发给它的 id 是什么（网关自己编的，全局唯一）。取消时用。
+pub struct Inflight {
+    pub mcp: String,
+    pub id: Id,
+}
+
+/// 一个等着收进度的请求：客户端原来的 token，和往它的响应流里推消息的通道。
+pub struct ProgressSink {
+    pub token: Value,
+    pub tx: tokio::sync::mpsc::UnboundedSender<Message>,
+}
+
 pub struct Registry {
+    /// （会话 id，客户端请求 id）→ 正在跑的请求。客户端的 id 在不同会话里会撞，所以带上会话。
+    pub inflight: DashMap<(String, String), Inflight>,
+    /// 网关自己的 progressToken → 客户端的。不同会话的 token 会撞，所以发给上游前换成网关的。
+    pub progress: DashMap<String, ProgressSink>,
+    next_uid: std::sync::atomic::AtomicU64,
     cfg: RwLock<ConfigFile>,
     config_error: RwLock<Option<String>>,
     ups: RwLock<BTreeMap<String, Up>>,
@@ -95,6 +112,9 @@ impl Registry {
             .and_then(|b| serde_json::from_slice(&b).ok())
             .unwrap_or_default();
         let reg = Arc::new(Self {
+            inflight: DashMap::new(),
+            progress: DashMap::new(),
+            next_uid: std::sync::atomic::AtomicU64::new(1),
             cfg: RwLock::new(loaded.cfg),
             config_error: RwLock::new(loaded.error),
             ups: RwLock::new(BTreeMap::new()),
@@ -167,15 +187,31 @@ impl Registry {
         }
     }
 
-    /// 上游说清单变了（tools/prompts/resources 的 list_changed）：重新拉一遍。
+    pub fn next_uid(&self) -> u64 {
+        self.next_uid.fetch_add(1, std::sync::atomic::Ordering::Relaxed)
+    }
+
+    /// 上游发来的通知：清单变了（list_changed）就重新拉一遍；进度（notifications/progress）按 token 推回发起请求的客户端。
     fn watch(self: &Arc<Self>, h: &UpstreamHandle, stop: CancellationToken) {
         let mut rx = h.subscribe();
         let h = h.clone();
+        let reg = Arc::downgrade(self);
         tokio::spawn(async move {
             loop {
                 tokio::select! {
                     _ = stop.cancelled() => return,
                     m = rx.recv() => match m {
+                        Ok(Inbound::Notification(mut m)) if m.method_str() == "notifications/progress" => {
+                            let Some(reg) = reg.upgrade() else { return };
+                            let token = m.params.as_ref().and_then(|p| p.get("progressToken")).and_then(Value::as_str).map(str::to_string);
+                            let sink = token.and_then(|t| reg.progress.get(&t).map(|s| (s.token.clone(), s.tx.clone())));
+                            if let Some((original, tx)) = sink {
+                                if let Some(p) = m.params.as_mut() {
+                                    p["progressToken"] = original;
+                                }
+                                let _ = tx.send(m);
+                            }
+                        }
                         Ok(Inbound::Notification(m)) if m.method_str().ends_with("list_changed") => {
                             tracing::info!(mcp = %h.name, method = %m.method_str(), "上游清单变了，重新拉取");
                             if let Some(c) = refetch(&h).await {

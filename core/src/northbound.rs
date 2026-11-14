@@ -5,7 +5,9 @@
 //!   带浏览器 Origin 头的请求一律拒绝——防网页借浏览器打本机端口（DNS rebinding）。
 //! - 不认识的 Mcp-Session-Id 直接接管，不回 404：会话里只有地址和客户端名，内核重启（升级、崩溃）后可以原地重建，
 //!   客户端不用重新握手。会话也写进 sessions.json，重启后还认得客户端名字。
-//! - POST 的响应用 application/json：不声明 sampling 等能力，一个请求恒定对应一个响应。GET（服务器推送流）回 405。
+//! - POST 的响应一般用 application/json。请求带了 `_meta.progressToken`、客户端也接受 SSE 时改用 SSE：
+//!   先推上游发来的进度（token 换回客户端的），最后推结果。GET（服务器推送流）回 405。
+//! - 客户端发来 notifications/cancelled 时转给正在跑这个请求的上游（见 router::cancel）。
 
 use crate::jsonrpc::{code, Message};
 use crate::registry::{Registry, Route, SessionInfo};
@@ -13,6 +15,7 @@ use crate::router::{self, Ctx};
 use axum::body::Bytes;
 use axum::extract::{DefaultBodyLimit, State};
 use axum::http::{HeaderMap, HeaderValue, Method, StatusCode, Uri};
+use axum::response::sse::{Event as SseEvent, Sse};
 use axum::response::{IntoResponse, Response};
 use axum::routing::any;
 use axum::Json;
@@ -162,7 +165,15 @@ async fn handle(State(reg): State<Arc<Registry>>, method: Method, uri: Uri, head
         (None, UNKNOWN_CLIENT.to_string())
     };
 
-    let ctx = Ctx { route, client };
+    let wants_stream = !batch
+        && msgs.len() == 1
+        && msgs[0].params.as_ref().and_then(|p| p.pointer("/_meta/progressToken")).is_some()
+        && headers.get("accept").and_then(|v| v.to_str().ok()).is_some_and(|a| a.contains("text/event-stream"));
+    if wants_stream {
+        return stream_reply(reg, msgs.into_iter().next().unwrap(), route, client, session_id);
+    }
+
+    let ctx = Ctx { route, client, session: session_id.clone(), progress: None };
     let mut replies = Vec::new();
     for m in msgs {
         if let Some(r) = router::handle(&reg, m, &ctx).await {
@@ -176,6 +187,26 @@ async fn handle(State(reg): State<Arc<Registry>>, method: Method, uri: Uri, head
     } else {
         Json(json!(replies[0])).into_response()
     };
+    if let Some(id) = session_id.and_then(|s| HeaderValue::from_str(&s).ok()) {
+        resp.headers_mut().insert(SESSION_HEADER, id);
+    }
+    resp
+}
+
+/// 用 SSE 回一个请求：进度通知和最终结果都走同一个通道，结果发出后所有发送端都释放，流自然结束。
+fn stream_reply(reg: Arc<Registry>, msg: Message, route: Route, client: String, session_id: Option<String>) -> Response {
+    let (tx, rx) = tokio::sync::mpsc::unbounded_channel::<Message>();
+    let ctx = Ctx { route, client, session: session_id.clone(), progress: Some(tx.clone()) };
+    tokio::spawn(async move {
+        if let Some(r) = router::handle(&reg, msg, &ctx).await {
+            let _ = tx.send(r);
+        }
+    });
+    let stream = futures::stream::unfold(rx, |mut rx| async move {
+        let m = rx.recv().await?;
+        Some((Ok::<_, std::convert::Infallible>(SseEvent::default().event("message").data(serde_json::to_string(&m).unwrap_or_default())), rx))
+    });
+    let mut resp = Sse::new(stream).into_response();
     if let Some(id) = session_id.and_then(|s| HeaderValue::from_str(&s).ok()) {
         resp.headers_mut().insert(SESSION_HEADER, id);
     }
