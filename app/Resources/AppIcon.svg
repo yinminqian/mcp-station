@@ -1,26 +1,26 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
-  <!-- MCP Station 图标：一座发射塔向两侧发信号——Station 就是"站"，网关把 MCP 发给所有客户端。
+  <!-- MCP Station 图标：四块粉彩方块是各个 MCP，中间的黑圆是网关。
        颜色取自 Pastel Bento 的设计变量（app/Sources/MCPStation/ThemeBento/BentoTokens.swift）。
-       设计稿：Figma「MCP Station Logo」B 版。 -->
+       设计稿：Figma「MCP Station Logo」A 版。 -->
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#2C2B31"/>
-      <stop offset="1" stop-color="#111111"/>
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#EFEAE2"/>
     </linearGradient>
   </defs>
 
   <!-- 底：macOS 图标网格里 824×824 的圆角方块 -->
   <rect x="100" y="100" width="824" height="824" rx="186" fill="url(#bg)"/>
+  <rect x="100.5" y="100.5" width="823" height="823" rx="185.5" fill="none" stroke="#000000" stroke-opacity="0.08"/>
 
-  <!-- 信号弧：内圈薄荷绿，外圈薰衣草紫 -->
-  <g fill="none" stroke-width="44" stroke-linecap="round">
-    <path d="M627 374 A150 150 0 0 1 627 566" stroke="#C2ECD8"/>
-    <path d="M397 374 A150 150 0 0 0 397 566" stroke="#C2ECD8"/>
-    <path d="M703.5 309.3 A250 250 0 0 1 703.5 630.7" stroke="#D9D2F9"/>
-    <path d="M320.5 309.3 A250 250 0 0 0 320.5 630.7" stroke="#D9D2F9"/>
-  </g>
+  <!-- 四个 MCP -->
+  <rect x="220" y="220" width="274" height="274" rx="68" fill="#D9D2F9"/>
+  <rect x="530" y="220" width="274" height="274" rx="68" fill="#CDE4F6"/>
+  <rect x="220" y="530" width="274" height="274" rx="68" fill="#C2ECD8"/>
+  <rect x="530" y="530" width="274" height="274" rx="68" fill="#F9DDBD"/>
 
-  <!-- 塔身 + 塔顶 -->
-  <path d="M512 470 L420 780 M512 470 L604 780 M452 680 H572" fill="none" stroke="#FFFFFF" stroke-width="36" stroke-linecap="round"/>
-  <circle cx="512" cy="470" r="56" fill="#F9DDBD"/>
+  <!-- 网关 -->
+  <circle cx="512" cy="512" r="146" fill="#F6F2EC"/>
+  <circle cx="512" cy="512" r="118" fill="#111111"/>
+  <circle cx="512" cy="512" r="42" fill="none" stroke="#FFFFFF" stroke-width="24"/>
 </svg>
