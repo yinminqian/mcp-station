@@ -5,7 +5,7 @@ struct BentoIcon: Hashable, Sendable {
     let symbol: String
 
     // 导航
-    static let brand = BentoIcon(symbol: "bolt")
+    static let brand = BentoIcon(symbol: "antenna.radiowaves.left.and.right")
     static let overview = BentoIcon(symbol: "house")
     static let mcps = BentoIcon(symbol: "powerplug")
     static let services = BentoIcon(symbol: "square.3.layers.3d")

@@ -42,7 +42,7 @@ struct BentoMCPLook {
 enum BentoCatalog {
     private static let known: [String: BentoMCPLook] = [
         "XcodeBuildMCP": BentoMCPLook(group: .dev, tone: .lavender, icon: .package),
-        "metro": BentoMCPLook(group: .dev, tone: .lavender, icon: .brand),
+        "metro": BentoMCPLook(group: .dev, tone: .lavender, icon: BentoIcon(symbol: "bolt")),
         "mobile": BentoMCPLook(group: .dev, tone: .sky, icon: .phone),
         "chrome-devtools": BentoMCPLook(group: .dev, tone: .sky, icon: .browser),
         "clickhouse": BentoMCPLook(group: .data, tone: .mint, icon: .database),
