@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle">
+  <channel>
+    <title>MCP Station</title>
+    <item>
+      <title>0.2.0</title>
+      <pubDate>Sat, 14 Nov 2026 14:35:38 GMT</pubDate>
+      <sparkle:version>7</sparkle:version>
+      <sparkle:shortVersionString>0.2.0</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>26.0</sparkle:minimumSystemVersion>
+      <description><![CDATA[
+<p>第一个公开版本。</p>
+<ul>
+<li><b>Rust 内核 mcp-core</b>：网关和所有 MCP 由独立的后台服务托管，开机自启，崩溃自动拉起；退出 App 不影响客户端。</li>
+<li><b>一个网关，三种地址</b>：<code>/mcp</code>（默认服务）、<code>/s/&lt;服务&gt;/mcp</code>（自己组的服务）、<code>/servers/&lt;名字&gt;/mcp</code>（单个 MCP，工具名不变）。聚合工具、prompts、resources，合并使用说明；转发进度通知和取消请求。</li>
+<li><b>看得见</b>：每个 MCP 的状态、日志、内存，每一次调用（谁调的、耗时、成败），可以在 App 里试调用。</li>
+<li><b>配置就是一个 JSON 文件</b>，可导入 Claude Code / Cursor 等的 mcpServers，也能导出。</li>
+<li>两套界面（Liquid Glass / Pastel Bento），中文和英文。</li>
+<li>自动更新。</li>
+</ul>
+<p><b>安装：</b> 下载 <code>MCP-Station.dmg</code>，拖进「应用程序」。还没有做苹果公证，第一次打开请右键 →「打开」。</p>
+      ]]></description>
+      <enclosure url="https://github.com/yinminqian/mcp-station/releases/download/v0.2.0/MCP-Station.dmg" type="application/octet-stream"
+                 sparkle:edSignature="OG7kZxWWTyUlhYk3/3dYVZHVj0rveKWMHWuq0OB9/3FeF8GdaABgj7Qrrmcmb0bT8YFhbpZB2CTTWNLLH+NnBg==" length="6034398"/>
+    </item>
+  </channel>
+</rss>
