@@ -4,34 +4,6 @@ import Testing
 
 @Suite("配置文件")
 struct ConfigFileTests {
-    @Test("导入 Claude / Cursor 的 mcpServers：认 command 和 url，其余字段忽略，description 记成备注")
-    func importMCPServers() throws {
-        let json = """
-        {"mcpServers": {
-          "fs": {"command": "npx", "args": ["-y", "@modelcontextprotocol/server-filesystem", "/tmp"], "transportType": "stdio"},
-          "remote": {"type": "http", "url": "https://example.com/mcp", "headers": {"Authorization": "Bearer x"}, "description": "远端"},
-          "broken": {"foo": 1}
-        }}
-        """
-        let r = try ConfigStore.parseImport(Data(json.utf8))
-        #expect(Set(r.mcps.keys) == ["fs", "remote"])
-        #expect(r.mcps["fs"]?.kind == .npx)
-        #expect(r.mcps["remote"]?.kind == .http)
-        #expect(r.mcps["remote"]?.x?.notes == "远端")
-        #expect(r.services.isEmpty)
-    }
-
-    @Test("本软件导出的文件导入后原样还原（含服务、开关）")
-    func roundTrip() throws {
-        var c = ConfigFile()
-        c.mcps["a"] = .init(command: "uvx", args: ["mcp-server-fetch"], x: .init(default: false))
-        c.services["web"] = .init(mcps: ["a"])
-        let r = try ConfigStore.parseImport(ConfigStore.encode(c))
-        #expect(r.mcps["a"] == c.mcps["a"])
-        #expect(r.services["web"]?.mcps == ["a"])
-        #expect(r.mcps["a"]?.isDefault == false)
-    }
-
     @Test("新增表单生成的定义：npx 带 -y、环境变量按行解析、密钥默认打码")
     func draftToEntry() {
         var d = MCPDraft()
@@ -44,12 +16,10 @@ struct ConfigFileTests {
         #expect(e.displayFields.first { $0.key == "API_KEY" }?.secret == true)
     }
 
-    @Test("文件缺字段时用默认值；认不出的文件报错")
-    func lenientDecodeAndErrors() throws {
+    @Test("文件缺字段时用默认值")
+    func lenientDecode() throws {
         let c = try JSONDecoder().decode(ConfigFile.self, from: Data("{}".utf8))
         #expect(c.port == 8090 && c.mcps.isEmpty)
-        #expect(throws: ConfigError.self) { try ConfigStore.parseImport(Data("[]".utf8)) }
-        #expect(throws: ConfigError.self) { try ConfigStore.parseImport(Data(#"{"mcpServers": {}}"#.utf8)) }
     }
 }
 

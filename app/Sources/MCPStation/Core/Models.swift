@@ -199,5 +199,5 @@ enum CoreInstall {
     static let supportDir = "~/Library/Application Support/MCP Station"
     static let binaryPath = supportDir + "/bin/mcp-core"
     static let configPath = supportDir + "/config.json"
-    static let logPath = supportDir + "/logs/core.log"
+    static let logsDir = supportDir + "/logs"
 }

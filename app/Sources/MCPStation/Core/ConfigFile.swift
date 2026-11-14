@@ -53,24 +53,25 @@ struct ConfigFile: Codable, Equatable, Sendable {
     }
 }
 
-/// 读写配置文件。路径固定在 `~/Library/Application Support/MCP Station/config.json`；
-/// 开发时可以用环境变量 `MCPSTATION_CONFIG=<路径>` 指到别处，不碰自己的真实配置。
+/// 配置文件在哪里。读写都由内核（mcp-core）负责，App 通过控制接口改；这里只给"在访达中显示"和迁移用。
+/// 数据目录默认是 `~/Library/Application Support/MCP Station`，开发时用环境变量 `MCPSTATION_HOME=<目录>` 指到别处（内核也认）。
 enum ConfigStore {
-    static var url: URL {
-        if let p = ProcessInfo.processInfo.environment["MCPSTATION_CONFIG"], !p.isEmpty {
+    static var dataDir: URL {
+        if let p = ProcessInfo.processInfo.environment["MCPSTATION_HOME"], !p.isEmpty {
             return URL(fileURLWithPath: (p as NSString).expandingTildeInPath)
         }
-        return FileManager.default.homeDirectoryForCurrentUser
-            .appendingPathComponent("Library/Application Support/MCP Station/config.json")
+        return FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Library/Application Support/MCP Station")
     }
 
+    static var url: URL { dataDir.appendingPathComponent("config.json") }
+
     /// 改名前（2026-11-14 以前叫 MCP Mac）的数据：整个目录搬到新名字下，主题设置也带过来。
-    /// 只在新目录还不存在时搬一次；用环境变量指到别处时不碰。
+    /// 只在新目录还不存在时搬一次；用环境变量指到别处时不碰。必须在内核第一次启动之前（App 启动时）调用。
     static func migrateFromOldName() {
         let fm = FileManager.default
         let support = fm.homeDirectoryForCurrentUser.appendingPathComponent("Library/Application Support")
         let old = support.appendingPathComponent("MCP Mac"), new = support.appendingPathComponent("MCP Station")
-        if ProcessInfo.processInfo.environment["MCPSTATION_CONFIG"] == nil,
+        if ProcessInfo.processInfo.environment["MCPSTATION_HOME"] == nil,
            fm.fileExists(atPath: old.path), !fm.fileExists(atPath: new.path) {
             try? fm.moveItem(at: old, to: new)
         }
@@ -80,23 +81,6 @@ enum ConfigStore {
         }
     }
 
-    /// 文件不存在时返回空配置（第一次打开）。文件存在但读不了、格式不对时抛错——此时绝不能用空配置覆盖它。
-    static func load() throws -> ConfigFile {
-        guard FileManager.default.fileExists(atPath: url.path) else { return ConfigFile() }
-        return try JSONDecoder().decode(ConfigFile.self, from: Data(contentsOf: url))
-    }
-
-    /// 原子写入，权限 0600（里面可能有密钥）。
-    static func save(_ config: ConfigFile) throws {
-        try write(encode(config), to: url)
-    }
-
-    static func encode(_ config: ConfigFile) throws -> Data {
-        let e = JSONEncoder()
-        e.outputFormatting = [.prettyPrinted, .sortedKeys, .withoutEscapingSlashes]
-        return try e.encode(config)
-    }
-
     static func write(_ data: Data, to url: URL) throws {
         let fm = FileManager.default
         try fm.createDirectory(at: url.deletingLastPathComponent(), withIntermediateDirectories: true)
@@ -104,57 +88,6 @@ enum ConfigStore {
         try fm.setAttributes([.posixPermissions: 0o600], ofItemAtPath: url.path)
     }
 
-    // MARK: 导入
-
-    struct Imported: Sendable {
-        var mcps: [String: ConfigFile.MCPEntry]
-        var services: [String: ConfigFile.ServiceEntry]
-        var env: [String: String]
-    }
-
-    /// 认这几种 JSON：
-    /// - 本软件的 config.json（`mcps` / `services` / `env`）；
-    /// - Claude Code、Claude Desktop、Cursor、mcp-proxy 等的 `{"mcpServers": {...}}`；
-    /// - VS Code 的 `{"servers": {...}}`。
-    /// 每一项认 `command` + `args` + `env`（本地进程）或 `url` + `headers`（HTTP），其余字段忽略，`description` 记成备注。
-    static func parseImport(_ data: Data) throws -> Imported {
-        guard let root = try JSONSerialization.jsonObject(with: data) as? [String: Any] else {
-            throw ConfigError.unrecognized("最外层不是 JSON 对象")
-        }
-        let isOurs = root["mcps"] != nil
-        guard let table = (root["mcps"] ?? root["mcpServers"] ?? root["servers"]) as? [String: Any] else {
-            throw ConfigError.unrecognized("没有找到 mcps、mcpServers 或 servers")
-        }
-        var mcps: [String: ConfigFile.MCPEntry] = [:]
-        for (name, raw) in table {
-            guard let item = raw as? [String: Any] else { continue }
-            var entry = ConfigFile.MCPEntry()
-            entry.command = item["command"] as? String
-            entry.args = (item["args"] as? [Any])?.compactMap { $0 as? String }
-            entry.env = item["env"] as? [String: String]
-            entry.url = item["url"] as? String ?? item["serverUrl"] as? String
-            entry.headers = item["headers"] as? [String: String]
-            if isOurs, let x = item["x"], let xd = try? JSONSerialization.data(withJSONObject: x) {
-                entry.x = try? JSONDecoder().decode(ConfigFile.MCPEntry.Extra.self, from: xd)
-            }
-            if let note = item["description"] as? String, !note.isEmpty {
-                entry.x = entry.x ?? .init()
-                entry.x?.notes = note
-            }
-            guard entry.command != nil || entry.url != nil else { continue }
-            mcps[name] = entry
-        }
-        guard !mcps.isEmpty else { throw ConfigError.unrecognized("里面没有可导入的 MCP（每一项要有 command 或 url）") }
-
-        var services: [String: ConfigFile.ServiceEntry] = [:]
-        if isOurs, let s = root["services"] as? [String: Any] {
-            for (name, raw) in s {
-                if let list = (raw as? [String: Any])?["mcps"] as? [String] { services[name] = .init(mcps: list) }
-            }
-        }
-        let env = isOurs ? (root["env"] as? [String: String] ?? [:]) : [:]
-        return Imported(mcps: mcps, services: services, env: env)
-    }
 }
 
 enum ConfigError: LocalizedError {

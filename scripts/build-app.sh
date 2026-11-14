@@ -1,10 +1,14 @@
 #!/bin/bash
-# 组装 MCP Station.app（SwiftPM 产物 → .app bundle → ad-hoc 签名）。
+# 组装 MCP Station.app（内核 mcp-core + SwiftPM 产物 → .app bundle → ad-hoc 签名）。
 #
 # 用法：
 #   scripts/build-app.sh            release 构建，产物在 build/MCP Station.app
 #   scripts/build-app.sh --debug    debug 构建（编译快，调试用）
 #   scripts/build-app.sh --install  构建后安装到 /Applications（已存在则先退出旧进程再覆盖）
+#   scripts/build-app.sh --install-core  再用包里的内核升级 / 重启正在跑的内核（客户端会断几秒）
+#
+# 内核放在 App 包的 Contents/Resources/mcp-core；App 发现内核没装会自动装（复制到数据目录、写 LaunchAgent）。
+# 重装 App 不会打断正在跑的内核（它跑的是数据目录里的那份），要升级内核加 --install-core 或在 App 里点「重启」。
 #
 # v1 只做 ad-hoc 签名（codesign -s -），不用证书；以后用用户本人账号签名时只改 SIGN_ID。
 set -euo pipefail
@@ -15,13 +19,20 @@ BUNDLE_ID="com.example.mcp-station"
 SIGN_ID="-"
 CONFIG=release
 INSTALL=0
+INSTALL_CORE=0
 for a in "$@"; do
   case "$a" in
     --debug) CONFIG=debug ;;
     --install) INSTALL=1 ;;
+    --install-core) INSTALL_CORE=1 ;;
     *) echo "未知参数 $a" >&2; exit 2 ;;
   esac
 done
+
+# 内核（Rust）。release 用全局优化，第一次编要几分钟，之后增量很快。
+# 在 core 目录里编：cargo 只从当前目录往上找 .cargo/config.toml（本机可以在那里配 crates 镜像）
+(cd "$ROOT/core" && cargo build --release)
+CORE_BIN="$ROOT/core/target/release/mcp-core"
 
 cd "$ROOT/app"
 swift build -c "$CONFIG" --product MCPStation
@@ -31,6 +42,7 @@ OUT="$ROOT/build/$APP_NAME.app"
 rm -rf "$OUT"
 mkdir -p "$OUT/Contents/MacOS" "$OUT/Contents/Resources"
 cp "$BIN" "$OUT/Contents/MacOS/MCPStation"
+cp "$CORE_BIN" "$OUT/Contents/Resources/mcp-core"
 
 VERSION="$(git -C "$ROOT" describe --tags --always 2>/dev/null || echo 0.1.0)"
 cat > "$OUT/Contents/Info.plist" <<PLIST
@@ -59,6 +71,8 @@ if [ -f "$ROOT/app/Resources/AppIcon.icns" ]; then
   /usr/libexec/PlistBuddy -c "Add :CFBundleIconFile string AppIcon" "$OUT/Contents/Info.plist"
 fi
 
+# 包里的可执行文件先单独签，再签整个包
+codesign --force --sign "$SIGN_ID" --timestamp=none "$OUT/Contents/Resources/mcp-core"
 codesign --force --sign "$SIGN_ID" --timestamp=none "$OUT"
 echo "已构建：${OUT}（${CONFIG}）"
 
@@ -76,4 +90,8 @@ if [ "$INSTALL" = 1 ]; then
   fi
   ditto "$OUT" "$DEST"
   echo "已安装：${DEST}"
+fi
+
+if [ "$INSTALL_CORE" = 1 ]; then
+  "$OUT/Contents/Resources/mcp-core" install --restart
 fi

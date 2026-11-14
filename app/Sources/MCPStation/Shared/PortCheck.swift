@@ -1,7 +1,7 @@
 import Foundation
 
 /// 端口有没有被别的程序占着：问一下 lsof 谁在监听它。没人监听返回 nil。
-/// 网关还没接入，所以任何监听者都是别人（比如以前的 mcp-proxy）；接入后要排除网关自己。
+/// 内核自己（mcp-core）在听不算占用。
 enum PortCheck {
     static func listener(on port: Int) async -> String? {
         await Task.detached(priority: .utility) {
@@ -20,7 +20,7 @@ enum PortCheck {
                 if line.hasPrefix("p"), pid.isEmpty { pid = String(line.dropFirst()) }
                 if line.hasPrefix("c"), name.isEmpty { name = String(line.dropFirst()) }
             }
-            return pid.isEmpty ? nil : "\(name.isEmpty ? "进程" : name)（pid \(pid)）"
+            return pid.isEmpty || name == "mcp-core" ? nil : "\(name.isEmpty ? "进程" : name)（pid \(pid)）"
         }.value
     }
 }

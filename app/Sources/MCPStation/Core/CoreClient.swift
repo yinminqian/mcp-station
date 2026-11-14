@@ -2,8 +2,7 @@ import Foundation
 
 /// App 与后台 core 之间的唯一接口。
 ///
-/// 现在由 `LocalCore` 实现：配置真实读写 config.json，各 MCP 在 App 里真实握手检测。
-/// 网关（core）做好后换成 HTTP 实现（`/control/*`，见 docs/ARCHITECTURE.md §4.1），界面代码不需要改。
+/// 由 `HTTPCoreClient` 实现：跟内核（mcp-core，Rust）的控制接口 `/control/*` 说话（见 core/src/control.rs）。
 ///
 /// 状态以「推」为主：`updates()` 按粒度推送变化，store 只替换变了的那一块，
 /// 这样调用记录每秒刷新时，MCP 列表不会跟着重绘。

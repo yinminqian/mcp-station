@@ -60,7 +60,15 @@ final class AppStore {
             } else if let i, mcps[i].state.needsAttention || retrying.contains(m.name) {
                 retrying.insert(m.name)
             }
-            if let i { mcps[i] = m } else { mcps.append(m) }
+            if let i {
+                // 内核推来的 MCP 不带趋势（界面自己按每 5 秒的采样攒）；运行中的内存也接着用上一次的，等下一次采样
+                var m = m
+                m.memoryHistory = mcps[i].memoryHistory
+                if m.memory == nil, m.state.isHealthy { m.memory = mcps[i].memory }
+                mcps[i] = m
+            } else {
+                mcps.append(m)
+            }
         case .services(let s):
             namedServices = s
         case let .memory(coreBytes, byName):

@@ -10,8 +10,8 @@ struct MCPStationApp: App {
 
     init() {
         ConfigStore.migrateFromOldName()
-        // 配置读写 config.json、MCP 在 App 里真实检测；网关做好后换成 HTTP 版 CoreClient，其余不动。
-        _store = State(initialValue: AppStore(client: LocalCore()))
+        // 内核（mcp-core）托管网关和所有 MCP，App 只是遥控器：通过控制接口管理它，没装就自动装上（见 HTTPCoreClient）。
+        _store = State(initialValue: AppStore(client: HTTPCoreClient()))
     }
 
     var body: some Scene {
