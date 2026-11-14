@@ -47,13 +47,13 @@ struct DerivedTests {
         #expect(s.avgDuration == .milliseconds(400))
     }
 
-    @Test("客户端配置：容器用 host.docker.internal，默认服务叫 mac")
+    @Test("客户端配置：容器用 host.docker.internal，默认服务叫 station")
     func clientCommand() {
         let svc = ServiceSummary(name: "ios", path: "/s/ios/mcp", isDefault: false, members: [], sessions: 0)
         #expect(Format.clientCommand(service: svc, client: .local, port: 8090)
-                == "claude mcp add --transport http mac-ios http://127.0.0.1:8090/s/ios/mcp")
+                == "claude mcp add --transport http station-ios http://127.0.0.1:8090/s/ios/mcp")
         #expect(Format.clientCommand(service: svc, client: .container, port: 8090).contains("host.docker.internal:8090"))
         let def = ServiceSummary(name: "默认", path: "/mcp", isDefault: true, members: [], sessions: 0)
-        #expect(Format.clientCommand(service: def, client: .local, port: 8090).contains(" mac http://"))
+        #expect(Format.clientCommand(service: def, client: .local, port: 8090).contains(" station http://"))
     }
 }

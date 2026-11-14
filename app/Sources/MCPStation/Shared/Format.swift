@@ -55,7 +55,7 @@ enum Format {
 
     static func clientCommand(service: ServiceSummary, client: ClientTarget, port: Int) -> String {
         let url = serviceURL(service, port: port, host: client == .container ? "host.docker.internal" : "127.0.0.1")
-        let name = service.isDefault ? "mac" : "mac-\(service.name)"
+        let name = service.isDefault ? "station" : "station-\(service.name)"
         switch client {
         case .local, .container:
             return "claude mcp add --transport http \(name) \(url)"
