@@ -30,51 +30,51 @@ INFO="$APP/Contents/Info.plist"
 VERSION="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$INFO")"
 BUILD_NUMBER="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' "$INFO")"
 MIN_SYSTEM="$(/usr/libexec/PlistBuddy -c 'Print :LSMinimumSystemVersion' "$INFO")"
-TAG="v$VERSION"
+TAG="v${VERSION}"
 
 # Sparkle 比较的是构建号：不比已发布的大，谁也收不到这个版本。
-if [ -f "$APPCAST" ]; then
-    PUBLISHED="$(sed -n 's:.*<sparkle\:version>\(.*\)</sparkle\:version>.*:\1:p' "$APPCAST" | head -1)"
-    if [ -n "$PUBLISHED" ] && [ "$BUILD_NUMBER" -le "$PUBLISHED" ]; then
-        echo "!! 构建号 $BUILD_NUMBER 不比已发布的 $PUBLISHED 大（先提交再发版）"; exit 1
+if [ -f "${APPCAST}" ]; then
+    PUBLISHED="$(sed -n 's:.*<sparkle\:version>\(.*\)</sparkle\:version>.*:\1:p' "${APPCAST}" | head -1)"
+    if [ -n "${PUBLISHED}" ] && [ "${BUILD_NUMBER}" -le "${PUBLISHED}" ]; then
+        echo "!! 构建号 ${BUILD_NUMBER} 不比已发布的 ${PUBLISHED} 大（先提交再发版）"; exit 1
     fi
 fi
 
-echo "==> 做 DMG（$VERSION，构建 $BUILD_NUMBER）"
+echo "==> 做 DMG（${VERSION}，构建 ${BUILD_NUMBER}）"
 STAGE="$ROOT/build/dmg"
-rm -rf "$STAGE" "$DMG"
+rm -rf "$STAGE" "${DMG}"
 mkdir -p "$STAGE"
 ditto "$APP" "$STAGE/MCP Station.app"
 ln -s /Applications "$STAGE/Applications"
-hdiutil create -volname "MCP Station" -srcfolder "$STAGE" -ov -format UDZO "$DMG" >/dev/null
+hdiutil create -volname "MCP Station" -srcfolder "$STAGE" -ov -format UDZO "${DMG}" >/dev/null
 rm -rf "$STAGE"
 
 echo "==> 签名（钥匙串里的 mcp-station 私钥）"
-SIGNED="$("$SPARKLE_BIN/sign_update" --account mcp-station "$DMG")"
-SIGNATURE="$(printf '%s' "$SIGNED" | sed -n 's/.*sparkle:edSignature="\([^"]*\)".*/\1/p')"
-LENGTH="$(printf '%s' "$SIGNED" | sed -n 's/.*length="\([^"]*\)".*/\1/p')"
-[ -n "$SIGNATURE" ] && [ -n "$LENGTH" ] || { echo "!! sign_update 没给出签名：$SIGNED"; exit 1; }
+SIGNED="$("$SPARKLE_BIN/sign_update" --account mcp-station "${DMG}")"
+SIGNATURE="$(printf '%s' "${SIGNED}" | sed -n 's/.*sparkle:edSignature="\([^"]*\)".*/\1/p')"
+LENGTH="$(printf '%s' "${SIGNED}" | sed -n 's/.*length="\([^"]*\)".*/\1/p')"
+[ -n "$SIGNATURE" ] && [ -n "$LENGTH" ] || { echo "!! sign_update 没给出签名：${SIGNED}"; exit 1; }
 
-python3 "$ROOT/scripts/appcast.py" "$APPCAST" "$VERSION" "$BUILD_NUMBER" "$MIN_SYSTEM" \
-    "https://github.com/$REPO/releases/download/$TAG/MCP-Station.dmg" "$SIGNATURE" "$LENGTH" ${NOTES:+"$NOTES"}
-echo "==> 写好了 $APPCAST"
+python3 "$ROOT/scripts/appcast.py" "${APPCAST}" "${VERSION}" "${BUILD_NUMBER}" "$MIN_SYSTEM" \
+    "https://github.com/${REPO}/releases/download/${TAG}/MCP-Station.dmg" "$SIGNATURE" "$LENGTH" ${NOTES:+"${NOTES}"}
+echo "==> 写好了 ${APPCAST}"
 
 if [ "${PUBLISH:-0}" != "1" ]; then
-    echo "    没有发布。PUBLISH=1 NOTES=notes.md scripts/release.sh 发布 $TAG。"
+    echo "    没有发布。PUBLISH=1 NOTES=notes.md scripts/release.sh 发布 ${TAG}。"
     exit 0
 fi
 
-[ -n "${NOTES:-}" ] && [ -f "$NOTES" ] || { echo "!! 发布要给 NOTES=更新说明.md"; exit 1; }
-gh release view "$TAG" --repo "$REPO" >/dev/null 2>&1 && { echo "!! $TAG 已经发过了（改 VERSION）"; exit 1; }
+[ -n "${NOTES:-}" ] && [ -f "${NOTES}" ] || { echo "!! 发布要给 NOTES=更新说明.md"; exit 1; }
+gh release view "${TAG}" --repo "${REPO}" >/dev/null 2>&1 && { echo "!! ${TAG} 已经发过了（改 VERSION）"; exit 1; }
 # 从 main 发：打包的内容必须就是 main 上的
 git -C "$ROOT" fetch -q origin main
 [ "$(git -C "$ROOT" rev-parse HEAD)" = "$(git -C "$ROOT" rev-parse origin/main)" ] || { echo "!! HEAD 不是 origin/main，先推送"; exit 1; }
 [ -z "$(git -C "$ROOT" status --porcelain -- . ':!appcast.xml')" ] || { echo "!! 有没提交的改动，DMG 会和标签对不上"; exit 1; }
 
-echo "==> 发布 $TAG"
+echo "==> 发布 ${TAG}"
 # 先传安装包、后推更新源：更新源永远不会指向还不存在的包
-gh release create "$TAG" "$DMG" --repo "$REPO" --target main --title "MCP Station $VERSION" --notes-file "$NOTES"
+gh release create "${TAG}" "${DMG}" --repo "${REPO}" --target main --title "MCP Station ${VERSION}" --notes-file "${NOTES}"
 git -C "$ROOT" add appcast.xml
-git -C "$ROOT" commit -q -m "更新源：提供 $VERSION"
+git -C "$ROOT" commit -q -m "更新源：提供 ${VERSION}"
 git -C "$ROOT" push -q origin main
-echo "==> 发布了 $TAG；装着旧版的 App 下次启动会收到提示"
+echo "==> 发布了 ${TAG}；装着旧版的 App 下次启动会收到提示"
