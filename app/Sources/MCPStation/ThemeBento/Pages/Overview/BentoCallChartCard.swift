@@ -191,15 +191,18 @@ private struct BentoCallChart: View {
         .accessibilityLabel("最近 \(columns.count) 小时的调用数")
     }
 
-    /// 选中那一小时：柱子背后一条整列高的浅底。
+    /// 选中那一小时：柱子背后一圈浅底，跟着柱子的实际高度（空的小时就包住那截矮桩）。
     @ViewBuilder
     private func focusBand(proxy: ChartProxy, plot: CGRect) -> some View {
-        if let focus, let x = proxy.position(forX: focus) {
-            let width = plot.width / CGFloat(columns.count) * Self.barRatio + Self.gap * 4
+        if let column = columns.first(where: { $0.label == focus }), let x = proxy.position(forX: column.label) {
+            let pad = Self.gap * 2
+            let barHeight = column.total > 0 ? plot.height - (proxy.position(forY: Double(column.total)) ?? plot.height) : Self.stub
+            let width = plot.width / CGFloat(columns.count) * Self.barRatio + pad * 2
+            let height = barHeight + pad * 2
             RoundedRectangle(cornerRadius: BentoRadius.sm, style: .continuous)
                 .fill(BentoColor.Bg.panel)
-                .frame(width: width, height: plot.height + Self.gap * 2)
-                .position(x: plot.minX + x, y: plot.midY)
+                .frame(width: width, height: height)
+                .position(x: plot.minX + x, y: plot.maxY - height / 2 + pad)
                 .allowsHitTesting(false)
         }
     }
