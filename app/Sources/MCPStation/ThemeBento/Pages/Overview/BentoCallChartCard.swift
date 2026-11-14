@@ -154,8 +154,10 @@ private struct BentoCallChart: View {
                 AxisValueLabel {
                     if let label = value.as(String.self) {
                         let isFocus = label == focus
+                        // 不用 bentoText：它的固定行高会把数字往下挤，在胶囊里不居中
                         Text(label)
-                            .bentoText(.label, isFocus ? BentoColor.Ink.inverse : BentoColor.Ink.tertiary)
+                            .font(BentoTextStyle.label.font)
+                            .foregroundStyle(isFocus ? BentoColor.Ink.inverse : BentoColor.Ink.tertiary)
                             .monospacedDigit()
                             .padding(.horizontal, BentoSpace.s6)
                             .frame(height: BentoSpace.s20)
