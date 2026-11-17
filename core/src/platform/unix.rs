@@ -74,6 +74,11 @@ pub fn alive(pid: u32) -> bool {
     nix::sys::signal::kill(nix::unistd::Pid::from_raw(pid as i32), None).is_ok()
 }
 
+/// 上一个内核留下的子进程组还在：组长还活着、已经被 init 收养（父进程，也就是上一个内核，已经不在了）。
+pub fn is_stale_child(table: &[super::Proc], pid: u32, _cmd: &str) -> bool {
+    table.iter().any(|p| p.pid == pid && p.pgid == pid && p.ppid == 1)
+}
+
 /// 只有自己能读写（配置里有密钥，runtime.json 里有控制令牌）。
 pub fn restrict(path: &Path) {
     use std::os::unix::fs::PermissionsExt;

@@ -44,8 +44,7 @@ pub fn reap_stale() {
     }
     let table = platform::process_table();
     for c in old {
-        let Some(p) = table.iter().find(|p| p.pid == c.pid) else { continue };
-        if p.pgid == c.pid && p.ppid == 1 {
+        if platform::is_stale_child(&table, c.pid, &c.cmd) {
             tracing::warn!(mcp = %c.name, pid = c.pid, "清掉上一个内核留下的子进程组");
             platform::terminate_tree(c.pid);
             std::thread::sleep(std::time::Duration::from_millis(300));

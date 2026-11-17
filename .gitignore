@@ -9,3 +9,5 @@ core/target/
 core/target-dev/
 # 本机网络用的 crates 镜像，不提交
 core/.cargo/
+windows/**/bin/
+windows/**/obj/

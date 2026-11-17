@@ -34,6 +34,7 @@ pub fn service_status() -> serde_json::Value {
 pub struct Proc {
     pub pid: u32,
     pub ppid: u32,
+    #[cfg_attr(windows, allow(dead_code))]
     pub pgid: u32,
     pub rss: u64,
 }
